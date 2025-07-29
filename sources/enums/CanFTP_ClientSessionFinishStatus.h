@@ -1,0 +1,14 @@
+#ifndef CANFTP_CLIENTSESSIONFINISHSTATUS_H_
+#define CANFTP_CLIENTSESSIONFINISHSTATUS_H_
+
+/*
+    Статусы завершения сессии передачи файла
+*/
+typedef enum _CanFTP_ClientSessionFinishStatus
+{
+    CANFTP_CLIENTSESSIONFINISHSTATUS_SUCCESSFULLY = 0,
+    CANFTP_CLIENTSESSIONFINISHSTATUS_FAILED = 1,
+
+} CanFTP_ClientSessionFinishStatus_t; 
+
+#endif // CANFTP_CLIENTSESSIONFINISHSTATUS_H_
