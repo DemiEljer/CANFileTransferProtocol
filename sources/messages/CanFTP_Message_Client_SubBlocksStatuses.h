@@ -3,6 +3,7 @@
 
 #include "CanFTP_Messages_Handlers.h"
 
+// Количество субблоков
 #define CANFTP_SUBBLOCKS_COUNT  64
 
 /*

@@ -3,6 +3,9 @@
 
 #include "CanFTP_Messages_Handlers.h"
 
+// Количество байт в сообщении передачи элемента блока
+#define CANFTP_DATAFRAME_BYTESCOUNT 8
+
 /*
     Структура сообщения BlockControl
 */
@@ -13,7 +16,7 @@ typedef struct _CanFTP_Message_Server_DataFrame
     // Индекс кадра в рамках блока
     CanFTP_FrameIndex_t frameIndex;
     // Вектор данных кадра блока
-    uint8_t data[8];
+    uint8_t data[CANFTP_DATAFRAME_BYTESCOUNT];
 
 } CanFTP_Message_Server_DataFrame_t;
 

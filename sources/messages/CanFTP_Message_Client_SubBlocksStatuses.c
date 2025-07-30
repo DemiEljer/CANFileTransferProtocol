@@ -9,6 +9,12 @@ void CanFTP_Message_Client_SubBlocksStatuses_Unpack(CanFTP_Message_Client_SubBlo
     {
         messageModel->sessionCode = CanFTP_CanIdentifier_UnpackSessionCode(messageCan->id);
         messageModel->deviceCode = CanFTP_CanIdentifier_UnpackDeviceCode(messageCan->id);
+
+        uint8_t i = 0;
+        for (i = 0; i < CANFTP_SUBBLOCKS_COUNT; i++)
+        {
+            messageModel->subblocksReciecedFlags[i] = (CanFTP_Logical_t)((messageCan->data[i / 8] >> (i % 8)) & 0x01);
+        }
     }
 }
 /*
@@ -20,11 +26,15 @@ void CanFTP_Message_Client_SubBlocksStatuses_Pack(CanFTP_Message_Client_SubBlock
     
     // Упаковка данных
     {
-
+        uint8_t i = 0;
+        for (i = 0; i < CANFTP_SUBBLOCKS_COUNT; i++)
+        {
+            messageDataVector[i / 8] |=  (messageModel->subblocksReciecedFlags[i] & 0x01) << (i % 8);
+        }
     }
 
     CanFTP_CanMessage_Init(messageCan
-        , CanFTP_CanIdentifier_PackWithSessionCodeAndDeviceCode(CANFTP_MESSAGE_ID_CLIENT_SUBBLOCKSSTATUSES, messageModel->sessionCode, messageModel->deviceCode )
+        , CanFTP_CanIdentifier_PackWithSessionCodeAndDeviceCode(CANFTP_MESSAGE_ID_CLIENT_SUBBLOCKSSTATUSES, messageModel->sessionCode, messageModel->deviceCode)
         , 8
         , messageDataVector
     );

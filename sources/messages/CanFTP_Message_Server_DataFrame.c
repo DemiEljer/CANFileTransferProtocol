@@ -9,6 +9,12 @@ void CanFTP_Message_Server_DataFrame_Unpack(CanFTP_Message_Server_DataFrame_t* m
     {
         messageModel->sessionCode = CanFTP_CanIdentifier_UnpackSessionCode(messageCan->id);
         messageModel->frameIndex = CanFTP_CanIdentifier_UnpackDataFrameIndex(messageCan->id);
+
+        uint8_t i = 0;
+        for (i = 0; i < CANFTP_DATAFRAME_BYTESCOUNT; i++)
+        {
+            messageModel->data[i] = messageCan->data[i];
+        }
     }
 }
 /*
@@ -20,7 +26,11 @@ void CanFTP_Message_Server_DataFrame_Pack(CanFTP_Message_Server_DataFrame_t* mes
     
     // Упаковка данных
     {
-
+        uint8_t i = 0;
+        for (i = 0; i < CANFTP_DATAFRAME_BYTESCOUNT; i++)
+        {
+            messageDataVector[i] = messageModel->data[i];
+        }
     }
 
     CanFTP_CanMessage_Init(messageCan

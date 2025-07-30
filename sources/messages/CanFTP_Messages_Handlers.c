@@ -37,7 +37,7 @@ uint32_t CanFTP_CanIdentifier_PackWithSerialDeviceCode
     , CanFTP_DeviceSerialCode_t deviceSerialCode
 )
 {
-    return messageCodificator | (deviceSerialCode & 0xFFFF);
+    return (uint32_t)messageCodificator | (uint32_t)(deviceSerialCode & 0xFFFF);
 }
 /*
     Упаковать идентификатор сообщения c кодом сессии
@@ -48,7 +48,7 @@ uint32_t CanFTP_CanIdentifier_PackWithSessionCode
     , CanFTP_SessionCode_t sessionCode
 )
 {
-    return messageCodificator | ((sessionCode & 0xFF) << 8);
+    return (uint32_t)messageCodificator | (uint32_t)((sessionCode & 0xFF) << 8);
 }
 /*
     Упаковать идентификатор сообщения c кодом сессии и кодом устройства
@@ -60,7 +60,7 @@ uint32_t CanFTP_CanIdentifier_PackWithSessionCodeAndDeviceCode
     , CanFTP_DeviceCode_t deviceCode
 )
 {
-    return messageCodificator | ((sessionCode & 0xFF) << 8) | (deviceCode & 0xFF);
+    return (uint32_t)messageCodificator | (uint32_t)((sessionCode & 0xFF) << 8) | (uint32_t)(deviceCode & 0xFF);
 }
 /*
     Упаковать идентификатор сообщения c кодом сессии и индексом фрейма
@@ -72,7 +72,7 @@ uint32_t CanFTP_CanIdentifier_PackWithSessionCodeAndFrameIndex
     , CanFTP_FrameIndex_t frameIndex
 )
 {
-    return messageCodificator | ((sessionCode & 0xFF) << 8) | (frameIndex & 0xFF);
+    return (uint32_t)messageCodificator | (uint32_t)((sessionCode & 0xFF) << 8) | (uint32_t)(frameIndex & 0xFF);
 }
 /*
     Верифицировать параметры сообщения

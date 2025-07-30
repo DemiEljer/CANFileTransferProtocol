@@ -32,14 +32,14 @@ typedef struct _CanFTP_Message_Server_BlockControl
         // Длина блока
         CanFTP_BlockLength_t blockLength;
 
-    } startBlock;
+    } start;
     // FINISHBLOCKACK
     struct
     {
         // Индекс блока
         CanFTP_BloclIndex_t blockIndex;
 
-    } finishBlock;
+    } finish;
     // FEEDBACKACK
     struct
     {

@@ -3,6 +3,9 @@
 
 #include "CanFTP_Messages_Handlers.h"
 
+// Количество элементов CRC-суммы
+#define CANFTP_CRCELEMENTS_COUNT 8
+
 /*
     Структура сообщения BlockControl
 */
@@ -13,7 +16,7 @@ typedef struct _CanFTP_Message_Client_BlockCRC
     // Код устройства
     CanFTP_DeviceCode_t deviceCode;
     // Элементы CRC-суммы
-    uint8_t crcElements[8];
+    uint8_t crcElements[CANFTP_CRCELEMENTS_COUNT];
 
 } CanFTP_Message_Client_BlockCRC_t;
 

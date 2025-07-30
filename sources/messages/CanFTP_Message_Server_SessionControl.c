@@ -12,15 +12,31 @@ void CanFTP_Message_Server_SessionControl_Unpack(CanFTP_Message_Server_SessionCo
 
         if (messageModel->messageType == CANFT_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION)
         {
-
+            messageModel->configuration.pageIndex = (CanFTP_PageIndex_t)(
+                  (CanFTP_PageIndex_t)((messageCan->data[0] >> 4) & 0x0F) << 0
+                | (CanFTP_PageIndex_t)((messageCan->data[1] >> 0) & 0x0F) << 4
+            );
+            messageModel->configuration.pageIndex = (CanFTP_FileLength_t)(
+                  (CanFTP_FileLength_t)((messageCan->data[1] >> 4) & 0x0F) << 0
+                | (CanFTP_FileLength_t)((messageCan->data[2] >> 0) & 0xFF) << 4
+                | (CanFTP_FileLength_t)((messageCan->data[3] >> 0) & 0xFF) << 12
+                | (CanFTP_FileLength_t)((messageCan->data[4] >> 0) & 0xFF) << 20
+                | (CanFTP_FileLength_t)((messageCan->data[5] >> 0) & 0x0F) << 28
+            );
+            messageModel->configuration.repeateBlockCount = (CanFTP_SendingRepeate_t)(
+                  (CanFTP_SendingRepeate_t)((messageCan->data[5] >> 4) & 0x0F) << 0
+                | (CanFTP_SendingRepeate_t)((messageCan->data[6] >> 0) & 0x03) << 4
+            );
+            messageModel->configuration.repeateAckCount = (CanFTP_SendingRepeate_t)((messageCan->data[6] >> 2) & 0x3F);
+            messageModel->configuration.repeateInterval = (CanFTP_SendingRepeate_t)((messageCan->data[7] >> 0) & 0xFF);
         }
         else if (messageModel->messageType == CANFT_MESSAGE_SERVER_SESSIONCONTROL_START)
         {
-
+            // Ничего не делаем
         }
         else if (messageModel->messageType == CANFT_MESSAGE_SERVER_SESSIONCONTROL_FINISH)
         {
-
+            messageModel->finish.status = (CanFTP_ClientSessionFinishStatus_t)((messageCan->data[0] >> 4) & 0x0F);
         }
         else
         {
@@ -37,17 +53,29 @@ void CanFTP_Message_Server_SessionControl_Pack(CanFTP_Message_Server_SessionCont
     
     // Упаковка данных
     {
+        messageDataVector[0] |= messageModel->messageType & 0x0F;
+
         if (messageModel->messageType == CANFT_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION)
         {
-
+            messageDataVector[0] |= ((messageModel->configuration.pageIndex >> 0) & 0x0F) << 4;
+            messageDataVector[1] |= (((messageModel->configuration.pageIndex >> 4) & 0x0F) << 0) 
+                                    | (((messageModel->configuration.pageIndex >> 0) & 0x0F) << 4);
+            messageDataVector[2] |= (((messageModel->configuration.pageIndex >> 4) & 0xFF) << 0);
+            messageDataVector[3] |= (((messageModel->configuration.pageIndex >> 12) & 0xFF) << 0);
+            messageDataVector[4] |= (((messageModel->configuration.pageIndex >> 20) & 0xFF) << 0);
+            messageDataVector[5] |= (((messageModel->configuration.pageIndex >> 28) & 0x0F) << 0)
+                                    | (((messageModel->configuration.repeateBlockCount >> 0) & 0x0F) << 4);
+            messageDataVector[6] |= (((messageModel->configuration.repeateBlockCount >> 4) & 0x03) << 0)
+                                    | (((messageModel->configuration.repeateAckCount >> 0) & 0x3F) << 2);
+            messageDataVector[7] |= (((messageModel->configuration.repeateInterval >> 0) & 0xFF) << 0);
         }
         else if (messageModel->messageType == CANFT_MESSAGE_SERVER_SESSIONCONTROL_START)
         {
-
+            // Ничего не делаем
         }
         else if (messageModel->messageType == CANFT_MESSAGE_SERVER_SESSIONCONTROL_FINISH)
         {
-
+            messageDataVector[0] = ((messageModel->finish.status >> 0) & 0x0F) << 4;
         }
         else
         {
