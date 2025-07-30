@@ -2,6 +2,7 @@
 #define CANFTP_BASETYPES_DEFINES_H_
 
 #include "stdint.h"
+#include "CanFTP_Configs.h"
 
 // Логический тип
 typedef uint8_t CanFTP_Logical_t;

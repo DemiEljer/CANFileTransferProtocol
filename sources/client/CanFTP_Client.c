@@ -1,120 +1,13 @@
 #include "CanFTP_Client.h"
-#include "stdio.h"
 
-/*
-    Обработчик события изменения состояния конечным автоматом
-*/
-static void CanFTP_Client_StateChanedEventHandler(CanFTP_FinalStateMachine_t *fms)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-
-}
-
-#ifndef CLIENT_STATE_IDLE_
-#define CLIENT_STATE_IDLE_
-
-/*
-    Переход в состояние IDLE
-*/
-static void CanFTP_Client_State_IDLE_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    printf("CanFTP_Client_State_IDLE_Enter\r\n");
-}
-/*
-    Обработка тела состояния IDLE
-*/
-static uint32_t CanFTP_Client_State_IDLE_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    return CANFTP_CLIENTSTATE_PING_RESPONSING;
-}
-/*
-    Выход из состояния IDLE
-*/
-static void CanFTP_Client_State_IDLE_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    printf("CanFTP_Client_State_IDLE_Leave\r\n");
-}
-
-#endif // CLIENT_STATE_IDLE_
-
-#ifndef CLIENT_STATE_PING_RESPONSING_
-#define CLIENT_STATE_PING_RESPONSING_
-
-/*
-    Переход в состояние IDLE
-*/
-static void CanFTP_Client_State_PING_RESPONSING_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    printf("CanFTP_Client_State_PING_RESPONSING_Enter\r\n");
-}
-/*
-    Обработка тела состояния IDLE
-*/
-static uint32_t CanFTP_Client_State_PING_RESPONSING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    return CANFTP_CLIENTSTATE_PING_FINISHED;
-}
-/*
-    Выход из состояния IDLE
-*/
-static void CanFTP_Client_State_PING_RESPONSING_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    printf("CanFTP_Client_State_PING_RESPONSING_Leave\r\n");
-}
-
-#endif // CLIENT_STATE_IDLE_
-
-#ifndef CLIENT_STATE_PING_FINISHED_
-#define CLIENT_STATE_PING_FINISHED_
-
-/*
-    Переход в состояние IDLE
-*/
-static void CanFTP_Client_State_PING_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    printf("CanFTP_Client_State_PING_FINISHED_Enter\r\n");
-}
-/*
-    Обработка тела состояния IDLE
-*/
-static uint32_t CanFTP_Client_State_PING_FINISHED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    return CANFTP_CLIENTSTATE_IDLE;
-}
-/*
-    Выход из состояния IDLE
-*/
-static void CanFTP_Client_State_PING_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel)
-{
-    CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-
-    printf("CanFTP_Client_State_PING_FINISHED_Leave\r\n");
-}
-
-#endif // CLIENT_STATE_IDLE_
+#include "CanFTP_Client_States_Handlers.h"
 
 /*
     Инициализация клиента
 */
 void CanFTP_Client_Init(CanFTP_Client_t *client)
 {
+    client->state = (CanFTP_ClientState_t*)&(client->fms.fms.state);
     // Инициализация обработчиков состояний
     {
         client->fms.states[CANFTP_CLIENTSTATE_IDLE].stateModel = 0;
@@ -132,9 +25,61 @@ void CanFTP_Client_Init(CanFTP_Client_t *client)
         client->fms.states[CANFTP_CLIENTSTATE_PING_FINISHED].handlers.bodyStateHandler = CanFTP_Client_State_PING_FINISHED_Body;
         client->fms.states[CANFTP_CLIENTSTATE_PING_FINISHED].handlers.leaveStateHandler = CanFTP_Client_State_PING_FINISHED_Leave;
 
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_REGISTRATED].stateModel = 0;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_REGISTRATED].handlers.enterStateHandler = CanFTP_Client_State_SESSION_REGISTRATED_Enter;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_REGISTRATED].handlers.bodyStateHandler = CanFTP_Client_State_SESSION_REGISTRATED_Body;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_REGISTRATED].handlers.leaveStateHandler = CanFTP_Client_State_SESSION_REGISTRATED_Leave;
+
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURED].stateModel = 0;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURED].handlers.enterStateHandler = CanFTP_Client_State_SESSION_CONFIGURED_Enter;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURED].handlers.bodyStateHandler = CanFTP_Client_State_SESSION_CONFIGURED_Body;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURED].handlers.leaveStateHandler = CanFTP_Client_State_SESSION_CONFIGURED_Leave;
+
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_STARTED].stateModel = 0;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_STARTED].handlers.enterStateHandler = CanFTP_Client_State_SESSION_STARTED_Enter;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_STARTED].handlers.bodyStateHandler = CanFTP_Client_State_SESSION_STARTED_Body;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_STARTED].handlers.leaveStateHandler = CanFTP_Client_State_SESSION_STARTED_Leave;
+
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_FINISHED].stateModel = 0;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_FINISHED].handlers.enterStateHandler = CanFTP_Client_State_SESSION_FINISHED_Enter;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_FINISHED].handlers.bodyStateHandler = CanFTP_Client_State_SESSION_FINISHED_Body;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_FINISHED].handlers.leaveStateHandler = CanFTP_Client_State_SESSION_FINISHED_Leave;
+
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_RECIEVING].stateModel = 0;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_RECIEVING].handlers.enterStateHandler = CanFTP_Client_State_BLOCK_RECIEVING_Enter;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_RECIEVING].handlers.bodyStateHandler = CanFTP_Client_State_BLOCK_RECIEVING_Body;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_RECIEVING].handlers.leaveStateHandler = CanFTP_Client_State_BLOCK_RECIEVING_Leave;
+
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_FINISHED].stateModel = 0;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_FINISHED].handlers.enterStateHandler = CanFTP_Client_State_BLOCK_FINISHED_Enter;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_FINISHED].handlers.bodyStateHandler = CanFTP_Client_State_BLOCK_FINISHED_Body;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_FINISHED].handlers.leaveStateHandler = CanFTP_Client_State_BLOCK_FINISHED_Leave;
+
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY].stateModel = 0;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY].handlers.enterStateHandler = CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Enter;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY].handlers.bodyStateHandler = CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Body;
+        client->fms.states[CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY].handlers.leaveStateHandler = CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Leave;
+
         CanFTP_FinalStateMachine_Init(&(client->fms.fms), CANFTP_CLIENTSTATES_COUNT, client->fms.states, CANFTP_CLIENTSTATE_IDLE);   
         // Инициализация обработчика события изменения состояния конечного автомата
         client->fms.fms.callbacks.changeStateCallback = CanFTP_Client_StateChanedEventHandler;
+    }
+    // Инициализация логики обработки сообшений
+    {
+        // Инициализация обратного вызова 
+        client->callbacks.sendMessageCallback = 0;
+
+        client->messagesHub.clientBlockControlCallback = 0;
+        client->messagesHub.clientBlockCRCCallback = 0;
+        client->messagesHub.clientPingResponseCallback = 0;
+        client->messagesHub.clientSessionControlCallback = 0;
+        client->messagesHub.clientSubBlocksStatusesCallback = 0;
+        client->messagesHub.serverBlockControlCallback = CanFTP_Client_MessageRecieve_BlockControl;
+        client->messagesHub.serverDataFrameCallback = CanFTP_Client_MessageRecieve_DataFrame;
+        client->messagesHub.serverPingCallback = CanFTP_Client_MessageRecieve_Ping;
+        client->messagesHub.serverPingResponseAckCallback = CanFTP_Client_MessageRecieve_PingResponseAck;
+        client->messagesHub.serverRegistrationCallback = CanFTP_Client_MessageRecieve_Registration;
+        client->messagesHub.serverSessionControlCallback = CanFTP_Client_MessageRecieve_SessionControl;
     }
 }
 /*
@@ -143,4 +88,11 @@ void CanFTP_Client_Init(CanFTP_Client_t *client)
 void CanFTP_Client_Invoke(CanFTP_Client_t *client)
 {
     CanFTP_FinalStateMachine_Invoke(CanFTP_FinalStateMachine_Cast(client));
+}
+/*
+    Обработка получения сообщений
+*/
+void CanFTP_Client_RecieveCanMessage(CanFTP_Client_t *client, CanFTP_CanMessage_t* canMessage)
+{
+    CanFTP_Messages_Hub_RecieveMessage(&(client->messagesHub), canMessage, client);
 }

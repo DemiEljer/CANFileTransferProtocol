@@ -1,7 +1,7 @@
-#ifndef CANFTP_CLIENT_STATEMODELS_H_
-#define CANFTP_CLIENT_STATEMODELS_H_
+#ifndef CANFTP_CLIENT_STATES_MODELS_H_
+#define CANFTP_CLIENT_STATES_MODELS_H_
 
-#include "CanFTP_Client_StatesModels_Defines.h"
+#include "CanFTP_Client_States_Models_Defines.h"
 
 /*
     Сброс модели этапа PING

@@ -4,7 +4,10 @@
 #include "CanFTP_FinalStateMachine.h"
 #include "CanFTP_DeviceConfig_Defines.h"
 #include "CanFTP_ClientState.h"
+#include "CanFTP_Messages_Hub.h"
 
+// Тип функции обратной связи отпраки сообщения
+typedef void (*CanFTP_Client_MessageSendCallback_t)(CanFTP_CanMessage_t*);
 
 /*
     Структура клиента передачи файла
@@ -19,12 +22,20 @@ typedef struct _CanFTP_Client
         // Обработчики конечного автомата
         CanFTP_FinalStateMachine_State_t states[CANFTP_CLIENTSTATES_COUNT]; 
     } fms;
+    // Состояние клиента
+    CanFTP_ClientState_t* state;
+    // Хаб приема сообщений
+    CanFTP_Messages_Hub_t messagesHub;
     // Конфигурация устройства
     CanFTP_DeviveConfig_t devicveConfig;
     // Структура управления сессией
 
-    // События
-    
+    // Обратные вызовы
+    struct
+    {
+        // Обратный вызов отправки сообщений
+        CanFTP_Client_MessageSendCallback_t sendMessageCallback;
+    } callbacks;
 
 } CanFTP_Client_t;
 

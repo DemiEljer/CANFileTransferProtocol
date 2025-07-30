@@ -13,7 +13,7 @@ typedef enum _CanFTP_ClientBlockHandlingStatus
     // Повторная отправка блока
     CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT = 2,
     // Ошибка обработки блока
-    CANFTP_CLIENTBLOCKHANDLINGSTATUS_FAILED = 2
+    CANFTP_CLIENTBLOCKHANDLINGSTATUS_FAILED = 3
 
 } CanFTP_ClientBlockHandlingStatus_t; 
 

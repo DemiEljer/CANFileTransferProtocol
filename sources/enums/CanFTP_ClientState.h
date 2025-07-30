@@ -2,7 +2,7 @@
 #define CANFTP_CLIENTSTATE_H_
 
 // Количество состояний конечного автомата клинета
-#define CANFTP_CLIENTSTATES_COUNT 3
+#define CANFTP_CLIENTSTATES_COUNT 10
 /*
     Состояния конечного автомата клиента
 */
@@ -13,7 +13,22 @@ typedef enum _CanFTP_ClientState
     // Состояние отправки ответов на сообщение Ping со стороны сервера
     CANFTP_CLIENTSTATE_PING_RESPONSING = 1,
     // Состояние получения всех подтверждений на сообщения Ping со стороны сервера
-    CANFTP_CLIENTSTATE_PING_FINISHED = 2
+    CANFTP_CLIENTSTATE_PING_FINISHED = 2,
+    // Клиент зарегистрирован в сессии
+    CANFTP_CLIENTSTATE_SESSION_REGISTRATED = 3,
+    // Сессия сконфигурирована
+    CANFTP_CLIENTSTATE_SESSION_CONFIGURED = 4,
+    // Сессия перешла в активное состояние
+    CANFTP_CLIENTSTATE_SESSION_STARTED = 5,
+    // Сессия завершена
+    CANFTP_CLIENTSTATE_SESSION_FINISHED = 6,
+    // Блок принимает фрагменты блока
+    CANFTP_CLIENTSTATE_BLOCK_RECIEVING = 7,
+    // Передача блока была закончена
+    CANFTP_CLIENTSTATE_BLOCK_FINISHED = 8,
+    // Клиент готов принимать следующий блок
+    CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY = 9,
+
 } CanFTP_ClientState_t;
 
 #endif // CANFTP_CLIENTSTATE_H_
