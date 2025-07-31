@@ -15,5 +15,9 @@ void CanFTP_Client_Invoke(CanFTP_Client_t *client);
     Обработка получения сообщений
 */
 void CanFTP_Client_RecieveCanMessage(CanFTP_Client_t *client, CanFTP_CanMessage_t* canMessage);
+/*
+    Проинициализировать функцию генерации случайных значений
+*/
+void CanFTP_Client_InitRanmod(CanFTP_Client_t *client);
 
 #endif // CANFTP_CLIENT_H_

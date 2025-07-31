@@ -1,7 +1,8 @@
 #ifndef CANFTP_CLIENT_MESSAGES_HANDLERS_H_
 #define CANFTP_CLIENT_MESSAGES_HANDLERS_H_
 
-#include "CanFTP_Client_Defines.h"
+#include "CanFTP_Client_HelpFunctions.h"
+#include "CanFTP_Client_Agents.h"
 
 /*
     Обработчик приема сообщения PingResponse

@@ -61,6 +61,8 @@ typedef struct _CanFTP_FinalStateMachine
     {
         // Обратный вызов при мзменение состояния конечного автомата
         CanFTP_FinalStateMachine_Callback_t changeStateCallback;
+        // Обратный вызов при итерации логики работы
+        CanFTP_FinalStateMachine_Callback_t iterationCallback;
     } callbacks;
 
 } CanFTP_FinalStateMachine_t;

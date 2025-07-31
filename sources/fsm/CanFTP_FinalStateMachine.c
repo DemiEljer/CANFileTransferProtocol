@@ -20,6 +20,7 @@ void CanFTP_FinalStateMachine_Init(CanFTP_FinalStateMachine_t* fsm
         fsm->statesCount = statesCount;
         fsm->statesHandlers = statesHandlers;
         fsm->callbacks.changeStateCallback = 0;
+        fsm->callbacks.iterationCallback = 0;
     }
     // Верификация обработчиков состояний
     {
@@ -60,11 +61,19 @@ void CanFTP_FinalStateMachine_Init(CanFTP_FinalStateMachine_t* fsm
 */
 void CanFTP_FinalStateMachine_Invoke(CanFTP_FinalStateMachine_t* fsm)
 {
-    CanFTP_FinalStateMachine_State_t* currentState = &(fsm->statesHandlers[fsm->state]);
-    // Вызов логики обработки состояния
-    CanFTP_FinalStateMachineStateIndex_t nextStateIndex = currentState->handlers.bodyStateHandler(fsm, currentState->stateModel);
-    
-    CanFTP_FinalStateMachine_ChangeState(fsm, nextStateIndex);
+    // Вызов обратного вызова итерации логики работы
+    if (fsm->callbacks.iterationCallback != 0)
+    {
+        fsm->callbacks.iterationCallback(fsm);
+    }
+    // Обработка вызова логики состояния
+    {
+        CanFTP_FinalStateMachine_State_t* currentState = &(fsm->statesHandlers[fsm->state]);
+        // Вызов логики обработки состояния
+        CanFTP_FinalStateMachineStateIndex_t nextStateIndex = currentState->handlers.bodyStateHandler(fsm, currentState->stateModel);
+
+        CanFTP_FinalStateMachine_ChangeState(fsm, nextStateIndex);
+    }
 }
 /*
     Изменить состояние конечного автомата
