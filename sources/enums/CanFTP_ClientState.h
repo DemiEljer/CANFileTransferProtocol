@@ -24,14 +24,14 @@ typedef enum _CanFTP_ClientState
     CANFTP_CLIENTSTATE_SESSION_STARTED = 6,
     // Сессия завершена
     CANFTP_CLIENTSTATE_SESSION_FINISHED = 7,
+    // Была начата обработка блока
+    CANFTP_CLIENTSTATE_BLOCK_STARTED = 8,
     // Блок принимает фрагменты блока
-    CANFTP_CLIENTSTATE_BLOCK_RECIEVING = 8,
+    CANFTP_CLIENTSTATE_BLOCK_RECIEVING = 9,
     // Передача блока была закончена
-    CANFTP_CLIENTSTATE_BLOCK_FINISHED = 9,
+    CANFTP_CLIENTSTATE_BLOCK_FINISHED = 10,
     // Клиент готов принимать следующий блок
-    CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY = 10,
-    // Выключение активной логики протокола
-    CANFTP_CLIENTSTATE_PROTOCOL_DISABLING = 11
+    CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY = 11,
 
 } CanFTP_ClientState_t;
 

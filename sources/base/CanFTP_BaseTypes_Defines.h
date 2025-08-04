@@ -4,6 +4,10 @@
 #include "stdint.h"
 #include "CanFTP_Configs.h"
 
+#define CANFTP_FALSE 0x00
+#define CANFTP_TRUE 0x01
+#define CANFTP_NONE 0x02
+
 // Логический тип
 typedef uint8_t CanFTP_Logical_t;
 

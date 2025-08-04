@@ -74,11 +74,25 @@ CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPassed_UpdateTimemark(CanFTP_Tim
     }
 }
 /*
+    Установить значение интевала времени для триггера
+*/
+void CanFTP_TimeTrigger_SetInterval(CanFTP_TimeTrigger_t *trigger, CanFTP_TimeInterval_t interval)
+{
+    trigger->timeInterval = interval;
+}
+/*
     Обновить метку времени в триггере
 */
 void CanFTP_TimeTrigger_Update(CanFTP_TimeTrigger_t *trigger)
 {
     CanFTP_TimeHandlers_UpdateTimeMark(&(trigger->timeMark));
+}
+/*
+    Сбросить метку времени в триггере
+*/
+void CanFTP_TimeTrigger_Reset(CanFTP_TimeTrigger_t *trigger)
+{
+    trigger->timeMark = 0;
 }
 /*
     Проверить, сработал ли триггер

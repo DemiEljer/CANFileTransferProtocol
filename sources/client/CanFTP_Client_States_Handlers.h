@@ -61,6 +61,12 @@ void CanFTP_Client_State_SESSION_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
 uint32_t CanFTP_Client_State_SESSION_FINISHED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel);
 void CanFTP_Client_State_SESSION_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel);
 /*
+    Обработка состояния BLOCK_STARTED
+*/
+void CanFTP_Client_State_BLOCK_STARTED_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel);
+uint32_t CanFTP_Client_State_BLOCK_STARTED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel);
+void CanFTP_Client_State_BLOCK_STARTED_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel);
+/*
     Обработка состояния BLOCK_RECIEVING
 */
 void CanFTP_Client_State_BLOCK_RECIEVING_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel);
@@ -78,11 +84,5 @@ void CanFTP_Client_State_BLOCK_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms, v
 void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel);
 uint32_t CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel);
 void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel);
-/*
-    Обработка состояния BLOCK_NEXTBLOCKREADY
-*/
-void CanFTP_Client_State_PROTOCOL_DISABLING_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel);
-uint32_t CanFTP_Client_State_PROTOCOL_DISABLING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel);
-void CanFTP_Client_State_PROTOCOL_DISABLING_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel);
 
 #endif // CANFTP_CLIENT_STATES_HANDLERS_H_

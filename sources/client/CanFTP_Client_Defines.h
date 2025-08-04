@@ -8,10 +8,21 @@
 #include "CanFTP_ClientState.h"
 #include "CanFTP_Messages_Hub.h"
 
+// Структура клиента передачи файла
+typedef struct _CanFTP_Client CanFTP_Client_t;
+
 // Тип функции обратной связи отпраки сообщения
-typedef void (*CanFTP_Client_MessageSendCallback_t)(CanFTP_CanMessage_t*);
+typedef void (*CanFTP_Client_MessageSendCallback_t)(CanFTP_Client_t*, CanFTP_CanMessage_t*);
 // Тип функции обратной связи запроса к внешней логике
-typedef CanFTP_Logical_t (*CanFTP_Client_Requestallback_t)(void);
+typedef CanFTP_Logical_t (*CanFTP_Client_RequestCallback_t)(CanFTP_Client_t*);
+// Тип функции обратного вызова согласования сессии
+typedef CanFTP_Logical_t (*CanFTP_Client_SessionConfigurationCallback)(CanFTP_Client_t*, CanFTP_Session_Configuration_t*);
+// Тип функции обратной связи к внешней логике
+typedef CanFTP_Logical_t (*CanFTP_Client_Callback_t)(CanFTP_Client_t*);
+// Тип функции обратной связи успешного приема блока файла
+typedef CanFTP_Logical_t (*CanFTP_Client_BlockRecieceCallback_t)(CanFTP_Client_t*, CanFTP_Session_FileBlock_t*);
+// Тип функции обратной связи завершения сессии
+typedef CanFTP_Logical_t (*CanFTP_Client_SessionFinishedCallback_t)(CanFTP_Client_t*, CanFTP_SessionStatus_t);
 
 /*
     Структура клиента передачи файла
@@ -35,6 +46,8 @@ typedef struct _CanFTP_Client
         CanFTP_Client_LogicLockController_t logicLockController;
         // Контроллер обработки процесса Ping
         CanFTP_Client_Agent_PingControler_t pingController;
+        // Контроллер сесии
+        CanFTP_Client_SessionController_t sessionController;
     
     } agents;
     // Состояние клиента
@@ -43,17 +56,31 @@ typedef struct _CanFTP_Client
     CanFTP_Messages_Hub_t messagesHub;
     // Конфигурация устройства
     CanFTP_DeviveConfig_t devicveConfig;
-    // Структура управления сессией
+    // Параметры управления
+    struct
+    {
+        // Разрешенеи на переход в состояние Ping
+        CanFTP_Logical_t pingPermition;
+        // Разрешение на активацию сессии
+        CanFTP_Logical_t sessionStartPermition;
 
+    } control;
     // Обратные вызовы
     struct
     {
         // Обратный вызов отправки сообщений
         CanFTP_Client_MessageSendCallback_t sendMessageCallback;
         // Обратный вызов запроса на блокировку логики (0 - не заблокирована, 1 - заблокирована)
-        CanFTP_Client_Requestallback_t lockLogicRequestCallback;
+        CanFTP_Client_RequestCallback_t lockLogicRequestCallback;
         // Обратный вызов запроса на разблокировку логики (0 - не разблокирована, 1 - разблокирована)
-        CanFTP_Client_Requestallback_t unlockLogicRequestCallback;
+        CanFTP_Client_RequestCallback_t unlockLogicRequestCallback;
+        // Обратный вызов конфигурации сессии (0 - сессия не прошла валидацию, 1 - сессия прошла валидацию)
+        CanFTP_Client_SessionConfigurationCallback sessionConfigureationCallback;
+        // Обратная связь успешного приема блока файла 
+        CanFTP_Client_BlockRecieceCallback_t blockRecieceCallback;
+        // Обратная связь завершения сессии
+        CanFTP_Client_SessionFinishedCallback_t sessionFinishedCallback;
+
     } callbacks;
 
 } CanFTP_Client_t;

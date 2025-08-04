@@ -5,7 +5,7 @@
 */
 void CanFTP_Message_Server_SessionControl_Unpack(CanFTP_Message_Server_SessionControl_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
-    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_SESSIONCONTROL, 8))
+    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_SESSIONCONTROL, CANFTP_MESSAGE_DLC_SERVER_SESSIONCONTROL))
     {
         messageModel->sessionCode = CanFTP_CanIdentifier_UnpackSessionCode(messageCan->id);
         messageModel->messageType = (CanFTP_Message_Server_SessionControl_Type_t)(messageCan->data[0] & 0x0F);
@@ -36,7 +36,10 @@ void CanFTP_Message_Server_SessionControl_Unpack(CanFTP_Message_Server_SessionCo
         }
         else if (messageModel->messageType == CANFT_MESSAGE_SERVER_SESSIONCONTROL_FINISH)
         {
-            messageModel->finish.status = (CanFTP_ClientSessionFinishStatus_t)((messageCan->data[0] >> 4) & 0x0F);
+            messageModel->finish.status = (CanFTP_ClientSessionAckStatus_t)((messageCan->data[0] >> 4) & 0x0F);
+            messageModel->finish.newSoftVersion.lowerPart = (CanFTP_DeviceSoftwareVersionPart_t)(messageCan->data[1]);
+            messageModel->finish.newSoftVersion.middlePart = (CanFTP_DeviceSoftwareVersionPart_t)(messageCan->data[2]);
+            messageModel->finish.newSoftVersion.higherPart = (CanFTP_DeviceSoftwareVersionPart_t)(messageCan->data[3]);
         }
         else
         {
@@ -76,6 +79,9 @@ void CanFTP_Message_Server_SessionControl_Pack(CanFTP_Message_Server_SessionCont
         else if (messageModel->messageType == CANFT_MESSAGE_SERVER_SESSIONCONTROL_FINISH)
         {
             messageDataVector[0] = ((messageModel->finish.status >> 0) & 0x0F) << 4;
+            messageDataVector[1] = messageModel->finish.newSoftVersion.lowerPart;
+            messageDataVector[2] = messageModel->finish.newSoftVersion.middlePart;
+            messageDataVector[3] = messageModel->finish.newSoftVersion.higherPart;
         }
         else
         {
@@ -85,7 +91,7 @@ void CanFTP_Message_Server_SessionControl_Pack(CanFTP_Message_Server_SessionCont
 
     CanFTP_CanMessage_Init(messageCan
         , CanFTP_CanIdentifier_PackWithSessionCode(CANFTP_MESSAGE_ID_SERVER_SESSIONCONTROL, messageModel->sessionCode)
-        , 8
+        , CANFTP_MESSAGE_DLC_SERVER_SESSIONCONTROL
         , messageDataVector
     );
 }

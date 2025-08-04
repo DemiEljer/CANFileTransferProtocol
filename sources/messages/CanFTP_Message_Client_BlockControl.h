@@ -34,6 +34,7 @@ typedef struct _CanFTP_Message_Client_BlockControl
     {
         // Статус обработки блока
         CanFTP_ClientBlockHandlingStatus_t blockHandlingStatus;
+        
     } finishBlockAck;
 
 } CanFTP_Message_Client_BlockControl_t;

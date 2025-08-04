@@ -5,7 +5,7 @@
 */
 void CanFTP_Message_Server_PingResponseAck_Unpack(CanFTP_Message_Server_PingResponseAck_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
-    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_PINGRESPONSE, 8))
+    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_PINGRESPONSE, CANFTP_MESSAGE_DLC_SERVER_PINGRESPONSE))
     {
         messageModel->responseType = (CanFTP_Message_Client_PingResponse_Type_t)(messageCan->data[0] & 0x0F);
         messageModel->deviceSerial = (CanFTP_DeviceSerial_t)(
@@ -36,7 +36,7 @@ void CanFTP_Message_Server_PingResponseAck_Pack(CanFTP_Message_Server_PingRespon
 
     CanFTP_CanMessage_Init(messageCan
         , CANFTP_MESSAGE_ID_SERVER_PINGRESPONSE
-        , 8
+        , CANFTP_MESSAGE_DLC_SERVER_PINGRESPONSE
         , messageDataVector
     );
 }

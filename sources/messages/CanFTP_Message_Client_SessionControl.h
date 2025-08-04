@@ -3,7 +3,7 @@
 
 #include "CanFTP_Messages_Handlers.h"
 #include "CanFTP_ClientSessionAckStatus.h"
-#include "CanFTP_ClientSessionFinishStatus.h"
+#include "CanFTP_SessionStatus.h"
 
 /*
     Тип сообщения при управлении сессией
@@ -32,24 +32,32 @@ typedef struct _CanFTP_Message_Client_SessionControl
     {
         // Статус завершения операции
         CanFTP_ClientSessionAckStatus_t status;
+        
     } registrationAck;
     // CONFIGURATIONACK
     struct
     {
         // Статус завершения операции
         CanFTP_ClientSessionAckStatus_t status;
+        // Максимальный размер блока
+        CanFTP_BlockLength_t maxBlockLength;
+
     } configurationAck;
     // STARTSESSIONACK
     struct
     {
         // Статус завершения операции
         CanFTP_ClientSessionAckStatus_t status;
+
     } startSessionAck;
     // FINISHSESSIONACK
     struct
     {
         // Статус завершения операции
-        CanFTP_ClientSessionFinishStatus_t status;
+        CanFTP_ClientSessionAckStatus_t status;
+        // Статус сессии
+        CanFTP_SessionStatus_t sessionStatus;
+
     } finishSessionAck;
 
 } CanFTP_Message_Client_SessionControl_t;

@@ -5,7 +5,7 @@
 */
 void CanFTP_Message_Client_BlockCRC_Unpack(CanFTP_Message_Client_BlockCRC_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
-    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_CLIENT_BLOCKCRC, 8))
+    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_CLIENT_BLOCKCRC, CANFTP_MESSAGE_DLC_CLIENT_BLOCKCRC))
     {
         messageModel->sessionCode = CanFTP_CanIdentifier_UnpackSessionCode(messageCan->id);
         messageModel->deviceCode = CanFTP_CanIdentifier_UnpackDeviceCode(messageCan->id);
@@ -35,7 +35,7 @@ void CanFTP_Message_Client_BlockCRC_Pack(CanFTP_Message_Client_BlockCRC_t* messa
 
     CanFTP_CanMessage_Init(messageCan
         , CanFTP_CanIdentifier_PackWithSessionCodeAndDeviceCode(CANFTP_MESSAGE_ID_CLIENT_BLOCKCRC, messageModel->sessionCode, messageModel->deviceCode)
-        , 8
+        , CANFTP_MESSAGE_DLC_CLIENT_BLOCKCRC
         , messageDataVector
     );
 }

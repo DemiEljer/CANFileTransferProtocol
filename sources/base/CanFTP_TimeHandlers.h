@@ -28,9 +28,17 @@ CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPessed(CanFTP_TimeMark_t *timeMa
 */
 CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPassed_UpdateTimemark(CanFTP_TimeMark_t *timeMark, CanFTP_TimeInterval_t timeInterval);
 /*
+    Установить значение интевала времени для триггера
+*/
+void CanFTP_TimeTrigger_SetInterval(CanFTP_TimeTrigger_t *trigger, CanFTP_TimeInterval_t interval);
+/*
     Обновить метку времени в триггере
 */
 void CanFTP_TimeTrigger_Update(CanFTP_TimeTrigger_t *trigger);
+/*
+    Сбросить метку времени в триггере
+*/
+void CanFTP_TimeTrigger_Reset(CanFTP_TimeTrigger_t *trigger);
 /*
     Проверить, сработал ли триггер
 */

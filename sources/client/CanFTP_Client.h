@@ -19,5 +19,9 @@ void CanFTP_Client_RecieveCanMessage(CanFTP_Client_t *client, CanFTP_CanMessage_
     Проинициализировать функцию генерации случайных значений
 */
 void CanFTP_Client_InitRanmod(CanFTP_Client_t *client);
+/*
+    Принудительно остановить сессию
+*/
+void CanFTP_Client_TerminateSession(CanFTP_Client_t *client);
 
 #endif // CANFTP_CLIENT_H_

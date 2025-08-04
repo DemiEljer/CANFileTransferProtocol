@@ -8,6 +8,10 @@
 */
 CanFTP_Logical_t CanFTP_Client_IsInActiveSession(CanFTP_Client_t* client);
 /*
+    Проверить условие, что конкретное сообщение относится к активной сессии клиента 
+*/
+CanFTP_Logical_t CanFTP_Client_CheckIfMessageCorrespondingToActiveSession(CanFTP_Client_t* client, CanFTP_SessionCode_t sessionCode);
+/*
     Проверить, находится ли клиент в состоянии Ping
 */
 CanFTP_Logical_t CanFTP_Client_IsPinging(CanFTP_Client_t* client);

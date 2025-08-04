@@ -2,6 +2,7 @@
 #define CANFTP_MESSAGE_CLIENT_PINGRESPONSE_H_
 
 #include "CanFTP_Messages_Handlers.h"
+#include "CanFTP_SofwareVersion.h"
 
 /*
     Тип сообщения ответа на запрос Ping
@@ -38,16 +39,8 @@ typedef struct _CanFTP_Message_Client_PingResponse
         // Серийный номер устройства
         CanFTP_DeviceSerial_t deviceSerial;
         // Версия программного обеспечения
-        struct 
-        {
-            // Страршая часть версии
-            CanFTP_DeviceSoftwareVersionPart_t higherPart;
-            // Средняя часть версии
-            CanFTP_DeviceSoftwareVersionPart_t middlePart;
-            // Младшая часть версии
-            CanFTP_DeviceSoftwareVersionPart_t lowerPart;
-
-        } deviceSoftVersion;
+        CanFTP_SofwareVersion_t deviceSoftVersion;
+        
     } response2;
 
 } CanFTP_Message_Client_PingResponse_t;

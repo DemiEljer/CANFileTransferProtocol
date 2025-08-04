@@ -5,7 +5,7 @@
 */
 void CanFTP_Message_Server_Registration_Unpack(CanFTP_Message_Server_Registration_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
-    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_REGISTRATION, 8))
+    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_REGISTRATION, CANFTP_MESSAGE_DLC_SERVER_REGISTRATION))
     {
         messageModel->deviceSerial = (CanFTP_DeviceSerial_t)(
               (CanFTP_DeviceSerial_t)(messageCan->data[0]) << 0
@@ -36,7 +36,7 @@ void CanFTP_Message_Server_Registration_Pack(CanFTP_Message_Server_Registration_
 
     CanFTP_CanMessage_Init(messageCan
         , CANFTP_MESSAGE_ID_SERVER_REGISTRATION
-        , 8
+        , CANFTP_MESSAGE_DLC_SERVER_REGISTRATION
         , messageDataVector
     );
 }

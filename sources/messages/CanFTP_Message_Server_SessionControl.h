@@ -2,7 +2,8 @@
 #define CANFTP_MESSAGE_SERVER_SESSIONCONTROL_H_
 
 #include "CanFTP_Messages_Handlers.h"
-#include "CanFTP_ClientSessionFinishStatus.h"
+#include "CanFTP_SofwareVersion.h"
+#include "CanFTP_ClientSessionAckStatus.h"
 
 /*
     Тип сообщения при управлении сессией
@@ -48,7 +49,9 @@ typedef struct _CanFTP_Message_Server_SessionControl
     struct
     {
         // Статус завершения операции
-        CanFTP_ClientSessionFinishStatus_t status;
+        CanFTP_ClientSessionAckStatus_t status;
+        // Новая версия программного обеспечения
+        CanFTP_SofwareVersion_t newSoftVersion;
 
     } finish;
 

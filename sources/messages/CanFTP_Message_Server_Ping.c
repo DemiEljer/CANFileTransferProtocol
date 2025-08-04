@@ -5,7 +5,7 @@
 */
 void CanFTP_Message_Server_Ping_Unpack(CanFTP_Message_Server_Ping_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
-    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_PING, 8))
+    if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_PING, CANFTP_MESSAGE_DLC_SERVER_PING))
     {
         messageModel->protocolVersion = (CanFTP_ProtocolVersion_t)(
               (CanFTP_ProtocolVersion_t)(messageCan->data[0]) << 0 
@@ -30,7 +30,7 @@ void CanFTP_Message_Server_Ping_Pack(CanFTP_Message_Server_Ping_t* messageModel,
 
     CanFTP_CanMessage_Init(messageCan
         , CANFTP_MESSAGE_ID_SERVER_PING
-        , 8
+        , CANFTP_MESSAGE_DLC_SERVER_PING
         , messageDataVector
     );
 }
