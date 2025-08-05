@@ -20,9 +20,9 @@ void CanFTP_Client_MessageRecieve_Ping(void* invoker, CanFTP_Message_Server_Ping
                 {
                     // Запрос на переход в состояние ответа на запрос Ping
                     client->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
+                    // Запрос на блокирование логики
+                    client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_TRUE;
                 }
-                // Запрос на блокирование логики
-                client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_TRUE;
             }
             else if (message->terminationRequest == CANFTP_TERMINATIONREQUEST_TERMINATE)
             {
@@ -102,6 +102,9 @@ void CanFTP_Client_MessageRecieve_Registration(void* invoker, CanFTP_Message_Ser
 
         client->agents.sessionController.clientAssosiation.sessionCode = message->sessionCode;
         client->agents.sessionController.clientAssosiation.deviceCode = message->deviceCode;
+
+        // Сброс счетчика количества повторений подтверждений приема
+        CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
     }
 }
 /*
@@ -127,6 +130,9 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
                     client->agents.sessionController.session.configuration.repeateInterval = message->configuration.repeateInterval;
                     // Выставление запроса на начало конфигурации
                     client->agents.sessionController.requsts.configurationRequest = CANFTP_TRUE;
+
+                    // Сброс счетчика количества повторений подтверждений приема
+                    CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
                 }
                 // Ошибка посоедовательности сообщение
                 else
@@ -140,6 +146,9 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
                 {
                     // Выставление запроса на начало сессии
                     client->agents.sessionController.requsts.startRequest = CANFTP_TRUE;
+
+                    // Сброс счетчика количества повторений подтверждений приема
+                    CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
                 }
                 // Ошибка посоедовательности сообщение
                 else
@@ -154,6 +163,7 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
                 {
                     // Выставление запроса на окончание сессии
                     client->agents.sessionController.requsts.stopRequest = CANFTP_TRUE;
+                    CanFTP_SofwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(message->finish.newSoftVersion));
                 }
                 // Ошибка посоедовательности сообщение
                 else
@@ -207,6 +217,9 @@ void CanFTP_Client_MessageRecieve_BlockControl(void* invoker, CanFTP_Message_Ser
                         CanFTP_Session_FileBlock_Configure(&(client->agents.sessionController.session.block)
                             , message->start.blockIndex
                             , message->start.blockLength);
+
+                        // Сброс счетчика количества повторений подтверждений приема
+                        CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
                     }
                 }
                 // Ошибка посоедовательности сообщение
@@ -225,6 +238,9 @@ void CanFTP_Client_MessageRecieve_BlockControl(void* invoker, CanFTP_Message_Ser
                     {
                         CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_BLOCKSEQUENCEFAILED);
                     }
+
+                    // Сброс счетчика количества повторений подтверждений приема
+                    CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
                 }
                 // Ошибка посоедовательности сообщение
                 else

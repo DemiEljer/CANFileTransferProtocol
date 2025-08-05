@@ -6,6 +6,7 @@
 #include "CanFTP_SessionStatus.h"
 #include "CanFTP_IterationsHandler.h"
 #include "CanFTP_ClientBlockHandlingStatus.h"
+#include "CanFTP_SofwareVersion.h"
 
 /*
     Структура параметров состояния на этапе PING
@@ -108,6 +109,8 @@ typedef struct _CanFTP_Client_SessionController
     CanFTP_TimeTrigger_t lostConnectionTrigger;
     // Счетчик количества повторений подтверждений Ack
     CanFTP_IterationsHandler_t repeateAckCounter;
+    // Новая версия файла
+    CanFTP_SofwareVersion_t newSoftVersion;
 
 } CanFTP_Client_SessionController_t;
 

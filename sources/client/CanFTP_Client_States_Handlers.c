@@ -18,6 +18,11 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
+    // Прекращение процесса Ping в случае выставления запрета
+    if (client->control.pingPermition != CANFTP_TRUE)
+    {
+        client->agents.pingController.requsts.requestPinging = CANFTP_FALSE;
+    }
     // Запрос на блокировку логики
     if (client->agents.logicLockController.requsts.requestToLockLogic
         && !client->agents.logicLockController.statuses.isLocked)
@@ -43,6 +48,11 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
         {
             client->agents.logicLockController.statuses.isLocked = CANFTP_FALSE;
         }
+    }
+    // Выключение сесси в случае выставления запрета
+    if (client->control.sessionStartPermition != CANFTP_TRUE)
+    {
+        client->agents.sessionController.requsts.requestSession = CANFTP_FALSE;
     }
     // Обработка логики сесии
     if (CanFTP_Client_IsInActiveSession(client)
@@ -282,7 +292,7 @@ void CanFTP_Client_State_SESSION_REGISTRATED_Enter(CanFTP_FinalStateMachine_t *f
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-
+    CanFTP_SofwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(client->devicveConfig.softVersion));
 }
 
 uint32_t CanFTP_Client_State_SESSION_REGISTRATED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -512,7 +522,13 @@ void CanFTP_Client_State_SESSION_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms,
     // Обратный вызов окончания сессии
     if (client->callbacks.sessionFinishedCallback != 0)
     {
-        client->callbacks.sessionFinishedCallback(client, client->agents.sessionController.statuses.sessionStatus);
+        client->callbacks.sessionFinishedCallback(client, client->agents.sessionController.statuses.sessionStatus, &(client->agents.sessionController.newSoftVersion));
+    }
+    // Автоматическое обновление номера версии
+    if (client->control.autpUpdateSoftVersion
+        && client->agents.sessionController.statuses.sessionStatus == CANFTP_SESSIONSTATUS_OK)
+    {
+        CanFTP_SofwareVersion_Copy(&(client->devicveConfig.softVersion), &(client->agents.sessionController.newSoftVersion));
     }
 
     CanFTP_Client_SessionController_Reset(&(client->agents.sessionController));

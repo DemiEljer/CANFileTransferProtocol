@@ -22,7 +22,7 @@ typedef CanFTP_Logical_t (*CanFTP_Client_Callback_t)(CanFTP_Client_t*);
 // Тип функции обратной связи успешного приема блока файла
 typedef CanFTP_Logical_t (*CanFTP_Client_BlockRecieceCallback_t)(CanFTP_Client_t*, CanFTP_Session_FileBlock_t*);
 // Тип функции обратной связи завершения сессии
-typedef CanFTP_Logical_t (*CanFTP_Client_SessionFinishedCallback_t)(CanFTP_Client_t*, CanFTP_SessionStatus_t);
+typedef CanFTP_Logical_t (*CanFTP_Client_SessionFinishedCallback_t)(CanFTP_Client_t*, CanFTP_SessionStatus_t, CanFTP_SofwareVersion_t*);
 
 /*
     Структура клиента передачи файла
@@ -63,6 +63,8 @@ typedef struct _CanFTP_Client
         CanFTP_Logical_t pingPermition;
         // Разрешение на активацию сессии
         CanFTP_Logical_t sessionStartPermition;
+        // Автоматически обновить номер версии при успешном завершении сессии
+        CanFTP_Logical_t autpUpdateSoftVersion;
 
     } control;
     // Обратные вызовы
