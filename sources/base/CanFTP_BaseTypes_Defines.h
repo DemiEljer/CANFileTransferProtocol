@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 #include "CanFTP_Configs.h"
+#include "CanFTP_Debug.h"
 
 #define CANFTP_FALSE 0x00
 #define CANFTP_TRUE 0x01

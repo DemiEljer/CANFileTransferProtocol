@@ -106,6 +106,16 @@ void CanFTP_Client_Init(CanFTP_Client_t *client)
         client->callbacks.blockRecieceCallback = 0;
         client->callbacks.sessionFinishedCallback = 0;
     }
+    // Сброс конфигурации
+    {
+        CanFTP_DeviveConfig_Reset(&(client->devicveConfig));
+    }
+    // Сброс флагов управления
+    {
+        client->control.autpUpdateSoftVersion = CANFTP_FALSE;
+        client->control.pingPermition = CANFTP_FALSE;
+        client->control.sessionStartPermition = CANFTP_FALSE;
+    }
 }
 /*
     Вызов логики обработки клиента

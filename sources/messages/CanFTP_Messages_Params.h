@@ -1,6 +1,8 @@
 #ifndef CANFTP_MESSAGES_IDENIFIERS_H_
 #define CANFTP_MESSAGES_IDENIFIERS_H_
 
+// Маска протокола
+#define CANFTP_MESSAGE_MASK                         0x000F0000
 // Идентификаторы
 #define CANFTP_MESSAGE_ID_SERVER_PING               0x00010000
 #define CANFTP_MESSAGE_ID_SERVER_PINGRESPONSE       0x00020000

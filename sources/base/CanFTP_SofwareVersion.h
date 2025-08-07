@@ -18,6 +18,10 @@ typedef struct _CanFTP_SofwareVersion
 } CanFTP_SofwareVersion_t;
 
 /*
+    Сбросить номер версии
+*/
+void CanFTP_SofwareVersion_Reset(CanFTP_SofwareVersion_t* version);
+/*
     Скопировать номер версии
 */
 void CanFTP_SofwareVersion_Copy(CanFTP_SofwareVersion_t* to, CanFTP_SofwareVersion_t* from);

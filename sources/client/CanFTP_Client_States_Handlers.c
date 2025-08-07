@@ -24,8 +24,8 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
         client->agents.pingController.requsts.requestPinging = CANFTP_FALSE;
     }
     // Запрос на блокировку логики
-    if (client->agents.logicLockController.requsts.requestToLockLogic
-        && !client->agents.logicLockController.statuses.isLocked)
+    if (client->agents.logicLockController.requsts.requestToLockLogic == CANFTP_TRUE
+        && client->agents.logicLockController.statuses.isLocked != CANFTP_TRUE)
     {
         if (client->callbacks.lockLogicRequestCallback != 0)
         {
@@ -37,8 +37,8 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
         }
     }
     // Запрос на снятие блокировки логики
-    else if (!client->agents.logicLockController.requsts.requestToLockLogic
-             && client->agents.logicLockController.statuses.isLocked)
+    else if (client->agents.logicLockController.requsts.requestToLockLogic != CANFTP_TRUE
+             && client->agents.logicLockController.statuses.isLocked == CANFTP_TRUE)
     {
         if (client->callbacks.lockLogicRequestCallback != 0)
         {
@@ -85,6 +85,7 @@ void CanFTP_Client_State_IDLE_Enter(CanFTP_FinalStateMachine_t *fms, void* state
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
+    CANFTP_DEBUG_PRINT_ARGS("Client enter state \"IDLE\", serial \"%u\"\r\n", client->devicveConfig.serialNumber);
 }
 
 uint32_t CanFTP_Client_State_IDLE_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -128,8 +129,13 @@ void CanFTP_Client_State_PING_RESPONSING_Enter(CanFTP_FinalStateMachine_t *fms, 
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
     // Инициализация времени повторной отправки сообщений
-    CanFTP_TimeTrigger_SetInterval(&(client->agents.pingController.reapeateSendingTrigger), CanFTP_Random_GetNext_Range(&(client->agents.random), 10, 100));
+    CanFTP_TimeTrigger_SetInterval(&(client->agents.pingController.reapeateSendingTrigger)
+        , CanFTP_Random_GetNext_Range(&(client->agents.random)
+        , CANFTP_CLIENT_MINPINGINTERVAL
+        , CANFTP_CLIENT_MAXPINGINTERVAL));
     CanFTP_TimeTrigger_Update(&(client->agents.pingController.reapeateSendingTrigger));
+
+    CANFTP_DEBUG_PRINT_ARGS("Client enter \"PING_RESPONSING\", serial \"%u\"\r\n", client->devicveConfig.serialNumber);
 }
 
 uint32_t CanFTP_Client_State_PING_RESPONSING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -171,16 +177,18 @@ uint32_t CanFTP_Client_State_PING_RESPONSING_Body(CanFTP_FinalStateMachine_t *fm
             {
                 client->agents.pingController.requestedMessageIndex = 1;
                 CanFTP_Client_MessageSend_PingResponse(client);
-
             }
-            if (!client->agents.pingController.pingResponsesAck[1] != CANFTP_TRUE)
+            if (client->agents.pingController.pingResponsesAck[1] != CANFTP_TRUE)
             {
                 client->agents.pingController.requestedMessageIndex = 2;
                 CanFTP_Client_MessageSend_PingResponse(client);
             }
         }
-
-        CanFTP_TimeTrigger_SetInterval(&(client->agents.pingController.reapeateSendingTrigger), CanFTP_Random_GetNext_Range(&(client->agents.random), 10, 100));
+        // Инициализация времени повторной отправки сообщений
+        CanFTP_TimeTrigger_SetInterval(&(client->agents.pingController.reapeateSendingTrigger)
+            , CanFTP_Random_GetNext_Range(&(client->agents.random)
+            , CANFTP_CLIENT_MINPINGINTERVAL
+            , CANFTP_CLIENT_MAXPINGINTERVAL));
     }
 
     return resultState;
@@ -203,6 +211,7 @@ void CanFTP_Client_State_PING_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms, vo
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
+    CANFTP_DEBUG_PRINT("Client enter \"PING_FINISHED\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_PING_FINISHED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -251,7 +260,7 @@ void CanFTP_Client_State_PROTOCOL_ACTIVE_Enter(CanFTP_FinalStateMachine_t *fms, 
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    
+    CANFTP_DEBUG_PRINT("Client enter \"PROTOCOL_ACTIVE\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_PROTOCOL_ACTIVE_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -293,6 +302,8 @@ void CanFTP_Client_State_SESSION_REGISTRATED_Enter(CanFTP_FinalStateMachine_t *f
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
     CanFTP_SofwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(client->devicveConfig.softVersion));
+
+    CANFTP_DEBUG_PRINT("Client enter \"SESSION_REGISTRATED\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_SESSION_REGISTRATED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -359,6 +370,8 @@ void CanFTP_Client_State_SESSION_CONFIGURED_Enter(CanFTP_FinalStateMachine_t *fm
             client->agents.sessionController.statuses.sessionHasBeenVerified = client->callbacks.sessionConfigureationCallback(client, &(client->agents.sessionController.session.configuration));
         }
     }
+
+    CANFTP_DEBUG_PRINT("Client enter \"SESSION_CONFIGURED\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_SESSION_CONFIGURED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -418,7 +431,7 @@ void CanFTP_Client_State_SESSION_STARTED_Enter(CanFTP_FinalStateMachine_t *fms, 
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    
+    CANFTP_DEBUG_PRINT("Client enter \"SESSION_STARTED\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_SESSION_STARTED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -483,6 +496,13 @@ void CanFTP_Client_State_SESSION_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
     {
         CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_FILEUNFINISHED);
     }
+    // В случае, если запрашивается включение логики, то инициализируем параметры отправки подтверждений
+    {
+        CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.repeateAckTrigger), 100);
+        CanFTP_IterationsHandler_SetMaxCount(&(client->agents.sessionController.repeateAckCounter), 10);
+    }
+
+    CANFTP_DEBUG_PRINT("Client enter \"SESSION_FINISHED\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_SESSION_FINISHED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -546,7 +566,7 @@ void CanFTP_Client_State_BLOCK_STARTED_Enter(CanFTP_FinalStateMachine_t *fms, vo
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    
+    CANFTP_DEBUG_PRINT("Client enter \"BLOCK_STARTED\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_BLOCK_STARTED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -601,7 +621,7 @@ void CanFTP_Client_State_BLOCK_RECIEVING_Enter(CanFTP_FinalStateMachine_t *fms, 
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    
+    CANFTP_DEBUG_PRINT("Client enter \"BLOCK_RECIEVING\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_BLOCK_RECIEVING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -658,6 +678,8 @@ void CanFTP_Client_State_BLOCK_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms, v
                 , client->agents.sessionController.statuses.blockCRC);
         }
     }
+
+    CANFTP_DEBUG_PRINT("Client enter \"BLOCK_FINISHED\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_BLOCK_FINISHED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -732,6 +754,8 @@ void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Enter(CanFTP_FinalStateMachine_t *
     }
     // Сброс флагов управления процессом приема блока
     CanFTP_Client_SessionController_ResetBlock(&(client->agents.sessionController));
+
+    CANFTP_DEBUG_PRINT("Client enter \"BLOCK_NEXTBLOCKREADY\"\r\n");
 }
 
 uint32_t CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)

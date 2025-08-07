@@ -1,5 +1,5 @@
-#ifndef CANFTP_DEVICECONFIG_DEFINES_H_
-#define CANFTP_DEVICECONFIG_DEFINES_H_
+#ifndef CANFTP_DEVICECONFIG_H_
+#define CANFTP_DEVICECONFIG_H_
 
 #include "CanFTP_SofwareVersion.h"
 
@@ -18,5 +18,10 @@ typedef struct _CanFTP_DeviveConfig
     CanFTP_SofwareVersion_t softVersion;
 
 } CanFTP_DeviveConfig_t;
+
+/*
+    Сбросить конфигурацию
+*/
+void CanFTP_DeviveConfig_Reset(CanFTP_DeviveConfig_t* configuration);
 
 #endif // CANFTP_CLIENT_DEVICECONFIG_DEFINES_H_

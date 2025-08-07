@@ -100,5 +100,5 @@ CanFTP_Logical_t CanFTP_CanMessage_Verify(CanFTP_CanMessage_t* canMessage
 CanFTP_Logical_t CanFTP_CanMessage_CheckMessageCodification(CanFTP_CanMessage_t* canMessage
     , CanFTP_CanMessageCodificator_t messageCodificator)
 {
-    return (canMessage->id & messageCodificator) == messageCodificator;
+    return (canMessage->id & CANFTP_MESSAGE_MASK) == messageCodificator;
 }

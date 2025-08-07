@@ -20,8 +20,8 @@ void CanFTP_Client_MessageRecieve_Ping(void* invoker, CanFTP_Message_Server_Ping
                 {
                     // Запрос на переход в состояние ответа на запрос Ping
                     client->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
-                    // Запрос на блокирование логики
-                    client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_TRUE;
+
+                    CanFTP_TimeTrigger_Update(&(client->agents.pingController.coolingDownTrigger));
                 }
             }
             else if (message->terminationRequest == CANFTP_TERMINATIONREQUEST_TERMINATE)
@@ -30,9 +30,12 @@ void CanFTP_Client_MessageRecieve_Ping(void* invoker, CanFTP_Message_Server_Ping
                 {
                     // Запрос на переход в состояние ответа на запрос Ping
                     client->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
+                    // Запрос на блокирование логики
+                    client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_TRUE;
+
+                    CanFTP_TimeTrigger_Update(&(client->agents.pingController.coolingDownTrigger));
                 }
             }
-            CanFTP_TimeTrigger_Update(&(client->agents.pingController.coolingDownTrigger));
         }
         else if (CanFTP_Client_IsPinging(client))
         {
@@ -43,7 +46,10 @@ void CanFTP_Client_MessageRecieve_Ping(void* invoker, CanFTP_Message_Server_Ping
                 // Снятие запроса на блокировку логики
                 client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_FALSE;
             }
-            CanFTP_TimeTrigger_Update(&(client->agents.pingController.coolingDownTrigger));
+            else
+            {
+                CanFTP_TimeTrigger_Update(&(client->agents.pingController.coolingDownTrigger));
+            }
         }
         // Проверка случая активной сессии
         else if (CanFTP_Client_IsInActiveState(client))
