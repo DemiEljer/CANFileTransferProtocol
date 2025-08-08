@@ -7,14 +7,7 @@
 #include "CanFTP_DeviceConfig.h"
 #include "CanFTP_ClientState.h"
 #include "CanFTP_Messages_Hub.h"
-
-/*
-    В процессе Ping каждый раз выбирается произвольный интервал ответа в заданном диапазоне
-*/
-// Минимальный интервал времени Ping
-#define CANFTP_CLIENT_MINPINGINTERVAL 10
-// Максимальный интервал времени Ping
-#define CANFTP_CLIENT_MAXPINGINTERVAL 100
+#include "CanFTP_Client_Debug.h"
 
 // Структура клиента передачи файла
 typedef struct _CanFTP_Client CanFTP_Client_t;

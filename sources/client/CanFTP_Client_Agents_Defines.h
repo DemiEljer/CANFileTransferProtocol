@@ -1,6 +1,7 @@
 #ifndef CANFTP_CLIENT_AGENTS_DEFINES_H_
 #define CANFTP_CLIENT_AGENTS_DEFINES_H_
 
+#include "CanFTP_Client_Params.h"
 #include "CanFTP_TimeHandlers.h"
 #include "CanFTP_Session.h"
 #include "CanFTP_SessionStatus.h"

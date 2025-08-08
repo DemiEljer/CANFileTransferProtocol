@@ -1,6 +1,8 @@
 #ifndef CANFTP_MESSAGES_IDENIFIERS_H_
 #define CANFTP_MESSAGES_IDENIFIERS_H_
 
+#include "CanFTP_Messages_Debug.h"
+
 // Маска протокола
 #define CANFTP_MESSAGE_MASK                         0x000F0000
 // Идентификаторы

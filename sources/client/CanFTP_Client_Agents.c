@@ -7,9 +7,9 @@ void CanFTP_Client_Agent_PingControler_Reset(CanFTP_Client_Agent_PingControler_t
 {
     agent->pingResponsesAck[0] = CANFTP_FALSE;
     agent->pingResponsesAck[1] = CANFTP_FALSE;
-    CanFTP_TimeTrigger_SetInterval(&(agent->reapeateSendingTrigger), 50);
+    CanFTP_TimeTrigger_SetInterval(&(agent->reapeateSendingTrigger), CANFTP_CLIENT_PING_MININTERVAL);
     CanFTP_TimeTrigger_Reset(&(agent->reapeateSendingTrigger));
-    CanFTP_TimeTrigger_SetInterval(&(agent->coolingDownTrigger), 1000);
+    CanFTP_TimeTrigger_SetInterval(&(agent->coolingDownTrigger), CANFTP_CLIENT_PING_TIMEOUT);
     CanFTP_TimeTrigger_Reset(&(agent->coolingDownTrigger));
     agent->requestedMessageIndex = 0x00;
     agent->requsts.requestPinging = CANFTP_FALSE;
@@ -60,11 +60,11 @@ void CanFTP_Client_SessionController_Reset(CanFTP_Client_SessionController_t *ag
     }
     agent->clientAssosiation.deviceCode = 0;
     agent->clientAssosiation.sessionCode = 0;
-    CanFTP_TimeTrigger_SetInterval(&(agent->repeateAckTrigger), 100);
+    CanFTP_TimeTrigger_SetInterval(&(agent->repeateAckTrigger), CANFTP_CLIENT_SEESION_REPEATEACK_INTERVAL);
     CanFTP_TimeTrigger_Reset(&(agent->repeateAckTrigger));
-    CanFTP_TimeTrigger_SetInterval(&(agent->lostConnectionTrigger), 30000);
+    CanFTP_TimeTrigger_SetInterval(&(agent->lostConnectionTrigger), CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT);
     CanFTP_TimeTrigger_Reset(&(agent->lostConnectionTrigger));
-    CanFTP_IterationsHandler_SetMaxCount(&(agent->repeateAckCounter), 20);
+    CanFTP_IterationsHandler_SetMaxCount(&(agent->repeateAckCounter), CANFTP_CLIENT_SEESION_REPEATEACK_COUNT);
     CanFTP_IterationsHandler_Reset(&(agent->repeateAckCounter));
     CanFTP_Session_Reset(&(agent->session));
 }
