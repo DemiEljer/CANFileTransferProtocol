@@ -5,8 +5,11 @@
 */
 void CanFTP_Client_Agent_PingControler_Reset(CanFTP_Client_Agent_PingControler_t *agent)
 {
-    agent->pingResponsesAck[0] = CANFTP_FALSE;
-    agent->pingResponsesAck[1] = CANFTP_FALSE;
+    uint8_t i = 0;
+    for (i = 0; i < CANFT_MESSAGE_CLIENT_PINGRESPONSE_COUNT; i++)
+    {
+        agent->pingResponsesAck[i] = CANFTP_FALSE;
+    }
     CanFTP_TimeTrigger_SetInterval(&(agent->reapeateSendingTrigger), CANFTP_CLIENT_PING_MININTERVAL);
     CanFTP_TimeTrigger_Reset(&(agent->reapeateSendingTrigger));
     CanFTP_TimeTrigger_SetInterval(&(agent->coolingDownTrigger), CANFTP_CLIENT_PING_TIMEOUT);
@@ -19,13 +22,21 @@ void CanFTP_Client_Agent_PingControler_Reset(CanFTP_Client_Agent_PingControler_t
 */
 CanFTP_Logical_t CanFTP_Client_Agent_PingControler_AllAcksAreReceived(CanFTP_Client_Agent_PingControler_t *agent)
 {
-    return agent->pingResponsesAck[0] == CANFTP_TRUE 
-           && agent->pingResponsesAck[1] == CANFTP_TRUE;
+    uint8_t i = 0;
+    for (i = 0; i < CANFT_MESSAGE_CLIENT_PINGRESPONSE_COUNT; i++)
+    {
+        if (agent->pingResponsesAck[i] != CANFTP_TRUE)
+        {
+            return CANFTP_FALSE;
+        }
+    }
+
+    return CANFTP_TRUE;
 }
 /*
     Сброс контроллера процесса Ping
 */
-void CanFTP_Client_LogicLockController_Reset(CanFTP_Client_LogicLockController_t *agent)
+void CanFTP_Client_Agent_LogicLockController_Reset(CanFTP_Client_Agent_LogicLockController_t *agent)
 {
     agent->requsts.requestToLockLogic = CANFTP_FALSE;
     agent->statuses.isLocked = CANFTP_FALSE;
@@ -33,7 +44,7 @@ void CanFTP_Client_LogicLockController_Reset(CanFTP_Client_LogicLockController_t
 /*
     Сброс контроллера управления сессией
 */
-void CanFTP_Client_SessionController_Reset(CanFTP_Client_SessionController_t *agent)
+void CanFTP_Client_Agent_SessionController_Reset(CanFTP_Client_Agent_SessionController_t *agent)
 {
     uint8_t i = 0;
 
@@ -71,7 +82,7 @@ void CanFTP_Client_SessionController_Reset(CanFTP_Client_SessionController_t *ag
 /*
     Сброс контроллера управления сессией
 */
-void CanFTP_Client_SessionController_ResetBlock(CanFTP_Client_SessionController_t *agent)
+void CanFTP_Client_Agent_SessionController_ResetBlock(CanFTP_Client_Agent_SessionController_t *agent)
 {
     uint8_t i = 0;
     // Сброс флагов управления чтением блока
@@ -91,7 +102,7 @@ void CanFTP_Client_SessionController_ResetBlock(CanFTP_Client_SessionController_
 /*
     Установить статус состояния сессии
 */
-void CanFTP_Client_SessionController_SetSessionStatus(CanFTP_Client_SessionController_t *agent, CanFTP_SessionStatus_t status)
+void CanFTP_Client_Agent_SessionController_SetSessionStatus(CanFTP_Client_Agent_SessionController_t *agent, CanFTP_SessionStatus_t status)
 {
     // Изменить статус в случае, если до этого сессия находилась в рабочем состоянии
     if (agent->statuses.sessionStatus == CANFTP_SESSIONSTATUS_OK)
@@ -107,7 +118,7 @@ void CanFTP_Client_SessionController_SetSessionStatus(CanFTP_Client_SessionContr
 /*
     Сброс флагов управления при переходе в другое состояние
 */
-void CanFTP_Client_SessionController_ResetBetweenStates(CanFTP_Client_SessionController_t *agent)
+void CanFTP_Client_Agent_SessionController_ResetBetweenStates(CanFTP_Client_Agent_SessionController_t *agent)
 {
     // Сброс счетчика количества повторений
     CanFTP_IterationsHandler_Reset(&(agent->repeateAckCounter));

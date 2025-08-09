@@ -17,11 +17,11 @@ typedef struct _CanFTP_DeviveConfig
     // Версия программного обеспечения устройства
     CanFTP_SofwareVersion_t softVersion;
 
-} CanFTP_DeviveConfig_t;
+} CanFTP_DeviceConfig_t;
 
 /*
     Сбросить конфигурацию
 */
-void CanFTP_DeviveConfig_Reset(CanFTP_DeviveConfig_t* configuration);
+void CanFTP_DeviceConfig_Reset(CanFTP_DeviceConfig_t* configuration);
 
 #endif // CANFTP_CLIENT_DEVICECONFIG_DEFINES_H_

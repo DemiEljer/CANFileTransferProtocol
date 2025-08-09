@@ -27,7 +27,7 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
     if (client->agents.logicLockController.requsts.requestToLockLogic == CANFTP_TRUE
         && client->agents.logicLockController.statuses.isLocked != CANFTP_TRUE)
     {
-        if (client->callbacks.lockLogicRequestCallback != 0)
+        if (client->callbacks.lockLogicRequestCallback != CANFTP_NULL)
         {
             client->agents.logicLockController.statuses.isLocked = client->callbacks.lockLogicRequestCallback(client);
         }
@@ -40,7 +40,7 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
     else if (client->agents.logicLockController.requsts.requestToLockLogic != CANFTP_TRUE
              && client->agents.logicLockController.statuses.isLocked == CANFTP_TRUE)
     {
-        if (client->callbacks.lockLogicRequestCallback != 0)
+        if (client->callbacks.unlockLogicRequestCallback != CANFTP_NULL)
         {
             client->agents.logicLockController.statuses.isLocked = !client->callbacks.unlockLogicRequestCallback(client);
         }
@@ -61,17 +61,17 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
         // В случае, если не получилось заблокировать логику, выходим из сесии
         if (client->agents.logicLockController.statuses.isLocked != CANFTP_TRUE)
         {
-            CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_LOGICISNOTLOCKED);
+            CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_LOGICISNOTLOCKED);
         }
         // В случае, если превышено время ожидания ответа от сервера
         if (CanFTP_TimeTrigger_HasFired(&(client->agents.sessionController.lostConnectionTrigger)))
         {
-            CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_LOSTCONNECTIONWITHSERVER);
+            CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_LOSTCONNECTIONWITHSERVER);
         }
         // В случае, если превышено количество повторов ответа серверу
         if (!CanFTP_IterationsHandler_CheckCount(&(client->agents.sessionController.repeateAckCounter)))
         {
-            CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ACKCOUNTOVERCOME);
+            CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ACKCOUNTOVERCOME);
         }
     }
 }
@@ -175,12 +175,12 @@ uint32_t CanFTP_Client_State_PING_RESPONSING_Body(CanFTP_FinalStateMachine_t *fm
         {
             if (client->agents.pingController.pingResponsesAck[0] != CANFTP_TRUE)
             {
-                client->agents.pingController.requestedMessageIndex = 1;
+                client->agents.pingController.requestedMessageIndex = CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1;
                 CanFTP_Client_MessageSend_PingResponse(client);
             }
             if (client->agents.pingController.pingResponsesAck[1] != CANFTP_TRUE)
             {
-                client->agents.pingController.requestedMessageIndex = 2;
+                client->agents.pingController.requestedMessageIndex = CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2;
                 CanFTP_Client_MessageSend_PingResponse(client);
             }
         }
@@ -269,11 +269,17 @@ uint32_t CanFTP_Client_State_PROTOCOL_ACTIVE_Body(CanFTP_FinalStateMachine_t *fm
 
     CanFTP_ClientState_t resultState = CANFTP_CLIENTSTATE_PROTOCOL_ACTIVE;
 
-    // Переход в состояние ожидания в случае снятиия блокировки логики
+    // Переход в состояние активной сессии в случае, если выставлен запрос
     if (client->agents.sessionController.requsts.requestSession == CANFTP_TRUE)
     {
         resultState = CANFTP_CLIENTSTATE_SESSION_REGISTRATED;
     }
+    // Переход в состояние Ping
+    if (client->agents.pingController.requsts.requestPinging == CANFTP_TRUE)
+    {
+        resultState = CANFTP_CLIENTSTATE_PING_RESPONSING;
+    }
+    // Переход в состояние ожидания в случае снятиия блокировки логики
     else if (client->agents.logicLockController.statuses.isLocked != CANFTP_TRUE)
     {
         resultState = CANFTP_CLIENTSTATE_IDLE;
@@ -315,7 +321,7 @@ uint32_t CanFTP_Client_State_SESSION_REGISTRATED_Body(CanFTP_FinalStateMachine_t
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)
     {
-        CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
         resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }
@@ -342,7 +348,7 @@ void CanFTP_Client_State_SESSION_REGISTRATED_Leave(CanFTP_FinalStateMachine_t *f
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_Client_SessionController_ResetBetweenStates(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_ResetBetweenStates(&(client->agents.sessionController));
 }
 
 #endif // CLIENT_STATE_SESSION_REGISTRATED_
@@ -361,7 +367,7 @@ void CanFTP_Client_State_SESSION_CONFIGURED_Enter(CanFTP_FinalStateMachine_t *fm
     CanFTP_IterationsHandler_SetMaxCount(&(client->agents.sessionController.repeateAckCounter), client->agents.sessionController.session.configuration.repeateAckCount);
     // Вызов логики согласования с вышестоящей логикой параметров сессии
     {
-        if (client->callbacks.sessionConfigureationCallback == 0)
+        if (client->callbacks.sessionConfigureationCallback == CANFTP_NULL)
         {
             client->agents.sessionController.statuses.sessionHasBeenVerified = CANFTP_TRUE;
         }
@@ -383,7 +389,7 @@ uint32_t CanFTP_Client_State_SESSION_CONFIGURED_Body(CanFTP_FinalStateMachine_t 
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)
     {
-        CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
         resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }
@@ -391,7 +397,7 @@ uint32_t CanFTP_Client_State_SESSION_CONFIGURED_Body(CanFTP_FinalStateMachine_t 
     {
         if (client->agents.sessionController.statuses.sessionHasBeenVerified != CANFTP_TRUE)
         {
-            CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_CONFIGURATIONFAILED);
+            CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_CONFIGURATIONFAILED);
 
             resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
         }
@@ -416,7 +422,7 @@ void CanFTP_Client_State_SESSION_CONFIGURED_Leave(CanFTP_FinalStateMachine_t *fm
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_Client_SessionController_ResetBetweenStates(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_ResetBetweenStates(&(client->agents.sessionController));
 }
 
 #endif // CLIENT_STATE_SESSION_CONFIGURED_
@@ -443,7 +449,7 @@ uint32_t CanFTP_Client_State_SESSION_STARTED_Body(CanFTP_FinalStateMachine_t *fm
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)
     {
-        CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
         resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }
@@ -476,7 +482,7 @@ void CanFTP_Client_State_SESSION_STARTED_Leave(CanFTP_FinalStateMachine_t *fms, 
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_Client_SessionController_ResetBetweenStates(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_ResetBetweenStates(&(client->agents.sessionController));
 }
 
 #endif // CLIENT_STATE_SESSION_STARTED_
@@ -494,7 +500,7 @@ void CanFTP_Client_State_SESSION_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
     // Проверка, что был передан весь файл
     if (client->agents.sessionController.statuses.resultFileLength != client->agents.sessionController.session.configuration.fileLength)
     {
-        CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_FILEUNFINISHED);
+        CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_FILEUNFINISHED);
     }
 
     // Корректировка параметров отправки сообщений подтверждения в случае активации вышестоящей логики  
@@ -545,7 +551,7 @@ void CanFTP_Client_State_SESSION_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms,
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
     // Обратный вызов окончания сессии
-    if (client->callbacks.sessionFinishedCallback != 0)
+    if (client->callbacks.sessionFinishedCallback != CANFTP_NULL)
     {
         client->callbacks.sessionFinishedCallback(client, client->agents.sessionController.statuses.sessionStatus, &(client->agents.sessionController.newSoftVersion));
     }
@@ -556,7 +562,7 @@ void CanFTP_Client_State_SESSION_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms,
         CanFTP_SofwareVersion_Copy(&(client->devicveConfig.softVersion), &(client->agents.sessionController.newSoftVersion));
     }
 
-    CanFTP_Client_SessionController_Reset(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_Reset(&(client->agents.sessionController));
 }
 
 #endif // CLIENT_STATE_SESSION_FINISHED_
@@ -583,7 +589,7 @@ uint32_t CanFTP_Client_State_BLOCK_STARTED_Body(CanFTP_FinalStateMachine_t *fms,
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)
     {
-        CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
         resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }
@@ -611,7 +617,7 @@ void CanFTP_Client_State_BLOCK_STARTED_Leave(CanFTP_FinalStateMachine_t *fms, vo
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_Client_SessionController_ResetBetweenStates(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_ResetBetweenStates(&(client->agents.sessionController));
 }
 
 #endif // CLIENT_STATE_BLOCK_STARTED_
@@ -638,7 +644,7 @@ uint32_t CanFTP_Client_State_BLOCK_RECIEVING_Body(CanFTP_FinalStateMachine_t *fm
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)
     {
-        CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
         resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }
@@ -657,7 +663,7 @@ void CanFTP_Client_State_BLOCK_RECIEVING_Leave(CanFTP_FinalStateMachine_t *fms, 
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_Client_SessionController_ResetBetweenStates(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_ResetBetweenStates(&(client->agents.sessionController));
 }
 
 #endif // CLIENT_STATE_BLOCK_RECIEVING_
@@ -696,7 +702,7 @@ uint32_t CanFTP_Client_State_BLOCK_FINISHED_Body(CanFTP_FinalStateMachine_t *fms
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)
     {
-        CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
         resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }
@@ -729,7 +735,7 @@ void CanFTP_Client_State_BLOCK_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms, v
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_Client_SessionController_ResetBetweenStates(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_ResetBetweenStates(&(client->agents.sessionController));
 }
 
 #endif // CLIENT_STATE_BLOCK_FINISHED_
@@ -748,7 +754,7 @@ void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Enter(CanFTP_FinalStateMachine_t *
         && client->agents.sessionController.statuses.newBlockIsHandling == CANFTP_TRUE)
     {
         // Обработный вызов успешного приема блока
-        if (client->callbacks.blockRecieceCallback != 0)
+        if (client->callbacks.blockRecieceCallback != CANFTP_NULL)
         {
             client->callbacks.blockRecieceCallback(client, &(client->agents.sessionController.session.block));
         }
@@ -758,7 +764,7 @@ void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Enter(CanFTP_FinalStateMachine_t *
         client->agents.sessionController.statuses.newBlockIsHandling = CANFTP_FALSE;
     }
     // Сброс флагов управления процессом приема блока
-    CanFTP_Client_SessionController_ResetBlock(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_ResetBlock(&(client->agents.sessionController));
 
     DEBUG_CLIENT_PRINTSTATE("BLOCK_NEXTBLOCKREADY", client->devicveConfig.serialNumber);
 }
@@ -772,7 +778,7 @@ uint32_t CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Body(CanFTP_FinalStateMachine_
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)
     {
-        CanFTP_Client_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
         resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }
@@ -805,7 +811,7 @@ void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Leave(CanFTP_FinalStateMachine_t *
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_Client_SessionController_ResetBetweenStates(&(client->agents.sessionController));
+    CanFTP_Client_Agent_SessionController_ResetBetweenStates(&(client->agents.sessionController));
 }
 
 #endif // CLIENT_STATE_BLOCK_NEXTBLOCKREADY

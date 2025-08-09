@@ -8,6 +8,7 @@
 #include "CanFTP_IterationsHandler.h"
 #include "CanFTP_ClientBlockHandlingStatus.h"
 #include "CanFTP_SofwareVersion.h"
+#include "CanFTP_Message_Client_PingResponse.h"
 
 /*
     Структура параметров состояния на этапе PING
@@ -19,46 +20,50 @@ typedef struct _CanFTP_Client_Agent_PingControler
     {
         // Запрос на начало процесса Ping
         CanFTP_Logical_t requestPinging;
+
     } requsts;
     // Структура выходных параметров
     struct
     {
         // Версия протокола была верифицирована
         CanFTP_Logical_t isProtocolVersionVerified;
+
     } statuses;
     // Флаги подтверждения приема сообщений Response 
-    CanFTP_Logical_t pingResponsesAck[2];
+    CanFTP_Logical_t pingResponsesAck[CANFT_MESSAGE_CLIENT_PINGRESPONSE_COUNT];
     // Триггер повторной отправки сообщений в случае, если не был получен ответ
     CanFTP_TimeTrigger_t reapeateSendingTrigger;
     // Триггер возврата в состояние ожидания
     CanFTP_TimeTrigger_t coolingDownTrigger;
-    // Номер запрашиваемого сообщения для отправки
-    uint8_t requestedMessageIndex;
+    // Тип запрашиваемого сообщения для отправки
+    CanFTP_Message_Client_PingResponse_Type_t requestedMessageIndex;
 
 } CanFTP_Client_Agent_PingControler_t;
 /*
     Структура управления процессом блокирования логики
 */
-typedef struct _CanFTP_Client_LogicLockController
+typedef struct _CanFTP_Client_Agent_LogicLockController
 {
     // Структура запросов к агенту
     struct
     {
         // Запрос на блокирование логики
         CanFTP_Logical_t requestToLockLogic;
+
     } requsts;
     // Структура выходных параметров
     struct
     {
         // Состояние блокирование логики
         CanFTP_Logical_t isLocked;
+
     } statuses;
 
-} CanFTP_Client_LogicLockController_t;
+} CanFTP_Client_Agent_LogicLockController_t;
 /*
     Структура управления сессией
 */
-typedef struct _CanFTP_Client_SessionController
+typedef struct _CanFTP_Client_Agent_SessionController
 {
     // Структура запросов к агенту
     struct
@@ -113,7 +118,7 @@ typedef struct _CanFTP_Client_SessionController
     // Новая версия файла
     CanFTP_SofwareVersion_t newSoftVersion;
 
-} CanFTP_Client_SessionController_t;
+} CanFTP_Client_Agent_SessionController_t;
 
 
 #endif // CANFTP_CLIENT_AGENTS_DEFINES_H_

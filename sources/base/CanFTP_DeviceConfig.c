@@ -3,7 +3,7 @@
 /*
     Сбросить конфигурацию
 */
-void CanFTP_DeviveConfig_Reset(CanFTP_DeviveConfig_t* configuration)
+void CanFTP_DeviceConfig_Reset(CanFTP_DeviceConfig_t* configuration)
 {
     configuration->identifier = 0;
     configuration->serialNumber = 0;

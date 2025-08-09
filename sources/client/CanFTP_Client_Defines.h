@@ -37,6 +37,7 @@ typedef struct _CanFTP_Client
         CanFTP_FinalStateMachine_t fms;
         // Обработчики конечного автомата
         CanFTP_FinalStateMachine_State_t states[CANFTP_CLIENTSTATES_COUNT]; 
+        
     } fms;
     // Агенты логики работы клинета
     struct
@@ -44,11 +45,11 @@ typedef struct _CanFTP_Client
         // Генератор случайных значений
         CanFTP_Random_t random;
         // Контроллер блокирования логики работы
-        CanFTP_Client_LogicLockController_t logicLockController;
+        CanFTP_Client_Agent_LogicLockController_t logicLockController;
         // Контроллер обработки процесса Ping
         CanFTP_Client_Agent_PingControler_t pingController;
         // Контроллер сесии
-        CanFTP_Client_SessionController_t sessionController;
+        CanFTP_Client_Agent_SessionController_t sessionController;
     
     } agents;
     // Состояние клиента
@@ -56,7 +57,7 @@ typedef struct _CanFTP_Client
     // Хаб приема сообщений
     CanFTP_Messages_Hub_t messagesHub;
     // Конфигурация устройства
-    CanFTP_DeviveConfig_t devicveConfig;
+    CanFTP_DeviceConfig_t devicveConfig;
     // Параметры управления
     struct
     {

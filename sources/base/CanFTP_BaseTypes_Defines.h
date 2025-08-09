@@ -9,6 +9,8 @@
 #define CANFTP_TRUE 0x01
 #define CANFTP_NONE 0x02
 
+#define CANFTP_NULL 0x00
+
 // Логический тип
 typedef uint8_t CanFTP_Logical_t;
 

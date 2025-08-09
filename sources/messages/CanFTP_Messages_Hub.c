@@ -10,7 +10,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
 {
     if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_SERVER_PING))
     {
-        if (hub->serverPingCallback != 0)
+        if (hub->serverPingCallback != CANFTP_NULL)
         {
             CanFTP_Message_Server_Ping_t message;
             CanFTP_Message_Server_Ping_Unpack(&(message), canMessage);
@@ -19,7 +19,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_SERVER_PINGRESPONSE))
     {
-        if (hub->serverPingResponseAckCallback != 0)
+        if (hub->serverPingResponseAckCallback != CANFTP_NULL)
         {
             CanFTP_Message_Server_PingResponseAck_t message;
             CanFTP_Message_Server_PingResponseAck_Unpack(&(message), canMessage);
@@ -28,7 +28,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_SERVER_REGISTRATION))
     {
-        if (hub->serverRegistrationCallback != 0)
+        if (hub->serverRegistrationCallback != CANFTP_NULL)
         {
             CanFTP_Message_Server_Registration_t message;
             CanFTP_Message_Server_Registration_Unpack(&(message), canMessage);
@@ -37,7 +37,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_SERVER_SESSIONCONTROL))
     {
-        if (hub->serverSessionControlCallback != 0)
+        if (hub->serverSessionControlCallback != CANFTP_NULL)
         {
             CanFTP_Message_Server_SessionControl_t message;
             CanFTP_Message_Server_SessionControl_Unpack(&(message), canMessage);
@@ -46,7 +46,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_SERVER_BLOCKCONTROL))
     {
-        if (hub->serverBlockControlCallback != 0)
+        if (hub->serverBlockControlCallback != CANFTP_NULL)
         {
             CanFTP_Message_Server_BlockControl_t message;
             CanFTP_Message_Server_BlockControl_Unpack(&(message), canMessage);
@@ -55,7 +55,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_SERVER_DATAFRAME))
     {
-        if (hub->serverDataFrameCallback != 0)
+        if (hub->serverDataFrameCallback != CANFTP_NULL)
         {
             CanFTP_Message_Server_DataFrame_t message;
             CanFTP_Message_Server_DataFrame_Unpack(&(message), canMessage);
@@ -64,7 +64,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_CLIENT_PINGRESPONSE))
     {
-        if (hub->clientPingResponseCallback != 0)
+        if (hub->clientPingResponseCallback != CANFTP_NULL)
         {
             CanFTP_Message_Client_PingResponse_t message;
             CanFTP_Message_Client_PingResponse_Unpack(&(message), canMessage);
@@ -73,7 +73,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_CLIENT_SESSIONCONTROL))
     {
-        if (hub->clientSessionControlCallback != 0)
+        if (hub->clientSessionControlCallback != CANFTP_NULL)
         {
             CanFTP_Message_Client_SessionControl_t message;
             CanFTP_Message_Client_SessionControl_Unpack(&(message), canMessage);
@@ -82,7 +82,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_CLIENT_BLOCKCONTROL))
     {
-        if (hub->clientBlockControlCallback != 0)
+        if (hub->clientBlockControlCallback != CANFTP_NULL)
         {
             CanFTP_Message_Client_BlockControl_t message;
             CanFTP_Message_Client_BlockControl_Unpack(&(message), canMessage);
@@ -91,7 +91,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_CLIENT_SUBBLOCKSSTATUSES))
     {
-        if (hub->clientSubBlocksStatusesCallback != 0)
+        if (hub->clientSubBlocksStatusesCallback != CANFTP_NULL)
         {
             CanFTP_Message_Client_SubBlocksStatuses_t message;
             CanFTP_Message_Client_SubBlocksStatuses_Unpack(&(message), canMessage);
@@ -100,7 +100,7 @@ void CanFTP_Messages_Hub_RecieveMessage(CanFTP_Messages_Hub_t* hub
     }
     else if (CanFTP_CanMessage_CheckMessageCodification(canMessage, CANFTP_MESSAGE_ID_CLIENT_BLOCKCRC))
     {
-        if (hub->clientBlockCRCCallback != 0)
+        if (hub->clientBlockCRCCallback != CANFTP_NULL)
         {
             CanFTP_Message_Client_BlockCRC_t message;
             CanFTP_Message_Client_BlockCRC_Unpack(&(message), canMessage);

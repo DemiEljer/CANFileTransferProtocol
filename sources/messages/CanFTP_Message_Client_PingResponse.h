@@ -4,13 +4,16 @@
 #include "CanFTP_Messages_Handlers.h"
 #include "CanFTP_SofwareVersion.h"
 
+// Количество сообщений ответов на запрос Ping
+#define CANFT_MESSAGE_CLIENT_PINGRESPONSE_COUNT 2
+
 /*
     Тип сообщения ответа на запрос Ping
 */
 typedef enum _CanFTP_Message_Client_PingResponse_Type
 {
-    CANFT_MESSAGE_CLIENT_BLOCKCONTROL_RESPONSE1 = 0,
-    CANFT_MESSAGE_CLIENT_BLOCKCONTROL_RESPONSE2 = 1,
+    CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1 = 0,
+    CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2 = 1,
 } CanFTP_Message_Client_PingResponse_Type_t;
 
 /*

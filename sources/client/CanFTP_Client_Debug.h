@@ -4,7 +4,7 @@
 #if (DEBUG_CLIENT_STATES)
 
     #define DEBUG_CLIENT_PRINTSTATE(state, serial) { \
-        CANFTP_DEBUG_ARGS("Client enter \"%s\", serial \"%u\"\r\n", state, serial); \
+        CANFTP_DEBUG_ARGS("Client enter state \"%s\", serial \"%u\"\r\n", state, serial); \
     }
 
 #else

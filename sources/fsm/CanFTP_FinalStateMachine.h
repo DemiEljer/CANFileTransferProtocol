@@ -23,7 +23,7 @@ void CanFTP_FinalStateMachine_Invoke(CanFTP_FinalStateMachine_t* fsm);
 */
 void CanFTP_FinalStateMachine_ChangeState(CanFTP_FinalStateMachine_t* fsm, CanFTP_FinalStateMachineStateIndex_t newState);
 /*
-    Метод приведения дочерней структуры к структуре конечного автомата
+    Функция приведения дочерней структуры к структуре конечного автомата
 */
 CanFTP_FinalStateMachine_t* CanFTP_FinalStateMachine_Cast(void* fsmChild);
 

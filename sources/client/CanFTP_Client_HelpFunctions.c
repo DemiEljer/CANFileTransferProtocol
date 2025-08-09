@@ -25,7 +25,7 @@ CanFTP_Logical_t CanFTP_Client_CheckIfMessageCorrespondingToActiveSession(CanFTP
         // Обновление метки времеи в случае получения сообщения от сервера
         CanFTP_TimeTrigger_Update(&(client->agents.sessionController.lostConnectionTrigger));
 
-        return CANFTP_TRUE;
+        return CanFTP_Client_GetState(client) != CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }
     else
     {
