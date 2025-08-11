@@ -6,11 +6,16 @@
 void CanFTP_Server_Client_Reset(CanFTP_Server_Client_t *client)
 {
     uint8_t i = 0;
-    for (i = 0; i < CANFT_MESSAGE_CLIENT_PINGRESPONSE_COUNT; i++)
+    // Сброс флаго подтверждения конфигурации
     {
-        client->configurationMessagesAck[i] = CANFTP_FALSE;
+        for (i = 0; i < CANFT_MESSAGE_CLIENT_PINGRESPONSE_COUNT; i++)
+        {
+            client->configurationMessagesAck[i] = CANFTP_FALSE;
+        }
     }
+    
     CanFTP_DeviceConfig_Reset(&(client->configuration));
+    client->isInSession = CANFTP_FALSE;
 }
 /*
     Проверить, что клиент сконфигурирован
@@ -27,4 +32,11 @@ CanFTP_Logical_t CanFTP_Server_Client_IsConfigured(CanFTP_Server_Client_t *clien
     }
 
     return CANFTP_TRUE;
+}
+/*
+    Проверить, что клиент вовлечен в сессию
+*/
+CanFTP_Logical_t CanFTP_Server_Client_IsInSession(CanFTP_Server_Client_t *client)
+{
+    return client->isInSession;
 }

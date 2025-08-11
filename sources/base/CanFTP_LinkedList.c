@@ -95,7 +95,7 @@ CanFTP_LinkedList_Element_t* CanFTP_LinkedList_Insert(CanFTP_LinkedList_t* list,
         {
             return CanFTP_LinkedList_AppendHead(list);
         }
-        else if (index == (list->elementsCount - 1))
+        else if (index == list->elementsCount)
         {
             return CanFTP_LinkedList_AppendTail(list);
         }

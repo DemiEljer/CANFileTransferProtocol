@@ -3,6 +3,7 @@
 
 #include "CanFTP_LinkedList.h"
 #include "CanFTP_Server_Client.h"
+#include "CanFTP_Server_Params.h"
 
 /*
     Элемент коллекции

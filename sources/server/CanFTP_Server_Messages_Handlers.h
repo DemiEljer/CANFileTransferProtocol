@@ -33,22 +33,6 @@ void CanFTP_Server_MessageSend_Ping(CanFTP_Server_t* server);
 */
 void CanFTP_Server_MessageSend_PingResponseAck(CanFTP_Server_t* server);
 /*
-    Обработчик приема сообщения Registration
-*/
-void CanFTP_Server_MessageSend_Registration(CanFTP_Server_t* server, CanFTP_Server_Session_t* session);
-/*
-    Обработчик приема сообщения SessionControl
-*/
-void CanFTP_Server_MessageSend_SessionControl(CanFTP_Server_t* server, CanFTP_Server_Session_t* session);
-/*
-    Обработчик приема сообщения BlockContro
-*/
-void CanFTP_Server_MessageSend_BlockControl(CanFTP_Server_t* server, CanFTP_Server_Session_t* session);
-/*
-    Обработчик приема сообщения DataFrame
-*/
-void CanFTP_Server_MessageSend_DataFrame(CanFTP_Server_t* server, CanFTP_Server_Session_t* session);
-/*
     Отправить сообщение
 */
 void CanFTP_Server_MessageSend(CanFTP_Server_t* server, CanFTP_CanMessage_t* message);

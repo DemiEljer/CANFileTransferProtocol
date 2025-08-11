@@ -11,5 +11,9 @@ CanFTP_ServerState_t CanFTP_Server_GetState(CanFTP_Server_t *server);
     Проверить, что в данный момент разрешено начать процесс Ping
 */
 CanFTP_Logical_t CanFTP_Server_PingPermition(CanFTP_Server_t *server);
+/*
+    Проверить, что в данный момент разрешено создать сессию
+*/
+CanFTP_Logical_t CanFTP_Server_CreateSessionPermition(CanFTP_Server_t *server);
 
 #endif // CANFTP_SERVER_HELPFUNCTIONS_H_

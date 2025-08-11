@@ -36,15 +36,17 @@ uint32_t CanFTP_Server_State_IDLE_Body(CanFTP_FinalStateMachine_t *fms, void* st
     CanFTP_Server_t* server = (CanFTP_Server_t*)(fms);
 
     CanFTP_ServerState_t resultState = CANFTP_SERVERSTATE_IDLE;
+    
+    if (CanFTP_Server_SessionsCollection_CheckActiveSessions(&(server->sessions)) > 0)
+    {
+        CanFTP_Server_Agent_PingControler_Reset(&(server->agents.pingController));
+
+        resultState = CANFTP_SERVERSTATE_SESSION;
+    }
     // Переход в логику процесса Ping
-    if (server->agents.pingController.requsts.requestPinging == CANFTP_TRUE)
+    else if (server->agents.pingController.requsts.requestPinging == CANFTP_TRUE)
     {
         resultState = CANFTP_SERVERSTATE_PING;
-    }
-    else
-    {
-        //!!! В сулчае переходв в сессию данный флаг необходимо сбросить
-        server->agents.pingController.requsts.requestPinging = CANFTP_FALSE;
     }
 
     return resultState;
@@ -117,6 +119,22 @@ uint32_t CanFTP_Server_State_SESSION_Body(CanFTP_FinalStateMachine_t *fms, void*
     CanFTP_Server_t* server = (CanFTP_Server_t*)(fms);
 
     CanFTP_ServerState_t resultState = CANFTP_SERVERSTATE_SESSION;
+
+    if (server->controls.doesServerInvokeSessions == CANFTP_TRUE)
+    {
+        // Вызлов логик созданных сессий
+        if (CanFTP_Server_SessionsCollection_InvokeSessionsOrDispose(&(server->sessions)) == 0)
+        {
+            resultState = CANFTP_SERVERSTATE_IDLE;
+        }
+    }
+    else
+    {
+        if (CanFTP_Server_SessionsCollection_CheckActiveSessions(&(server->sessions)) == 0)
+        {
+            resultState = CANFTP_SERVERSTATE_IDLE;
+        }
+    }
 
     return resultState;
 }

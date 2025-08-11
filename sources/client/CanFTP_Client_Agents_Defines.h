@@ -3,7 +3,7 @@
 
 #include "CanFTP_Client_Params.h"
 #include "CanFTP_TimeHandlers.h"
-#include "CanFTP_Session.h"
+#include "CanFTP_Client_Session.h"
 #include "CanFTP_SessionStatus.h"
 #include "CanFTP_IterationsHandler.h"
 #include "CanFTP_ClientBlockHandlingStatus.h"
@@ -106,7 +106,7 @@ typedef struct _CanFTP_Client_Agent_SessionController
 
     } statuses;
     // Сессия передачи файла
-    CanFTP_Session_t session;
+    CanFTP_Client_Session_t session;
     // Ассоция клиента c сессией
     CanFTP_Session_ClientAssosiation_t clientAssosiation;
     // Триггер повторной отправки сообщения подтверждения

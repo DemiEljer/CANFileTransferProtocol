@@ -1,4 +1,5 @@
 #include "CanFTP_Server_Messages_Handlers.h"
+#include "CanFTP_Server_Session_Messages_Handlers.h"
 
 /*
     Обработчик приема сообщения PingResponse
@@ -16,6 +17,9 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
             {
                 client = CanFTP_Server_ClientsCollection_Append(&(server->clients));
             }
+            // Флаг, что клиент уже был сконфигурирован
+            CanFTP_Logical_t clientConfigurationIsFinished = CanFTP_Server_Client_IsConfigured(client);
+            
             // Подтверждление получения сообщения конфигурации клиента
             client->configurationMessagesAck[0] = CANFTP_TRUE;
             // Заполнение конфигурируемых полей
@@ -30,6 +34,15 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
 
                 CanFTP_Server_MessageSend_PingResponseAck(server);
             }
+            // Проверка условия вызова нахождения клиента
+            if (!clientConfigurationIsFinished
+                && CanFTP_Server_Client_IsConfigured(client))
+            {
+                if (server->callbacks.clientFoundCallback != CANFTP_NULL)
+                {
+                    server->callbacks.clientFoundCallback(server, client);
+                }
+            }
         }
         else if (message->messageType == CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
         {
@@ -38,6 +51,9 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
             {
                 client = CanFTP_Server_ClientsCollection_Append(&(server->clients));
             }
+            // Флаг, что клиент уже был сконфигурирован
+            CanFTP_Logical_t clientConfigurationIsFinished = CanFTP_Server_Client_IsConfigured(client);
+
             // Подтверждление получения сообщения конфигурации клиента
             client->configurationMessagesAck[1] = CANFTP_TRUE;
             // Заполнение конфигурируемых полей
@@ -51,6 +67,15 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
 
                 CanFTP_Server_MessageSend_PingResponseAck(server);
             }
+            // Проверка условия вызова нахождения клиента
+            if (!clientConfigurationIsFinished
+                && CanFTP_Server_Client_IsConfigured(client))
+            {
+                if (server->callbacks.clientFoundCallback != CANFTP_NULL)
+                {
+                    server->callbacks.clientFoundCallback(server, client);
+                }
+            }
         }
     }
 }
@@ -61,7 +86,15 @@ void CanFTP_Server_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_C
 {
     CanFTP_Server_t* server = (CanFTP_Server_t*)(invoker);
 
-    
+    if (CanFTP_Server_GetState(server) == CANFTP_SERVERSTATE_SESSION)
+    {
+        CanFTP_Server_Session_t* session = CanFTP_Server_SessionsCollection_GetSessionByCode(&(server->sessions), message->sessionCode);
+
+        if (session != CANFTP_NULL)
+        {
+            CanFTP_Server_Session_MessageRecieve_SessionControl(session, message);
+        }
+    }
 }
 /*
     Обработчик приема сообщения BlockControl
@@ -70,7 +103,15 @@ void CanFTP_Server_MessageRecieve_BlockControl(void* invoker, CanFTP_Message_Cli
 {
     CanFTP_Server_t* server = (CanFTP_Server_t*)(invoker);
 
-        
+    if (CanFTP_Server_GetState(server) == CANFTP_SERVERSTATE_SESSION)
+    {
+        CanFTP_Server_Session_t* session = CanFTP_Server_SessionsCollection_GetSessionByCode(&(server->sessions), message->sessionCode);
+
+        if (session != CANFTP_NULL)
+        {
+            CanFTP_Server_Session_MessageRecieve_BlockControl(session, message);
+        }
+    } 
 }
 /*
     Обработчик приема сообщения SubBlocksStatuses
@@ -79,7 +120,15 @@ void CanFTP_Server_MessageRecieve_SubBlocksStatuses(void* invoker, CanFTP_Messag
 {
     CanFTP_Server_t* server = (CanFTP_Server_t*)(invoker);
 
+    if (CanFTP_Server_GetState(server) == CANFTP_SERVERSTATE_SESSION)
+    {
+        CanFTP_Server_Session_t* session = CanFTP_Server_SessionsCollection_GetSessionByCode(&(server->sessions), message->sessionCode);
 
+        if (session != CANFTP_NULL)
+        {
+            CanFTP_Server_Session_MessageRecieve_SubBlocksStatuses(session, message);
+        }
+    }
 }
 /*
     Обработчик приема сообщения BlockCRC
@@ -88,7 +137,15 @@ void CanFTP_Server_MessageRecieve_BlockCRC(void* invoker, CanFTP_Message_Client_
 {
     CanFTP_Server_t* server = (CanFTP_Server_t*)(invoker);
 
+    if (CanFTP_Server_GetState(server) == CANFTP_SERVERSTATE_SESSION)
+    {
+        CanFTP_Server_Session_t* session = CanFTP_Server_SessionsCollection_GetSessionByCode(&(server->sessions), message->sessionCode);
 
+        if (session != CANFTP_NULL)
+        {
+            CanFTP_Server_Session_MessageRecieve_BlockCRC(session, message);
+        }
+    }
 }
 
 /*
@@ -100,8 +157,7 @@ void CanFTP_Server_MessageSend_Ping(CanFTP_Server_t* server)
     // Обработка сообщения
     {
         messageModel.protocolVersion = CANFTP_PROTOCOL_VERSION;
-        //!!! Необходима назначить тип Ping
-        messageModel.terminationRequest = CANFTP_TERMINATIONREQUEST_NOTERMINATION;
+        messageModel.terminationRequest = server->agents.pingController.requsts.terminationRequest;
     }
     // Упаковка сообщения и отправка
     {
@@ -125,74 +181,6 @@ void CanFTP_Server_MessageSend_PingResponseAck(CanFTP_Server_t* server)
     {
         CanFTP_CanMessage_t messageCan;
         CanFTP_Message_Server_PingResponseAck_Pack(&(messageModel), &(messageCan));
-        CanFTP_Server_MessageSend(server, &(messageCan));
-    }
-}
-/*
-    Обработчик приема сообщения Registration
-*/
-void CanFTP_Server_MessageSend_Registration(CanFTP_Server_t* server, CanFTP_Server_Session_t* session)
-{
-    CanFTP_Message_Server_Registration_t messageModel;
-    // Обработка сообщения
-    {
-
-    }
-    // Упаковка сообщения и отправка
-    {
-        CanFTP_CanMessage_t messageCan;
-        CanFTP_Message_Server_Registration_Pack(&(messageModel), &(messageCan));
-        CanFTP_Server_MessageSend(server, &(messageCan));
-    }
-}
-/*
-    Обработчик приема сообщения SessionControl
-*/
-void CanFTP_Server_MessageSend_SessionControl(CanFTP_Server_t* server, CanFTP_Server_Session_t* session)
-{
-    CanFTP_Message_Server_SessionControl_t messageModel;
-    // Обработка сообщения
-    {
-
-    }
-    // Упаковка сообщения и отправка
-    {
-        CanFTP_CanMessage_t messageCan;
-        CanFTP_Message_Server_SessionControl_Pack(&(messageModel), &(messageCan));
-        CanFTP_Server_MessageSend(server, &(messageCan));
-    }
-}
-/*
-    Обработчик приема сообщения BlockContro
-*/
-void CanFTP_Server_MessageSend_BlockControl(CanFTP_Server_t* server, CanFTP_Server_Session_t* session)
-{
-    CanFTP_Message_Server_BlockControl_t messageModel;
-    // Обработка сообщения
-    {
-
-    }
-    // Упаковка сообщения и отправка
-    {
-        CanFTP_CanMessage_t messageCan;
-        CanFTP_Message_Server_BlockControl_Pack(&(messageModel), &(messageCan));
-        CanFTP_Server_MessageSend(server, &(messageCan));
-    }
-}
-/*
-    Обработчик приема сообщения DataFrame
-*/
-void CanFTP_Server_MessageSend_DataFrame(CanFTP_Server_t* server, CanFTP_Server_Session_t* session)
-{
-    CanFTP_Message_Server_DataFrame_t messageModel;
-    // Обработка сообщения
-    {
-
-    }
-    // Упаковка сообщения и отправка
-    {
-        CanFTP_CanMessage_t messageCan;
-        CanFTP_Message_Server_DataFrame_Pack(&(messageModel), &(messageCan));
         CanFTP_Server_MessageSend(server, &(messageCan));
     }
 }

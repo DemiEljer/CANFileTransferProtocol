@@ -18,10 +18,19 @@ void CanFTP_Server_RecieveCanMessage(CanFTP_Server_t *server, CanFTP_CanMessage_
 /*
     Запустить процесс Ping
 */
-CanFTP_Logical_t CanFTP_Server_StartPing(CanFTP_Server_t *server);
+CanFTP_Logical_t CanFTP_Server_StartPing(CanFTP_Server_t *server, CanFTP_Logical_t requestLogicLocking);
+/*
+    Запустить процесс разблокировки логик клиентов
+*/
+CanFTP_Logical_t CanFTP_Server_StartRelease(CanFTP_Server_t *server);
 /*
     Остановить процесс Ping
 */
 void CanFTP_Server_StopPing(CanFTP_Server_t *server);
+/*
+    Создать экземпляр сессии
+*/
+CanFTP_Server_Session_t* CanFTP_Server_CreateNewSession(CanFTP_Server_t *server);
+
 
 #endif // CANFTP_SERVER_H_

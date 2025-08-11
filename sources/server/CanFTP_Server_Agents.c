@@ -10,4 +10,5 @@ void CanFTP_Server_Agent_PingControler_Reset(CanFTP_Server_Agent_PingControler_t
     agent->responsingDeviceSerial = 0;
     agent->responsingMessageType = CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1;
     agent->requsts.requestPinging = CANFTP_FALSE;
+    agent->requsts.terminationRequest = CANFTP_TERMINATIONREQUEST_NOTERMINATION;
 }

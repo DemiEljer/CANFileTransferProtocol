@@ -59,7 +59,7 @@ void CanFTP_Session_FileBlock_InitData(CanFTP_Session_FileBlock_t* block
     {
         block->data[i] = data[i];
     }
-    // Иниуиализация добавочной части блока
+    // Инициализация добавочной части блока
     for (; i < actualFileLength; i++)
     {
         block->data[i] = 0;
@@ -116,7 +116,7 @@ void CanFTP_Session_FileBlock_SetFrame(CanFTP_Session_FileBlock_t* block
 */
 CanFTP_Logical_t CanFTP_Session_FileBlock_VerifySubblocks(CanFTP_Session_FileBlock_t* block)
 {
-    CanFTP_FrameIndex_t blockframesCount = CanFTP_Session_FileBlock_GetFramesCount(block);
+    CanFTP_FrameIndex_t blockFramesCount = CanFTP_Session_FileBlock_GetFramesCount(block);
     CanFTP_FrameIndex_t subblocksCount = CanFTP_Session_FileBlock_GetSubblockesCount(block);
 
     uint32_t i = 0;
@@ -129,7 +129,7 @@ CanFTP_Logical_t CanFTP_Session_FileBlock_VerifySubblocks(CanFTP_Session_FileBlo
 
     CanFTP_Logical_t blockIsVerified = CANFTP_TRUE;
     // Првоерка флагов обработки фреймов блока
-    for (i = 0; i < blockframesCount; i++)
+    for (i = 0; i < blockFramesCount; i++)
     {
         if (block->framesFlags[i] != CANFTP_TRUE)
         {

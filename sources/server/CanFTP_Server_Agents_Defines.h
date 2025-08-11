@@ -4,6 +4,7 @@
 #include "CanFTP_Server_Params.h"
 #include "CanFTP_Message_Client_PingResponse.h"
 #include "CanFTP_TimeHandlers.h"
+#include "CanFTP_TerminationRequest.h"
 
 /*
     Струкутура контроллера процесса Ping на стороне сервера
@@ -15,6 +16,8 @@ typedef struct _CanFTP_Server_Agent_PingControler
     {
         // Запрос на начало процесса Ping
         CanFTP_Logical_t requestPinging;
+        // Запрос на териминирование логики
+        CanFTP_TerminationRequest_t terminationRequest;
 
     } requsts;
     // Структура выходных параметров

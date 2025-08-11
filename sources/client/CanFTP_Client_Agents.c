@@ -77,7 +77,7 @@ void CanFTP_Client_Agent_SessionController_Reset(CanFTP_Client_Agent_SessionCont
     CanFTP_TimeTrigger_Reset(&(agent->lostConnectionTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(agent->repeateAckCounter), CANFTP_CLIENT_SEESION_REPEATEACK_COUNT);
     CanFTP_IterationsHandler_Reset(&(agent->repeateAckCounter));
-    CanFTP_Session_Reset(&(agent->session));
+    CanFTP_Client_Session_Reset(&(agent->session));
 }
 /*
     Сброс контроллера управления сессией

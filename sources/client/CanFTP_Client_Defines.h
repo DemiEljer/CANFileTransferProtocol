@@ -17,7 +17,7 @@ typedef void (*CanFTP_Client_MessageSendCallback_t)(CanFTP_Client_t*, CanFTP_Can
 // Тип функции обратной связи запроса к внешней логике
 typedef CanFTP_Logical_t (*CanFTP_Client_RequestCallback_t)(CanFTP_Client_t*);
 // Тип функции обратного вызова согласования сессии
-typedef CanFTP_Logical_t (*CanFTP_Client_SessionConfigurationCallback)(CanFTP_Client_t*, CanFTP_Session_Configuration_t*);
+typedef CanFTP_Logical_t (*CanFTP_Client_SessionConfigurationCallback)(CanFTP_Client_t*, CanFTP_Client_Session_Configuration_t*);
 // Тип функции обратной связи к внешней логике
 typedef CanFTP_Logical_t (*CanFTP_Client_Callback_t)(CanFTP_Client_t*);
 // Тип функции обратной связи успешного приема блока файла

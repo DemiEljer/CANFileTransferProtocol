@@ -7,7 +7,7 @@
 void CanFTP_Server_Init(CanFTP_Server_t *server)
 {
     server->state = (CanFTP_ServerState_t*)&(server->fms.fms.state);
-        // Инициализация обработчиков состояний
+    // Инициализация обработчиков состояний
     {
         server->fms.states[CANFTP_SERVERSTATE_IDLE].stateModel = CANFTP_NULL;
         server->fms.states[CANFTP_SERVERSTATE_IDLE].handlers.enterStateHandler = CanFTP_Server_State_IDLE_Enter;
@@ -50,6 +50,11 @@ void CanFTP_Server_Init(CanFTP_Server_t *server)
     {
         CanFTP_Server_Agent_PingControler_Reset(&(server->agents.pingController));
     }
+    // Инициализация обратных вызовов
+    {
+        server->callbacks.clientFoundCallback = CANFTP_NULL;
+    }
+    CanFTP_Server_Session_Configuration_Reset(&(server->defaultSessionConfiguration));
 
 }
 /*
@@ -69,11 +74,23 @@ void CanFTP_Server_RecieveCanMessage(CanFTP_Server_t *server, CanFTP_CanMessage_
 /*
     Запустить процесс Ping
 */
-CanFTP_Logical_t CanFTP_Server_StartPing(CanFTP_Server_t *server)
+CanFTP_Logical_t CanFTP_Server_StartPing(CanFTP_Server_t *server, CanFTP_Logical_t requestLogicLocking)
 {
     if (CanFTP_Server_PingPermition(server))
     {
         server->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
+        server->agents.pingController.requsts.terminationRequest = requestLogicLocking == CANFTP_FALSE ? CANFTP_TERMINATIONREQUEST_NOTERMINATION : CANFTP_TERMINATIONREQUEST_TERMINATE;
+    }
+}
+/*
+    Запустить процесс разблокировки логик клиентов
+*/
+CanFTP_Logical_t CanFTP_Server_StartRelease(CanFTP_Server_t *server)
+{
+    if (CanFTP_Server_PingPermition(server))
+    {
+        server->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
+        server->agents.pingController.requsts.terminationRequest = CANFTP_TERMINATIONREQUEST_RELEASE;
     }
 }
 /*
@@ -82,4 +99,29 @@ CanFTP_Logical_t CanFTP_Server_StartPing(CanFTP_Server_t *server)
 void CanFTP_Server_StopPing(CanFTP_Server_t *server)
 {
     server->agents.pingController.requsts.requestPinging = CANFTP_FALSE;
+}
+/*
+    Создать экземпляр сессии
+*/
+CanFTP_Server_Session_t* CanFTP_Server_CreateNewSession(CanFTP_Server_t *server)
+{
+    if (CanFTP_Server_CreateSessionPermition(server))
+    {
+        CanFTP_Server_Session_t* newSession = CanFTP_Server_SessionsCollection_CreateNewSession(&(server->sessions), server);
+        // В случае, если сессия была успешно создана
+        if (newSession != CANFTP_NULL)
+        {
+            // Инициализация обратных связей
+            {
+                newSession->callbacks.sendMessageCallback = (CanFTP_Server_Session_MessageSendCallback_t)server->callbacks.sendMessageCallback;
+            }
+            CanFTP_Server_Session_Configuration_Copy(&(newSession->configuration), &(server->defaultSessionConfiguration));
+        }
+
+        return newSession;
+    }
+    else
+    {
+        return CANFTP_NULL;
+    }
 }

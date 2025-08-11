@@ -1,12 +1,12 @@
-#ifndef CANFTP_SESSION_CONFIGURATION_H_
-#define CANFTP_SESSION_CONFIGURATION_H_
+#ifndef CANFTP_CLIENT_SESSION_CONFIGURATION_H_
+#define CANFTP_CLIENT_SESSION_CONFIGURATION_H_
 
 #include "CanFTP_BaseTypes_Defines.h"
 
 /*
-    Структура конфигурации сессии
+    Структура конфигурации сессии на стороне клиента
 */
-typedef struct _CanFTP_Session_Configuration
+typedef struct _CanFTP_Client_Session_Configuration
 {
     // Индекс страницы записи
     CanFTP_PageIndex_t pageIndex;
@@ -19,11 +19,11 @@ typedef struct _CanFTP_Session_Configuration
     // Интервал времени повторной отправки
     CanFTP_SendingRepeateInterval_t repeateInterval;
     
-} CanFTP_Session_Configuration_t;
+} CanFTP_Client_Session_Configuration_t;
 
 /*
     Сбросить конфигурацию сессии
 */
-void CanFTP_Session_Configuratio_Reset(CanFTP_Session_Configuration_t *configuration);
+void CanFTP_Session_Configuratio_Reset(CanFTP_Client_Session_Configuration_t *configuration);
 
-#endif // CANFTP_SESSION_CONFIGURATION_H_
+#endif // CANFTP_CLIENT_SESSION_CONFIGURATION_H_
