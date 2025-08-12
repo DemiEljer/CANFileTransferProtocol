@@ -5,28 +5,64 @@
 */
 void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t* session, CanFTP_Message_Client_SessionControl_t* message)
 {
+    if (CanFTP_Server_Session_IsActive(session))
+    {
+        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), message->deviceCode);
 
+        if (client != CANFTP_NULL)
+        {
+            // Обновление метки времени потери связи с клиентом
+            CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
+        }
+    }
 }
 /*
     Обработчик приема сообщения BlockControl
 */
 void CanFTP_Server_Session_MessageRecieve_BlockControl(CanFTP_Server_Session_t* session, CanFTP_Message_Client_BlockControl_t* message)
 {
+    if (CanFTP_Server_Session_IsActive(session))
+    {
+        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), message->deviceCode);
 
+        if (client != CANFTP_NULL)
+        {
+            // Обновление метки времени потери связи с клиентом
+            CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
+        }
+    }
 }
 /*
     Обработчик приема сообщения SubBlocksStatuses
 */
 void CanFTP_Server_Session_MessageRecieve_SubBlocksStatuses(CanFTP_Server_Session_t* session, CanFTP_Message_Client_SubBlocksStatuses_t* message)
 {
+    if (CanFTP_Server_Session_IsActive(session))
+    {
+        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), message->deviceCode);
 
+        if (client != CANFTP_NULL)
+        {
+            // Обновление метки времени потери связи с клиентом
+            CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
+        }
+    }
 }
 /*
     Обработчик приема сообщения BlockCRC
 */
 void CanFTP_Server_Session_MessageRecieve_BlockCRC(CanFTP_Server_Session_t* session, CanFTP_Message_Client_BlockCRC_t* message)
 {
+    if (CanFTP_Server_Session_IsActive(session))
+    {
+        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), message->deviceCode);
 
+        if (client != CANFTP_NULL)
+        {
+            // Обновление метки времени потери связи с клиентом
+            CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
+        }
+    }
 }
 
 /*
@@ -37,7 +73,18 @@ void CanFTP_Server_Session_MessageSend_Registration(CanFTP_Server_Session_t* ses
     CanFTP_Message_Server_Registration_t messageModel;
     // Обработка сообщения
     {
+        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), session->agents.registrationConrtoller.clientIndex);
 
+        if (client != CANFTP_NULL)
+        {
+            messageModel.deviceSerial = client->serverClient->configuration.serialNumber;
+            messageModel.sessionCode = client->assosiation.sessionCode; 
+            messageModel.deviceCode = client->assosiation.deviceCode;  
+        }
+        else
+        {
+            CanFTP_ThrowError();
+        }
     }
     // Упаковка сообщения и отправка
     {

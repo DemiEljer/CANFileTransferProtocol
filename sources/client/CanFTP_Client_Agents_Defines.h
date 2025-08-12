@@ -93,6 +93,8 @@ typedef struct _CanFTP_Client_Agent_SessionController
         CanFTP_SessionStatus_t sessionStatus;
         // Флаг, что параметры сессии были согласованы
         CanFTP_Logical_t sessionHasBeenVerified;
+        // Флаг, что клиент был зарегистрирован в сессии
+        CanFTP_Logical_t clientHasBeenRegistrated;
         // Флаг, что все фреймы блока были получены
         CanFTP_Logical_t allBlocksFramesWereRecieved;
         // CRC-сумма блока

@@ -1,12 +1,16 @@
 #ifndef CANFTP_SESSION_FILEBLOCK_H_
 #define CANFTP_SESSION_FILEBLOCK_H_
 
-#include "CanFTP_Session_FileBLock_Defines.h"
+#include "CanFTP_Session_FileBlock_Defines.h"
 
 /*
     Сброс блока файла
 */
 void CanFTP_Session_FileBlock_Reset(CanFTP_Session_FileBlock_t* block);
+/*
+    Сбросить флаги приема фреймов
+*/
+void CanFTP_Session_FileBlock_ResetFramesFlags(CanFTP_Session_FileBlock_t* block);
 /*
     Сконфигурировать блок
 */
@@ -14,12 +18,16 @@ void CanFTP_Session_FileBlock_Configure(CanFTP_Session_FileBlock_t* block
     , CanFTP_BloclIndex_t index
     , CanFTP_BlockLength_t length);
 /*
-    Проинициализовать данные
+    Конфигурация с переносом данных
 */
-void CanFTP_Session_FileBlock_InitData(CanFTP_Session_FileBlock_t* block
+void CanFTP_Session_FileBlock_ConfigureWithData(CanFTP_Session_FileBlock_t* block
     , CanFTP_BloclIndex_t index
     , CanFTP_BlockLength_t length
     , uint8_t* data);
+/*
+    Перенос данных блока
+*/
+void CanFTP_Session_FileBlock_MoveBlockData(CanFTP_Session_FileBlock_t* block, uint8_t* data);
 /*
     Получить фрейм блока файла
 */

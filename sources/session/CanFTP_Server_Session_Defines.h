@@ -8,14 +8,24 @@
 #include "CanFTP_Server_Session_Configuration.h"
 #include "CanFTP_Server_Session_ClientsCollection.h"
 #include "CanFTP_SessionStatus.h"
+#include "CanFTP_Server_Session_FileConfiguration.h"
+#include "CanFTP_Server_Session_Agents.h"
 
 // Структура сессии на стороне серевера
 typedef struct _CanFTP_Server_Session CanFTP_Server_Session_t;
 
 // Тип функции обратной связи отпраки сообщения
-typedef void (*CanFTP_Server_Session_MessageSendCallback_t)(void*, CanFTP_CanMessage_t*);
+typedef void (*CanFTP_Server_Session_MessageSendCallback_t)(void* server, CanFTP_CanMessage_t* message);
 // Тип функции события завершения сессии
-typedef void (*CanFTP_Server_Session_SessionFinishCallback_t)(void*, CanFTP_Server_Session_t session, CanFTP_SessionStatus_t);
+typedef void (*CanFTP_Server_Session_SessionFinishCallback_t)(void* server
+    , CanFTP_Server_Session_t* session
+    , CanFTP_SessionStatus_t status);
+// Тип функции запроса установки параметров блока
+typedef void (*CanFTP_Server_Session_GetFileBlockCallback_t)(void* server
+    , CanFTP_Server_Session_t* session
+    , CanFTP_Session_FileBlock_t* fileBlock
+    , CanFTP_FileLength_t startByteIndex
+    , CanFTP_FileLength_t bytesCount);
 
 /*
     Структура сессии на стороне серевера
@@ -33,6 +43,13 @@ typedef struct _CanFTP_Server_Session
     } fms;
     // Состояние сессии
     CanFTP_SessionState_t* state;
+    // Агенты сессии
+    struct
+    {
+        // Контроллер процесса регистрации
+        CanFTP_Server_Session_Agent_RegistrationConroller_t registrationConrtoller;
+
+    } agents;
     // Запросы к сессии
     struct 
     {
@@ -51,6 +68,8 @@ typedef struct _CanFTP_Server_Session
         CanFTP_Logical_t canBeDisposed;
         // Подтверждение факта инициализации клиентов
         CanFTP_Logical_t clientsAreInited;
+        // Подтверждение факта инициализации конфигурации файла
+        CanFTP_Logical_t fileIsInited;
 
     } statuses; 
     // Обратные вызовы
@@ -60,14 +79,20 @@ typedef struct _CanFTP_Server_Session
         CanFTP_Server_Session_MessageSendCallback_t sendMessageCallback;
         // Обратный вызов события завершения сессии
         CanFTP_Server_Session_SessionFinishCallback_t sessionFinishedCallback;
+        // Обратный вызов запроса блока файла
+        CanFTP_Server_Session_GetFileBlockCallback_t getFileBlockCallback;
 
     } callbacks;
     // Указатель на сервер, с которым ассоциирована сессия
     void* server;
     // Код сессии
     CanFTP_SessionCode_t code;
+    // Статус сессии
+    CanFTP_SessionStatus_t status;
     // Конфигурация сессии
     CanFTP_Server_Session_Configuration_t configuration;
+    // Конфигурация файла
+    CanFTP_Server_Session_FileConfiguration_t fileConfiguration;
     // Коллекция клиентов сессии
     CanFTP_Server_Session_ClientsCollection_t clients;
 

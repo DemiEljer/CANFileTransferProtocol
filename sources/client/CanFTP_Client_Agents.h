@@ -20,9 +20,13 @@ void CanFTP_Client_Agent_LogicLockController_Reset(CanFTP_Client_Agent_LogicLock
 */
 void CanFTP_Client_Agent_SessionController_Reset(CanFTP_Client_Agent_SessionController_t *agent);
 /*
-    Сброс контроллера управления сессией
+    Сброс контроллера управления приемом блока
 */
 void CanFTP_Client_Agent_SessionController_ResetBlock(CanFTP_Client_Agent_SessionController_t *agent);
+/*
+    Сброс контроллера управления приемом блоком при переходе к новому блоку
+*/
+void CanFTP_Client_Agent_SessionController_NewBlockReset(CanFTP_Client_Agent_SessionController_t *agent);
 /*
     Установить статус состояния сессии
 */

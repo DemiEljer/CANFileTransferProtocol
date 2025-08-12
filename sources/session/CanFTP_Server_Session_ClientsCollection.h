@@ -41,5 +41,29 @@ CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_GetCount(CanFTP_Serv
     Получить клиента по индексу
 */
 CanFTP_Server_Session_Client_t* CanFTP_Server_Session_ClientsCollection_GetClientByIndex(CanFTP_Server_Session_ClientsCollection_t* collection, CanFTP_DeviceCode_t index);
+/*
+    Подготовить клиентов перед запуском сессии
+*/
+void CanFTP_Server_Session_ClientsCollection_Prepare(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Обновить параметры отпавки сообщений
+*/
+void CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(CanFTP_Server_Session_ClientsCollection_t *collection
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t interval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t maxCount);
+/*
+    Проверить клиентов на предмет выполнения условия нахождения в сессии
+*/
+void CanFTP_Server_Session_ClientsCollection_Check(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Проврить, что остались не удаленные клиенты
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckIsNotDisposedLeft(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Проврить, что все клиенты были зарегистрированы
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsRegistration(CanFTP_Server_Session_ClientsCollection_t* collection);
 
 #endif // CANFTP_SERVER_SESSION_CLIENTSCOLLECTION_H_

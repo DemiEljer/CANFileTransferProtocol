@@ -3,7 +3,7 @@
 
 #include "CanFTP_Client_Session_Configuration.h"
 #include "CanFTP_Session_ClientAssosiation.h"
-#include "CanFTP_Session_FileBLock_Defines.h"
+#include "CanFTP_Session_FileBlock_Defines.h"
 
 /*
     Структура сессии передачи файла

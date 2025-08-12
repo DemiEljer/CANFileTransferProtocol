@@ -16,6 +16,10 @@ void CanFTP_Server_Session_Dispose(CanFTP_Server_Session_t *session);
 */
 void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_DeviceCode_t clientsCount, CanFTP_Server_Client_t** serverClients);
 /*
+    Проициализовать параметры отправляемого файла
+*/
+void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session, CanFTP_PageIndex_t pageIndex, CanFTP_FileLength_t fileLength);
+/*
     Вызов логики сессии
 */
 void CanFTP_Server_Session_Invoke(CanFTP_Server_Session_t *session);

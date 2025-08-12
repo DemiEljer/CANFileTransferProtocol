@@ -16,7 +16,16 @@ void CanFTP_Server_Session_IterationEventHandler(CanFTP_FinalStateMachine_t *fms
 {
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
-
+    if (CanFTP_Server_Session_IsActive(session))
+    {
+        // Проверить выполнение условий клиентами
+        CanFTP_Server_Session_ClientsCollection_Check(&(session->clients));
+        // Проверка, что сессия не опустела
+        if (!CanFTP_Server_Session_ClientsCollection_CheckIsNotDisposedLeft(&(session->clients)))
+        {
+            CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_NOCLIENTSLEFT);
+        }
+    }
 }
 
 #ifndef SERVER_SESSION_STATE_CREATED_
@@ -37,8 +46,34 @@ uint32_t CanFTP_Server_Session_State_CREATED_Body(CanFTP_FinalStateMachine_t *fm
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
     CanFTP_SessionState_t resultState = CANFTP_SESSIONSTATE_CREATED;
-
-
+    // Обработка запроса запуска сессии
+    if (session->requests.startRequest == CANFTP_TRUE)
+    {
+        if (session->statuses.clientsAreInited == CANFTP_TRUE
+            && session->statuses.fileIsInited == CANFTP_TRUE)
+        {
+            // Проверка параметров конфигурации сессии
+            if (CanFTP_Server_Session_ClientsCollection_GetCount(&(session->clients)) == 0
+                || session->fileConfiguration.fileLength == 0
+                || session->fileConfiguration.maxBlockLength == 0)
+            {
+                resultState = CANFTP_SESSIONSTATE_FINISHED;
+            }
+            // В случае, если есть кому и что передавать, то переходим к регистрации клиентов
+            else
+            {
+                resultState = CANFTP_SESSIONSTATE_REGISTRATING;
+            }
+        }
+        else
+        {
+            CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_CONFIGURATIONFAILED);
+        }
+    }
+    else if (session->requests.stopRequest == CANFTP_TRUE)
+    {
+        resultState = CANFTP_SESSIONSTATE_FINISHED;
+    }
 
     return resultState;
 }
@@ -62,7 +97,14 @@ void CanFTP_Server_Session_State_REGISTRATING_Enter(CanFTP_FinalStateMachine_t *
 {
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
-    
+    CanFTP_TimeTrigger_SetInterval(&(session->agents.registrationConrtoller.sendMessageTrigger), session->configuration.registrationInterval);
+    CanFTP_IterationsHandler_SetMaxCount(&(session->agents.registrationConrtoller.sendMessageCounter), session->configuration.registrationRepeateCount);
+    // Подготовка клиентов к сессии
+    CanFTP_Server_Session_ClientsCollection_Prepare(&(session->clients));
+    // Обновление параметров отправки сообщений
+    CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(&(session->clients)
+        , session->configuration.registrationInterval
+        , session->configuration.registrationRepeateCount);
 }
 
 uint32_t CanFTP_Server_Session_State_REGISTRATING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -71,7 +113,44 @@ uint32_t CanFTP_Server_Session_State_REGISTRATING_Body(CanFTP_FinalStateMachine_
 
     CanFTP_SessionState_t resultState = CANFTP_SESSIONSTATE_REGISTRATING;
 
+    if (session->requests.stopRequest == CANFTP_TRUE)
+    {
+        CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
+        resultState = CANFTP_SESSIONSTATE_FINISHING;
+    }
+    // Если есть кого регистрировать
+    else if (CanFTP_Server_Session_Agent_RegistrationConroller_CheckIfClientsLeft(&(session->agents.registrationConrtoller), session->clients.clientsCount))
+    {
+        CanFTP_Server_Session_Client_t* currentClient = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), session->agents.registrationConrtoller.clientIndex);
+
+        if (currentClient != CANFTP_NULL)
+        {
+            if (currentClient->statuses.isConfigurated
+                || !CanFTP_Server_Session_Client_IsInSession(currentClient))
+            {
+                // В случае, если клиент зарегистрирован или вышел из сессии, переходим к другому
+                CanFTP_Server_Session_Agent_RegistrationConroller_MoveToNextClient(&(session->agents.registrationConrtoller), session->clients.clientsCount);
+            }
+            else if (CanFTP_TimeTrigger_HasFired_Udpate(&(currentClient->repeateSendingTrigger)))
+            {
+                // В противном случае, производим циклическую отправку сообщений регистрации
+                if (CanFTP_IterationsHandler_Handle(&(currentClient->repeateSendingCounter)))
+                {
+                    CanFTP_Server_Session_MessageSend_Registration(session);
+                }
+            }
+        }
+        else
+        {
+            CanFTP_ThrowError();
+        }
+    }
+    // Верификация прошедших регистрацию клиентов
+    else if (CanFTP_Server_Session_ClientsCollection_CheckClientsRegistration(&(session->clients)))
+    {
+        resultState = CANFTP_SESSIONSTATE_CONFIGURING;
+    }
     
     return resultState;
 }
@@ -80,7 +159,7 @@ void CanFTP_Server_Session_State_REGISTRATING_Leave(CanFTP_FinalStateMachine_t *
 {
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
-    
+
 }
 
 #endif // SERVER_SESSION_STATE_CREATED_
@@ -95,7 +174,10 @@ void CanFTP_Server_Session_State_CONFIGURING_Enter(CanFTP_FinalStateMachine_t *f
 {
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
-    
+    // Обновление параметров отправки сообщений
+    CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(&(session->clients)
+        , session->configuration.sessionControlInterval
+        , session->configuration.sessionControlRepeateCount);
 }
 
 uint32_t CanFTP_Server_Session_State_CONFIGURING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -194,7 +276,11 @@ void CanFTP_Server_Session_State_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
 {
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
-    
+    // Обратный вызов завершения сессии
+    if (session->callbacks.sessionFinishedCallback != CANFTP_NULL)
+    {
+        session->callbacks.sessionFinishedCallback(session->server, session, session->status);
+    }
 }
 
 uint32_t CanFTP_Server_Session_State_FINISHED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -203,7 +289,10 @@ uint32_t CanFTP_Server_Session_State_FINISHED_Body(CanFTP_FinalStateMachine_t *f
 
     CanFTP_SessionState_t resultState = CANFTP_SESSIONSTATE_FINISHED;
 
-
+    if (session->requests.deleteRequest == CANFTP_TRUE)
+    {
+        session->statuses.canBeDisposed = CANFTP_TRUE;
+    }
     
     return resultState;
 }

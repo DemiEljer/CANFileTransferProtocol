@@ -16,9 +16,9 @@
 typedef struct _CanFTP_Server CanFTP_Server_t;
 
 // Тип функции обратной связи отпраки сообщения
-typedef void (*CanFTP_Server_MessageSendCallback_t)(CanFTP_Server_t*, CanFTP_CanMessage_t*);
+typedef void (*CanFTP_Server_MessageSendCallback_t)(CanFTP_Server_t* server, CanFTP_CanMessage_t* message);
 // Тип функции события находждения клиента
-typedef void (*CanFTP_Server_ClientFoundCallback_t)(CanFTP_Server_t*, CanFTP_Server_Client_t*);
+typedef void (*CanFTP_Server_ClientFoundCallback_t)(CanFTP_Server_t* server, CanFTP_Server_Client_t* client);
 
 /*
     Структура сервера
@@ -34,6 +34,8 @@ typedef struct _CanFTP_Server
         CanFTP_FinalStateMachine_State_t states[CANFTP_SERVERSTATES_COUNT]; 
 
     } fms;
+    // Состояние сервера
+    CanFTP_ServerState_t* state;
     // Агенты логики работы сервера
     struct
     {
@@ -41,8 +43,6 @@ typedef struct _CanFTP_Server
         CanFTP_Server_Agent_PingControler_t pingController;
     
     } agents;
-    // Состояние сервера
-    CanFTP_ServerState_t* state;
     // Хаб приема сообщений
     CanFTP_Messages_Hub_t messagesHub;
     // Коллекция клиентов

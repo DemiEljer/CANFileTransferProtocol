@@ -3,6 +3,7 @@
 
 #include "CanFTP_TimeHandlers.h"
 #include "CanFTP_IterationsHandler.h"
+#include "CanFTP_Server_Session_Params.h"
 
 /*
     Структура конфигурации сессии на стороне сервера

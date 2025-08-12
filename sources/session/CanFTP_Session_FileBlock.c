@@ -1,4 +1,4 @@
-#include "CanFTP_Session_FileBLock.h"
+#include "CanFTP_Session_FileBlock.h"
 
 /*
     Сброс блока файла
@@ -11,6 +11,20 @@ void CanFTP_Session_FileBlock_Reset(CanFTP_Session_FileBlock_t* block)
     {
         block->data[i] = 0x00;
     }
+    // Сброс базовых параметров
+    {
+        block->index = 0;
+        block->length = 0;
+    }
+
+    CanFTP_Session_FileBlock_ResetFramesFlags(block);
+}
+/*
+    Сбросить флаги приема фреймов
+*/
+void CanFTP_Session_FileBlock_ResetFramesFlags(CanFTP_Session_FileBlock_t* block)
+{
+    uint32_t i = 0;
     // Сброс флагов обработки фреймов
     {
         for (i = 0; i < CANFTP_FILEBLOCK_FRAMESCOUNT; i++)
@@ -25,11 +39,6 @@ void CanFTP_Session_FileBlock_Reset(CanFTP_Session_FileBlock_t* block)
             block->subblocksFlags[i] = CANFTP_FALSE;
         }
     }
-    // Сброс базовых параметров
-    {
-        block->index = 0;
-        block->length = 0;
-    }
 }
 /*
     Сконфигурировать блок
@@ -42,16 +51,24 @@ void CanFTP_Session_FileBlock_Configure(CanFTP_Session_FileBlock_t* block
     block->length = length;
 }
 /*
-    Проинициализовать данные
+    Конфигурация с переносом данных
 */
-void CanFTP_Session_FileBlock_InitData(CanFTP_Session_FileBlock_t* block
+void CanFTP_Session_FileBlock_ConfigureWithData(CanFTP_Session_FileBlock_t* block
     , CanFTP_BloclIndex_t index
     , CanFTP_BlockLength_t length
     , uint8_t* data)
 {
-    uint32_t i = 0;
-
+    // Конфигуация базовых параметров
     CanFTP_Session_FileBlock_Configure(block, index, length);
+    // Перенос данных блока
+    CanFTP_Session_FileBlock_MoveBlockData(block, data);
+}
+/*
+    Перенос данных блока
+*/
+void CanFTP_Session_FileBlock_MoveBlockData(CanFTP_Session_FileBlock_t* block, uint8_t* data)
+{
+    uint32_t i = 0;
 
     CanFTP_BlockLength_t actualFileLength = CanFTP_Session_FileBlock_GetFramesCount(block) * CANFTP_FILEBLOCK_FRAMESIZE;
     // Инициализация параметров блока

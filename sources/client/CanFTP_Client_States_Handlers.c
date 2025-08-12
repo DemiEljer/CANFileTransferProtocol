@@ -66,7 +66,7 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
         // В случае, если превышено время ожидания ответа от сервера
         if (CanFTP_TimeTrigger_HasFired(&(client->agents.sessionController.lostConnectionTrigger)))
         {
-            CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_LOSTCONNECTIONWITHSERVER);
+            CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_LOSTCONNECTION);
         }
         // В случае, если превышено количество повторов ответа серверу
         if (!CanFTP_IterationsHandler_CheckCount(&(client->agents.sessionController.repeateAckCounter)))
@@ -332,7 +332,8 @@ uint32_t CanFTP_Client_State_SESSION_REGISTRATED_Body(CanFTP_FinalStateMachine_t
             resultState = CANFTP_CLIENTSTATE_SESSION_CONFIGURED;
         }
         // Отправка подтверждения регистрации в рамках сессии
-        else if (CanFTP_TimeTrigger_HasFired_Udpate(&(client->agents.sessionController.repeateAckTrigger)))
+        else if (CanFTP_TimeTrigger_HasFired_Udpate(&(client->agents.sessionController.repeateAckTrigger))
+                 && client->agents.sessionController.statuses.clientHasBeenRegistrated != CANFTP_TRUE)
         {
             if (CanFTP_IterationsHandler_Handle(&(client->agents.sessionController.repeateAckCounter)))
             {
@@ -576,6 +577,11 @@ void CanFTP_Client_State_SESSION_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms,
 void CanFTP_Client_State_BLOCK_STARTED_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel)
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
+    // Сбролс флагов приема фреймов блока в случае, если запрошена повторная отправка
+    if (client->agents.sessionController.statuses.blockHandlingStatus == CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT)
+    {
+        CanFTP_Client_Agent_SessionController_NewBlockReset(&(client->agents.sessionController));
+    }
 
     DEBUG_CLIENT_PRINTSTATE("BLOCK_STARTED", client->devicveConfig.serialNumber);
 }
@@ -756,7 +762,10 @@ void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Enter(CanFTP_FinalStateMachine_t *
         // Обработный вызов успешного приема блока
         if (client->callbacks.blockRecieceCallback != CANFTP_NULL)
         {
-            client->callbacks.blockRecieceCallback(client, &(client->agents.sessionController.session.block));
+            client->callbacks.blockRecieceCallback(client
+                , client->agents.sessionController.statuses.resultFileLength 
+                , client->agents.sessionController.session.block.length
+                , client->agents.sessionController.session.block.data);
         }
         // Увеличение длины файла
         client->agents.sessionController.statuses.resultFileLength += client->agents.sessionController.session.block.length;

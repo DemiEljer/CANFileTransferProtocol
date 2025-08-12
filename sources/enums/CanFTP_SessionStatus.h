@@ -23,9 +23,9 @@ typedef enum _CanFTP_SessionStatus
     */
     CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE = 3,
     /*
-        Ошибка. Потеряна связь с сервером
+        Ошибка. Потеряна связь
     */
-    CANFTP_SESSIONSTATUS_ERROR_LOSTCONNECTIONWITHSERVER = 4,
+    CANFTP_SESSIONSTATUS_ERROR_LOSTCONNECTION = 4,
     /*
         Ошибка. Превышено количество итераций ответа серверу
     */
@@ -46,6 +46,18 @@ typedef enum _CanFTP_SessionStatus
         Ошибка. Не был передан весь файл
     */
     CANFTP_SESSIONSTATUS_ERROR_FILEUNFINISHED = 9,
+    /*
+        Ошибка. Не осталось ни одного клиента
+    */
+    CANFTP_SESSIONSTATUS_ERROR_NOCLIENTSLEFT = 10,
+    /*
+        Ошибка. Превышено количество отправляемых запросов
+    */
+    CANFTP_SESSIONSTATUS_ERROR_REQUESTSSENDINGOVERCONE = 11,
+    /*
+        Ошибка. Превышено количество отправляемых запросов
+    */
+    CANFTP_SESSIONSTATUS_ERROR_REGISTRATIONFAIL = 12,
 
 } CanFTP_SessionStatus_t;
 

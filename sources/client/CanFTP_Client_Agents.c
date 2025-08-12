@@ -62,6 +62,7 @@ void CanFTP_Client_Agent_SessionController_Reset(CanFTP_Client_Agent_SessionCont
     agent->statuses.blockHandlingStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT;
     agent->statuses.resultFileLength = 0;
     agent->statuses.newBlockIsHandling = CANFTP_TRUE;
+    agent->statuses.clientHasBeenRegistrated = CANFTP_FALSE;
     // Сброс CRC-суммы
     {
         for (i = 0; i < CANFTP_FILEBLOCK_CRCLENGTH; i++)
@@ -80,16 +81,23 @@ void CanFTP_Client_Agent_SessionController_Reset(CanFTP_Client_Agent_SessionCont
     CanFTP_Client_Session_Reset(&(agent->session));
 }
 /*
-    Сброс контроллера управления сессией
+    Сброс контроллера управления приемом блока
 */
 void CanFTP_Client_Agent_SessionController_ResetBlock(CanFTP_Client_Agent_SessionController_t *agent)
 {
-    uint8_t i = 0;
     // Сброс флагов управления чтением блока
     agent->requsts.startBlockRequest = CANFTP_FALSE;
     agent->requsts.recievingBlockRequest = CANFTP_FALSE;
     agent->requsts.stopBlockRequest = CANFTP_FALSE;
     agent->requsts.blockFinishAckRecieved = CANFTP_FALSE;
+}
+/*
+    Сброс контроллера управления приемом блоком при переходе к новому блоку
+*/
+void CanFTP_Client_Agent_SessionController_NewBlockReset(CanFTP_Client_Agent_SessionController_t *agent)
+{
+    uint8_t i = 0;
+
     agent->statuses.allBlocksFramesWereRecieved = CANFTP_FALSE;
     // Сброс CRC-суммы
     {
@@ -98,6 +106,8 @@ void CanFTP_Client_Agent_SessionController_ResetBlock(CanFTP_Client_Agent_Sessio
             agent->statuses.blockCRC[i] = 0;
         }
     }
+
+    CanFTP_Session_FileBlock_ResetFramesFlags(&(agent->session.block));
 }
 /*
     Установить статус состояния сессии

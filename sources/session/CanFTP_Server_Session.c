@@ -8,6 +8,7 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
 {
     session->server = server;
     session->code = sessionCode;
+    session->status = CANFTP_SESSIONSTATUS_OK;
     session->state = (CanFTP_SessionState_t*)&(session->fms.fms.state);
     // Инициализация обработчиков состояний
     {
@@ -71,12 +72,18 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
     {
         session->statuses.canBeDisposed = CANFTP_FALSE;
         session->statuses.clientsAreInited = CANFTP_FALSE;
+        session->statuses.fileIsInited = CANFTP_FALSE;
     }
     // Инициализация логики обработки сообшений
     {
         // Инициализация обратного вызова 
         session->callbacks.sendMessageCallback = CANFTP_NULL;
         session->callbacks.sessionFinishedCallback = CANFTP_NULL;
+        session->callbacks.getFileBlockCallback = CANFTP_NULL;
+    }
+    // Инициализация агентов
+    {
+        CanFTP_Server_Session_Agent_RegistrationConroller_Reset(&(session->agents.registrationConrtoller));
     }
     // Сброс параметров клиентов
     {
@@ -84,6 +91,7 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
     }
     CanFTP_Server_Session_Configuration_Reset(&(session->configuration));
     CanFTP_Server_Session_ClientsCollection_Init(&(session->clients));
+    CanFTP_Server_Session_FileConfiguration_Init(&(session->fileConfiguration));
 }
 /*
     Удалить сессию
@@ -105,6 +113,17 @@ void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_
     CanFTP_Server_Session_ClientsCollection_InitClients(&(session->clients), session->code, clientsCount, serverClients);
 
     session->statuses.clientsAreInited = CANFTP_TRUE;
+}
+/*
+    Проициализовать параметры отправляемого файла
+*/
+void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session, CanFTP_PageIndex_t pageIndex, CanFTP_FileLength_t fileLength)
+{
+    CanFTP_Server_Session_FileConfiguration_InitBaseParamns(&(session->fileConfiguration)
+        , pageIndex
+        , fileLength);
+
+    session->statuses.fileIsInited = CANFTP_TRUE;
 }
 /*
     Вызов логики сессии

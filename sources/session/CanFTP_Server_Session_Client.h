@@ -14,12 +14,33 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
     // Код клиента
     , CanFTP_DeviceCode_t clientCode);
 /*
+    Подготовить клиента
+*/
+void CanFTP_Server_Session_Client_Prepare(CanFTP_Server_Session_Client_t *client);
+/*
     Удаление клиента
 */
 void CanFTP_Server_Session_Client_Dispose(CanFTP_Server_Session_Client_t *client);
 /*
+    Установить статус сессии клиенту
+*/
+void CanFTP_Server_Session_Client_SetSessionStatus(CanFTP_Server_Session_Client_t *client, CanFTP_SessionStatus_t status);
+/*
+    Обновить параметры отпавки сообщений
+*/
+void CanFTP_Server_Session_Client_UpdateSendingParams(CanFTP_Server_Session_Client_t *client
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t interval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t maxCount);
+/*
     Проверить, что клиент активно участвует в сессии
 */
 CanFTP_Logical_t CanFTP_Server_Session_Client_IsInSession(CanFTP_Server_Session_Client_t *client);
+/*
+    Проверить клиента
+*/
+CanFTP_Logical_t CanFTP_Server_Session_Client_Check(CanFTP_Server_Session_Client_t *client);
+
 
 #endif // CANFTP_SERVER_SESSION_CLIENT_H_
