@@ -2,6 +2,8 @@
 #define CANFTP_SERVER_SESSION_FILECONFIGURATION_H_
 
 #include "CanFTP_Session_FileBlock.h"
+#include "CanFTP_SoftwareVersion.h"
+
 /*
     Структура конфигурации файла на стороне сервера
 */
@@ -13,7 +15,9 @@ typedef struct _CanFTP_Server_Session_FileConfiguration
     CanFTP_FileLength_t fileLength;
     // Максимальный длина блока
     CanFTP_BlockLength_t maxBlockLength;
-
+    // Новая версия программного обеспечения
+    CanFTP_SoftwareVersion_t newSoftVersion;
+    
 } CanFTP_Server_Session_FileConfiguration_t;
 
 /*

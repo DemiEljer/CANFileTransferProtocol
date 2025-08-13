@@ -7,7 +7,7 @@
 #include "CanFTP_SessionStatus.h"
 #include "CanFTP_IterationsHandler.h"
 #include "CanFTP_ClientBlockHandlingStatus.h"
-#include "CanFTP_SofwareVersion.h"
+#include "CanFTP_SoftwareVersion.h"
 #include "CanFTP_Message_Client_PingResponse.h"
 
 /*
@@ -118,7 +118,7 @@ typedef struct _CanFTP_Client_Agent_SessionController
     // Счетчик количества повторений подтверждений Ack
     CanFTP_IterationsHandler_t repeateAckCounter;
     // Новая версия файла
-    CanFTP_SofwareVersion_t newSoftVersion;
+    CanFTP_SoftwareVersion_t newSoftVersion;
 
 } CanFTP_Client_Agent_SessionController_t;
 

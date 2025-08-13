@@ -98,8 +98,9 @@ CanFTP_Logical_t CanFTP_Server_Session_Client_Check(CanFTP_Server_Session_Client
     else if (!CanFTP_IterationsHandler_CheckCount(&(client->repeateSendingCounter)))
     {
         CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_REQUESTSSENDINGOVERCONE);
-    }
 
+        return CANFTP_FALSE;
+    }
     
-    return CANFTP_TRUE;
+    return client->statuses.sessionStatus == CANFTP_SESSIONSTATUS_OK;
 }

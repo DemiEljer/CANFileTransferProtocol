@@ -1,7 +1,7 @@
 #ifndef CANFTP_DEVICECONFIG_H_
 #define CANFTP_DEVICECONFIG_H_
 
-#include "CanFTP_SofwareVersion.h"
+#include "CanFTP_SoftwareVersion.h"
 
 /* 
     Структура конфигурации клиента
@@ -15,7 +15,7 @@ typedef struct _CanFTP_DeviveConfig
     // Тип устройства
     CanFTP_DeviceType_t type;
     // Версия программного обеспечения устройства
-    CanFTP_SofwareVersion_t softVersion;
+    CanFTP_SoftwareVersion_t softVersion;
 
 } CanFTP_DeviceConfig_t;
 

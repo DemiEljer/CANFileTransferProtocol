@@ -54,6 +54,18 @@ void CanFTP_Server_Session_ClientsCollection_InitClients(CanFTP_Server_Session_C
     }
 }
 /*
+    Найти обобщенную версию программного обеспечения
+*/    
+void CanFTP_Server_Session_ClientsCollection_GetSoftVewrsion(CanFTP_Server_Session_ClientsCollection_t* collection, CanFTP_SoftwareVersion_t *softVersion)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        CanFTP_SoftwareVersion_CopyIfBigger(softVersion, &(collection->clients[clientIndex].serverClient->configuration.softVersion));
+    }
+}
+/*
     Получить клиента по индексу
 */
 CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_GetCount(CanFTP_Server_Session_ClientsCollection_t* collection)
@@ -137,7 +149,7 @@ CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckIsNotDisposedLeft(
 /*
     Проврить, что все клиенты были зарегистрированы
 */
-CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsRegistration(CanFTP_Server_Session_ClientsCollection_t* collection)
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsRegistrationAndDelete(CanFTP_Server_Session_ClientsCollection_t* collection)
 {
     CanFTP_DeviceCode_t clientIndex = 0;
     CanFTP_DeviceCode_t registratedClientsCount = 0;
@@ -156,4 +168,127 @@ CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsRegistratio
     }
 
     return registratedClientsCount > 0;
+}
+/*
+    Проврить, что все клиенты были сконфигурированы
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsConfiguration(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+    CanFTP_DeviceCode_t configuratedClientsCount = 0;
+    CanFTP_DeviceCode_t disposedClientsCount = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.isConfigurated == CANFTP_TRUE)
+        {
+            configuratedClientsCount++;
+        }
+        else if (!CanFTP_Server_Session_Client_IsInSession(&(collection->clients[clientIndex])))
+        {
+            disposedClientsCount++;
+        }
+    }
+
+    return (configuratedClientsCount + disposedClientsCount) == collection->clientsCount
+            && configuratedClientsCount > 0;
+}
+/*
+    Удалить всех клиентов, не прошедших конфигурацию 
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllUnconfugured(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.isConfigurated != CANFTP_TRUE)
+        {
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_CONFIGURATIONFAILED);
+        }
+    }
+}
+/*
+    Проврить, что все клиенты готовы к началу сессии
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsSessionStarted(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+    CanFTP_DeviceCode_t startedClientsCount = 0;
+    CanFTP_DeviceCode_t disposedClientsCount = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.sessionIsStarted == CANFTP_TRUE)
+        {
+            startedClientsCount++;
+        }
+        else if (!CanFTP_Server_Session_Client_IsInSession(&(collection->clients[clientIndex])))
+        {
+            disposedClientsCount++;
+        }
+    }
+
+    return (startedClientsCount + disposedClientsCount) == collection->clientsCount
+            && startedClientsCount > 0;
+}
+/*
+    Удалить всех клиентов, не начавших сессию
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllUnstarted(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.sessionIsStarted != CANFTP_TRUE)
+        {
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_SESSIONSTARTINGFAILED);
+        }
+    }
+}
+/*
+    Проврить, что все клиенты завершили сессию
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsSessionFinished(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+    CanFTP_DeviceCode_t finishedClientsCount = 0;
+    CanFTP_DeviceCode_t disposedClientsCount = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.sessionIsFinished == CANFTP_TRUE)
+        {
+            finishedClientsCount++;
+        }
+        else if (!CanFTP_Server_Session_Client_IsInSession(&(collection->clients[clientIndex])))
+        {
+            disposedClientsCount++;
+        }
+    }
+
+    return (finishedClientsCount + disposedClientsCount) == collection->clientsCount
+            && finishedClientsCount > 0;
+}
+/*
+    Удалить всех клиентов, не закончившие сессию
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllUnfinished(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.sessionIsFinished != CANFTP_TRUE)
+        {
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_SESSIONFINISHINGFAILED);
+        }
+    }
 }

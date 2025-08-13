@@ -2,7 +2,7 @@
 #define CANFTP_MESSAGE_CLIENT_PINGRESPONSE_H_
 
 #include "CanFTP_Messages_Handlers.h"
-#include "CanFTP_SofwareVersion.h"
+#include "CanFTP_SoftwareVersion.h"
 
 // Количество сообщений ответов на запрос Ping
 #define CANFT_MESSAGE_CLIENT_PINGRESPONSE_COUNT 2
@@ -42,7 +42,7 @@ typedef struct _CanFTP_Message_Client_PingResponse
         // Серийный номер устройства
         CanFTP_DeviceSerial_t deviceSerial;
         // Версия программного обеспечения
-        CanFTP_SofwareVersion_t deviceSoftVersion;
+        CanFTP_SoftwareVersion_t deviceSoftVersion;
         
     } response2;
 

@@ -58,7 +58,7 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
             client->configurationMessagesAck[1] = CANFTP_TRUE;
             // Заполнение конфигурируемых полей
             client->configuration.serialNumber = message->response2.deviceSerial;
-            CanFTP_SofwareVersion_Copy(&(client->configuration.softVersion), &(message->response2.deviceSoftVersion));
+            CanFTP_SoftwareVersion_Copy(&(client->configuration.softVersion), &(message->response2.deviceSoftVersion));
             // Отправка сообщения подтверждения конфигурации
             {
                 // Назначение параметров ответа

@@ -20,6 +20,10 @@ void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_
 */
 void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session, CanFTP_PageIndex_t pageIndex, CanFTP_FileLength_t fileLength);
 /*
+    Проициализовать новую версию программного обеспечения
+*/
+void CanFTP_Server_Session_InitNewSoftVersion(CanFTP_Server_Session_t *session, CanFTP_SoftwareVersion_t* newSoftVersion);
+/*
     Вызов логики сессии
 */
 void CanFTP_Server_Session_Invoke(CanFTP_Server_Session_t *session);

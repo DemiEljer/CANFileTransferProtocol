@@ -8,6 +8,7 @@ void CanFTP_Server_Session_FileConfiguration_Init(CanFTP_Server_Session_FileConf
     configuration->pageIndex = 0;
     configuration->fileLength = 0;
     configuration->maxBlockLength = CANFTP_FILEBLOCK_LENGTH;
+    CanFTP_SoftwareVersion_Reset(&(configuration->newSoftVersion));
 }
 /*
     Инициализация базовых параметров конфигурации файла

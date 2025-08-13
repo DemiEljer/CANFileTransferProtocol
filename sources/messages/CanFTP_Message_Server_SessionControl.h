@@ -2,7 +2,7 @@
 #define CANFTP_MESSAGE_SERVER_SESSIONCONTROL_H_
 
 #include "CanFTP_Messages_Handlers.h"
-#include "CanFTP_SofwareVersion.h"
+#include "CanFTP_SoftwareVersion.h"
 #include "CanFTP_ClientSessionAckStatus.h"
 
 /*
@@ -51,7 +51,7 @@ typedef struct _CanFTP_Message_Server_SessionControl
         // Статус завершения операции
         CanFTP_ClientSessionAckStatus_t status;
         // Новая версия программного обеспечения
-        CanFTP_SofwareVersion_t newSoftVersion;
+        CanFTP_SoftwareVersion_t newSoftVersion;
 
     } finish;
 

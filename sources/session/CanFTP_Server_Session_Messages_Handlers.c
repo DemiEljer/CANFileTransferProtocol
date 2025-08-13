@@ -13,6 +13,52 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
         {
             // Обновление метки времени потери связи с клиентом
             CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
+
+            if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_REGISTRATIONACK)
+            {
+                if (message->registrationAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
+                {
+                    // Подтверждение регистрации
+                    client->statuses.isRegistrated = CANFTP_TRUE;
+                }
+                else
+                {
+                    // Тут пока ничего не делаем
+                }
+            }
+            else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATIONACK)
+            {
+                if (message->configurationAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
+                {
+                    // Чтение ограничения на размер блока файла
+                    CanFTP_Server_Session_FileConfiguration_InitMaxBlockLength(&(session->fileConfiguration), message->configurationAck.maxBlockLength);
+                    // Подтверждение конфигурации сессии
+                    client->statuses.isConfigurated = CANFTP_TRUE;
+                }
+                else
+                {
+                    // Тут пока ничего не делаем
+                }
+            }
+            else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_STARTSESSIONACK)
+            {
+                if (message->startSessionAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
+                {
+                    // Подтверждение начала сессии
+                    client->statuses.sessionIsStarted = CANFTP_TRUE;
+                }
+                else
+                {
+                    // Тут пока ничего не делаем
+                }
+            }
+            else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_FINISHSESSIONACK)
+            {
+                // Подтверждение окончания сессии
+                client->statuses.sessionIsFinished = CANFTP_TRUE;
+                // Чтение статуса сессии
+                CanFTP_Server_Session_Client_SetSessionStatus(client, message->finishSessionAck.sessionStatus);
+            }
         }
     }
 }
@@ -101,7 +147,33 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
     CanFTP_Message_Server_SessionControl_t messageModel;
     // Обработка сообщения
     {
+        messageModel.sessionCode = session->code;
 
+        if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_CONFIGURING)
+        {
+            messageModel.messageType = CANFT_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION;
+
+            messageModel.configuration.pageIndex = session->fileConfiguration.pageIndex;
+            messageModel.configuration.pageIndex = session->fileConfiguration.fileLength;
+            messageModel.configuration.repeateBlockCount = session->configuration.repeateBlockCount;
+            messageModel.configuration.repeateAckCount = session->configuration.repeateAckCount;
+            messageModel.configuration.repeateInterval = session->configuration.repeateAckInterval;
+        }
+        else if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_STARTING)
+        {
+            messageModel.messageType = CANFT_MESSAGE_SERVER_SESSIONCONTROL_START;
+        }
+        else if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_FINISHING)
+        {
+            messageModel.messageType = CANFT_MESSAGE_SERVER_SESSIONCONTROL_FINISH;
+
+            messageModel.finish.status = session->status;
+            CanFTP_SoftwareVersion_Copy(&(messageModel.finish.newSoftVersion), &(session->fileConfiguration.newSoftVersion));
+        }
+        else
+        {
+            CanFTP_ThrowError();
+        }
     }
     // Упаковка сообщения и отправка
     {

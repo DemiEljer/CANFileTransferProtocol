@@ -34,6 +34,10 @@ void CanFTP_Server_Session_ClientsCollection_InitClients(CanFTP_Server_Session_C
     // Массив указателей на клиентов сессии
     , CanFTP_Server_Client_t** serverClients);
 /*
+    Найти обобщенную версию программного обеспечения
+*/    
+void CanFTP_Server_Session_ClientsCollection_GetSoftVewrsion(CanFTP_Server_Session_ClientsCollection_t* collection, CanFTP_SoftwareVersion_t *softVersion);
+/*
     Получить клиента по индексу
 */
 CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_GetCount(CanFTP_Server_Session_ClientsCollection_t* collection);
@@ -64,6 +68,31 @@ CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckIsNotDisposedLeft(
 /*
     Проврить, что все клиенты были зарегистрированы
 */
-CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsRegistration(CanFTP_Server_Session_ClientsCollection_t* collection);
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsRegistrationAndDelete(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Проврить, что все клиенты были сконфигурированы
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsConfiguration(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Удалить всех клиентов, не прошедших конфигурацию 
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllUnconfugured(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Проврить, что все клиенты готовы к началу сессии
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsSessionStarted(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Удалить всех клиентов, не начавших сессию
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllUnstarted(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Проврить, что все клиенты завершили сессию
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsSessionFinished(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Удалить всех клиентов, не закончившие сессию
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllUnfinished(CanFTP_Server_Session_ClientsCollection_t* collection);
+
 
 #endif // CANFTP_SERVER_SESSION_CLIENTSCOLLECTION_H_

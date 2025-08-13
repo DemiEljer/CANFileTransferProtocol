@@ -26,7 +26,7 @@ typedef CanFTP_Logical_t (*CanFTP_Client_BlockRecieceCallback_t)(CanFTP_Client_t
 // Тип функции обратной связи завершения сессии
 typedef CanFTP_Logical_t (*CanFTP_Client_SessionFinishedCallback_t)(CanFTP_Client_t* client
     , CanFTP_SessionStatus_t sessionStatus
-    , CanFTP_SofwareVersion_t* newSoftVersion);
+    , CanFTP_SoftwareVersion_t* newSoftVersion);
 
 /*
     Структура клиента передачи файла

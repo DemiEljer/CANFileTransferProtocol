@@ -184,7 +184,7 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
             if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY
                 || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_STARTED)
             {
-                CanFTP_SofwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(message->finish.newSoftVersion));
+                CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(message->finish.newSoftVersion));
 
                 // Выставление запроса на окончание сессии
                 client->agents.sessionController.requsts.stopRequest = CANFTP_TRUE;

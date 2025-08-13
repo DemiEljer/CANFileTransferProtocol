@@ -84,6 +84,7 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
     // Инициализация агентов
     {
         CanFTP_Server_Session_Agent_RegistrationConroller_Reset(&(session->agents.registrationConrtoller));
+        CanFTP_Server_Session_Agent_SessionConroller_Reset(&(session->agents.sessionController));
     }
     // Сброс параметров клиентов
     {
@@ -111,6 +112,7 @@ void CanFTP_Server_Session_Dispose(CanFTP_Server_Session_t *session)
 void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_DeviceCode_t clientsCount, CanFTP_Server_Client_t** serverClients)
 {
     CanFTP_Server_Session_ClientsCollection_InitClients(&(session->clients), session->code, clientsCount, serverClients);
+    CanFTP_Server_Session_ClientsCollection_GetSoftVewrsion(&(session->clients), &(session->fileConfiguration.newSoftVersion));
 
     session->statuses.clientsAreInited = CANFTP_TRUE;
 }
@@ -124,6 +126,13 @@ void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *sessio
         , fileLength);
 
     session->statuses.fileIsInited = CANFTP_TRUE;
+}
+/*
+    Проициализовать новую версию программного обеспечения
+*/
+void CanFTP_Server_Session_InitNewSoftVersion(CanFTP_Server_Session_t *session, CanFTP_SoftwareVersion_t* newSoftVersion)
+{
+    CanFTP_SoftwareVersion_Copy(&(session->fileConfiguration.newSoftVersion), newSoftVersion);
 }
 /*
     Вызов логики сессии

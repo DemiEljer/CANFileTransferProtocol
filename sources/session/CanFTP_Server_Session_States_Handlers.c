@@ -147,7 +147,7 @@ uint32_t CanFTP_Server_Session_State_REGISTRATING_Body(CanFTP_FinalStateMachine_
         }
     }
     // Верификация прошедших регистрацию клиентов
-    else if (CanFTP_Server_Session_ClientsCollection_CheckClientsRegistration(&(session->clients)))
+    else if (CanFTP_Server_Session_ClientsCollection_CheckClientsRegistrationAndDelete(&(session->clients)))
     {
         resultState = CANFTP_SESSIONSTATE_CONFIGURING;
     }
@@ -175,7 +175,7 @@ void CanFTP_Server_Session_State_CONFIGURING_Enter(CanFTP_FinalStateMachine_t *f
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
     // Обновление параметров отправки сообщений
-    CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(&(session->clients)
+    CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(&(session->agents.sessionController)
         , session->configuration.sessionControlInterval
         , session->configuration.sessionControlRepeateCount);
 }
@@ -186,8 +186,32 @@ uint32_t CanFTP_Server_Session_State_CONFIGURING_Body(CanFTP_FinalStateMachine_t
 
     CanFTP_SessionState_t resultState = CANFTP_SESSIONSTATE_CONFIGURING;
 
+    if (session->requests.stopRequest == CANFTP_TRUE)
+    {
+        CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
-    
+        resultState = CANFTP_SESSIONSTATE_FINISHING;
+    }
+    // Верификация прошедших регистрацию клиентов
+    else if (CanFTP_Server_Session_ClientsCollection_CheckClientsConfiguration(&(session->clients)))
+    {
+        resultState = CANFTP_SESSIONSTATE_STARTING;
+    }
+    // Проверка триггера времени отправки сообщения
+    else if (CanFTP_TimeTrigger_HasFired_Udpate(&(session->agents.sessionController.sendMessageTrigger)))
+    {
+        // Проверка количества уже отправленных сообщений
+        if (CanFTP_IterationsHandler_Handle(&(session->agents.sessionController.sendMessageCounter)))
+        {
+            CanFTP_Server_Session_MessageSend_SessionControl(session);
+        }
+        else
+        {
+            // В случае, если были пройдены все этапы конфигурации, то удаляем всех не прошедших этап клиентов
+            CanFTP_Server_Session_ClientsCollection_DeleteAllUnconfugured(&(session->clients));
+        }
+    }
+
     return resultState;
 }
 
@@ -210,7 +234,10 @@ void CanFTP_Server_Session_State_STARTING_Enter(CanFTP_FinalStateMachine_t *fms,
 {
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
-    
+    // Обновление параметров отправки сообщений
+    CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(&(session->agents.sessionController)
+        , session->configuration.sessionControlInterval
+        , session->configuration.sessionControlRepeateCount);
 }
 
 uint32_t CanFTP_Server_Session_State_STARTING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -219,7 +246,31 @@ uint32_t CanFTP_Server_Session_State_STARTING_Body(CanFTP_FinalStateMachine_t *f
 
     CanFTP_SessionState_t resultState = CANFTP_SESSIONSTATE_STARTING;
 
+    if (session->requests.stopRequest == CANFTP_TRUE)
+    {
+        CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
+        resultState = CANFTP_SESSIONSTATE_FINISHING;
+    }
+    // Верификация прошедших регистрацию клиентов
+    else if (CanFTP_Server_Session_ClientsCollection_CheckClientsSessionStarted(&(session->clients)))
+    {
+        resultState = CANFTP_SESSIONSTATE_BLOCK_STARTING;
+    }
+    // Проверка триггера времени отправки сообщения
+    else if (CanFTP_TimeTrigger_HasFired_Udpate(&(session->agents.sessionController.sendMessageTrigger)))
+    {
+        // Проверка количества уже отправленных сообщений
+        if (CanFTP_IterationsHandler_Handle(&(session->agents.sessionController.sendMessageCounter)))
+        {
+            CanFTP_Server_Session_MessageSend_SessionControl(session);
+        }
+        else
+        {
+            // В случае, если были пройдены все этапы конфигурации, то удаляем всех не прошедших этап клиентов
+            CanFTP_Server_Session_ClientsCollection_DeleteAllUnstarted(&(session->clients));
+        }
+    }
     
     return resultState;
 }
@@ -243,7 +294,10 @@ void CanFTP_Server_Session_State_FINISHING_Enter(CanFTP_FinalStateMachine_t *fms
 {
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
 
-    
+    // Обновление параметров отправки сообщений
+    CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(&(session->agents.sessionController)
+        , session->configuration.sessionControlInterval
+        , session->configuration.sessionControlRepeateCount);
 }
 
 uint32_t CanFTP_Server_Session_State_FINISHING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
@@ -252,7 +306,31 @@ uint32_t CanFTP_Server_Session_State_FINISHING_Body(CanFTP_FinalStateMachine_t *
 
     CanFTP_SessionState_t resultState = CANFTP_SESSIONSTATE_FINISHING;
 
+    if (session->requests.stopRequest == CANFTP_TRUE)
+    {
+        CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
 
+        resultState = CANFTP_SESSIONSTATE_FINISHING;
+    }
+    // Верификация прошедших регистрацию клиентов
+    else if (CanFTP_Server_Session_ClientsCollection_CheckClientsSessionFinished(&(session->clients)))
+    {
+        resultState = CANFTP_SESSIONSTATE_FINISHED;
+    }
+    // Проверка триггера времени отправки сообщения
+    else if (CanFTP_TimeTrigger_HasFired_Udpate(&(session->agents.sessionController.sendMessageTrigger)))
+    {
+        // Проверка количества уже отправленных сообщений
+        if (CanFTP_IterationsHandler_Handle(&(session->agents.sessionController.sendMessageCounter)))
+        {
+            CanFTP_Server_Session_MessageSend_SessionControl(session);
+        }
+        else
+        {
+            // В случае, если были пройдены все этапы конфигурации, то удаляем всех не прошедших этап клиентов
+            CanFTP_Server_Session_ClientsCollection_DeleteAllUnfinished(&(session->clients));
+        }
+    }
     
     return resultState;
 }

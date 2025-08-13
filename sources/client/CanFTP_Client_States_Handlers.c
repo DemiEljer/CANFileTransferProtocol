@@ -307,7 +307,7 @@ void CanFTP_Client_State_SESSION_REGISTRATED_Enter(CanFTP_FinalStateMachine_t *f
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_SofwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(client->devicveConfig.softVersion));
+    CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(client->devicveConfig.softVersion));
 
     DEBUG_CLIENT_PRINTSTATE("SESSION_REGISTRATED", client->devicveConfig.serialNumber);
 }
@@ -560,7 +560,7 @@ void CanFTP_Client_State_SESSION_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms,
     if (client->control.autpUpdateSoftVersion
         && client->agents.sessionController.statuses.sessionStatus == CANFTP_SESSIONSTATUS_OK)
     {
-        CanFTP_SofwareVersion_Copy(&(client->devicveConfig.softVersion), &(client->agents.sessionController.newSoftVersion));
+        CanFTP_SoftwareVersion_Copy(&(client->devicveConfig.softVersion), &(client->agents.sessionController.newSoftVersion));
     }
 
     CanFTP_Client_Agent_SessionController_Reset(&(client->agents.sessionController));

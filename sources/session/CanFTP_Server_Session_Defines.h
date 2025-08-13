@@ -48,6 +48,8 @@ typedef struct _CanFTP_Server_Session
     {
         // Контроллер процесса регистрации
         CanFTP_Server_Session_Agent_RegistrationConroller_t registrationConrtoller;
+        // Контроллер управления сессией
+        CanFTP_Server_Session_Agent_SessionConroller_t sessionController;
 
     } agents;
     // Запросы к сессии

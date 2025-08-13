@@ -29,3 +29,25 @@ CanFTP_Logical_t CanFTP_Server_Session_Agent_RegistrationConroller_CheckIfClient
 {
     return agent->clientIndex < clientsCount;
 }
+/*
+    Сброисть контроллер управления сессией
+*/
+void CanFTP_Server_Session_Agent_SessionConroller_Reset(CanFTP_Server_Session_Agent_SessionConroller_t* agent)
+{
+    CanFTP_TimeTrigger_Reset(&(agent->sendMessageTrigger));
+    CanFTP_IterationsHandler_Reset(&(agent->sendMessageCounter));
+}
+/*
+    Обновить параметры отправки соообщений
+*/
+void CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(CanFTP_Server_Session_Agent_SessionConroller_t* agent
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t interval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t maxCount)
+{
+    CanFTP_TimeTrigger_SetInterval(&(agent->sendMessageTrigger), interval);
+    CanFTP_TimeTrigger_Update(&(agent->sendMessageTrigger));
+    CanFTP_IterationsHandler_SetMaxCount(&(agent->sendMessageCounter), maxCount);
+    CanFTP_IterationsHandler_Reset(&(agent->sendMessageCounter));
+}

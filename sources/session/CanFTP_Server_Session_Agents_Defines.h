@@ -15,8 +15,30 @@ typedef struct _CanFTP_Server_Session_Agent_RegistrationConroller
     // Интервал времени отправки сообщения регистрации
     CanFTP_TimeTrigger_t sendMessageTrigger;
     // Счетчик повторной отправки сообщения регистрации
-    CanFTP_IterationCounter_t sendMessageCounter;
+    CanFTP_IterationsHandler_t sendMessageCounter;
 
 } CanFTP_Server_Session_Agent_RegistrationConroller_t;
+/*
+    Контроллер отправки сообщений управления сессией
+*/
+typedef struct _CanFTP_Server_Session_Agent_SessionConroller
+{
+    // Интервал времени отправки сообщения регистрации
+    CanFTP_TimeTrigger_t sendMessageTrigger;
+    // Счетчик повторной отправки сообщения регистрации
+    CanFTP_IterationsHandler_t sendMessageCounter;
+
+} CanFTP_Server_Session_Agent_SessionConroller_t;
+/*
+    Контроллер отправки сообщений блока файла
+*/
+typedef struct _CanFTP_Server_Session_Agent_BlockConroller
+{
+    // Интервал времени отправки сообщения регистрации
+    CanFTP_TimeTrigger_t sendMessageTrigger;
+    // Счетчик повторной отправки сообщения регистрации
+    CanFTP_IterationsHandler_t sendMessageCounter;
+
+} CanFTP_Server_Session_Agent_BlockConroller_t;
 
 #endif // CANFTP_SERVER_SESSION_AGENTS_DEFINES_H_
