@@ -93,6 +93,26 @@ CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsSessionFini
     Удалить всех клиентов, не закончившие сессию
 */
 void CanFTP_Server_Session_ClientsCollection_DeleteAllUnfinished(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Сброс флагов при переходе к следующему блоку
+*/
+void CanFTP_Server_Session_ClientsCollection_NextBlockReset(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Проврить, что все клиенты начали чтение блока
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsBlockStarted(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Удалить всех клиентов, не начавших чтение блока
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnstarted(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Проврить, что все клиенты окончили чтение блока
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsBlockFinished(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Удалить всех клиентов, не окончавших чтение блока
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnfinished(CanFTP_Server_Session_ClientsCollection_t* collection);
 
 
 #endif // CANFTP_SERVER_SESSION_CLIENTSCOLLECTION_H_

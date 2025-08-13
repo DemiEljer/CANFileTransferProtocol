@@ -53,7 +53,7 @@ typedef enum _CanFTP_SessionStatus
     /*
         Ошибка. Превышено количество отправляемых запросов
     */
-    CANFTP_SESSIONSTATUS_ERROR_REQUESTSSENDINGOVERCONE = 11,
+    CANFTP_SESSIONSTATUS_ERROR_REQUESTSSENDINGOVERCOME = 11,
     /*
         Ошибка. Ошибка регистрации клиента
     */
@@ -66,6 +66,10 @@ typedef enum _CanFTP_SessionStatus
         Ошибка. Ошибка окончания сессии
     */
     CANFTP_SESSIONSTATUS_ERROR_SESSIONFINISHINGFAILED = 13,
+    /*
+        Ошибка. Превышено количество попыток отправки блока
+    */
+    CANFTP_SESSIONSTATUS_ERROR_BLOCKSENDINGOVERCOME = 14,
 
 } CanFTP_SessionStatus_t;
 

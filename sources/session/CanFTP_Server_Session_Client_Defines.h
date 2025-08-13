@@ -33,6 +33,12 @@ typedef struct _CanFTP_Server_Session_Client
         CanFTP_Logical_t sessionIsFinished;
         // Статус сессии со стороны клиента
         CanFTP_SessionStatus_t sessionStatus;
+        // Подтверждение начала приема блока
+        CanFTP_Logical_t isBlockStarted;
+        // Подтверждение окончания приема блока
+        CanFTP_Logical_t isBlockFinished;
+        // Подтверждение готовности принимать следущий блок
+        CanFTP_Logical_t isNextBlockReady;
 
     } statuses;
     // Триггер потери связи с клиентом
@@ -41,6 +47,8 @@ typedef struct _CanFTP_Server_Session_Client
     CanFTP_TimeTrigger_t repeateSendingTrigger;
     // Счетчик количества повторений отправки сообщений
     CanFTP_IterationsHandler_t repeateSendingCounter;
+    // Флаг, что было вызвано событие освобождения клиента
+    CanFTP_Logical_t isDisposeEventCalled;
 
 } CanFTP_Server_Session_Client_t;
 

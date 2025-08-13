@@ -15,5 +15,9 @@ void CanFTP_Server_Session_SetStatus(CanFTP_Server_Session_t *session, CanFTP_Se
     Находится ли сессия в активном состоянии
 */
 CanFTP_SessionState_t CanFTP_Server_Session_IsActive(CanFTP_Server_Session_t *session);
+/*
+    Проверить, что клиент относится к данной сессии
+*/
+CanFTP_Server_Session_Client_t* CanFTP_Server_Session_CheckClientIsInSession(CanFTP_Server_Session_t *session, CanFTP_DeviceCode_t clientIndex);
 
 #endif // CANFTP_SERVER_SESSION_HELPFUNCTIONS_H_

@@ -51,3 +51,125 @@ void CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(CanFTP_Ser
     CanFTP_IterationsHandler_SetMaxCount(&(agent->sendMessageCounter), maxCount);
     CanFTP_IterationsHandler_Reset(&(agent->sendMessageCounter));
 }
+/*
+    Сбросить контроллер блока
+*/
+void CanFTP_Server_Session_Agent_BlockConroller_Reset(CanFTP_Server_Session_Agent_BlockConroller_t* agent)
+{
+    // Сбпрос запросов
+    {
+        agent->requests.blockFramesFlagsResetRequst = CANFTP_FALSE;
+    }
+    // Сброс ответов клиенту
+    {
+        agent->responeses.isClientResponseRequested = CANFTP_FALSE;
+        agent->responeses.clientIndex = 0;
+        agent->responeses.blockStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT;
+    }
+    // Сброс статусов
+    {
+        agent->statuses.newBlockIsHanling = CANFTP_TRUE;
+    }
+    CanFTP_TimeTrigger_Reset(&(agent->sendControlMessageTrigger));
+    CanFTP_IterationsHandler_Reset(&(agent->sendControlMessageCounter));
+    CanFTP_TimeTrigger_Reset(&(agent->sendDataMessageTrigger));
+    CanFTP_IterationsHandler_Reset(&(agent->sendBlockCounter));
+    agent->firstBlockByteIndex = 0;
+    agent->currentFrameIndex = 0;
+    agent->currentBlockIndex = 0;
+    CanFTP_Session_FileBlock_Reset(&(agent->fileBlock));
+    CanFTP_Session_FileBlock_ClearCRC(agent->fileBlockCRC);
+}
+/*
+    Обновить параметры отправки соообщений
+*/
+void CanFTP_Server_Session_Agent_BlockConroller_UpdateSendingParams(CanFTP_Server_Session_Agent_BlockConroller_t* agent
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t controlInterval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t controlMaxCount
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t dataInterval
+    // Максимальное количество итераций отправки блока
+    , CanFTP_IterationCounter_t blockMaxCount)
+{
+    CanFTP_TimeTrigger_SetInterval(&(agent->sendControlMessageTrigger), controlInterval);
+    CanFTP_TimeTrigger_Update(&(agent->sendControlMessageTrigger));
+    CanFTP_IterationsHandler_SetMaxCount(&(agent->sendControlMessageCounter), controlMaxCount);
+    CanFTP_IterationsHandler_Reset(&(agent->sendControlMessageCounter));
+    CanFTP_TimeTrigger_SetInterval(&(agent->sendDataMessageTrigger), dataInterval);
+    CanFTP_TimeTrigger_Update(&(agent->sendDataMessageTrigger));
+    CanFTP_IterationsHandler_SetMaxCount(&(agent->sendBlockCounter), blockMaxCount);
+}
+/*
+    Выставить запрос на отправку ответа клиенту
+*/
+void CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(CanFTP_Server_Session_Agent_BlockConroller_t* agent
+    // Индекс клиента
+    , CanFTP_DeviceCode_t clientIndex
+    // Статус обработки блока
+    , CanFTP_ClientBlockHandlingStatus_t blockStatus)
+{
+    agent->responeses.isClientResponseRequested = CANFTP_TRUE;
+    agent->responeses.clientIndex = clientIndex;
+    agent->responeses.blockStatus = blockStatus;
+}
+/*
+    Проверит, выставлен ли запрос на ответ клиенту и сбросить его
+*/
+CanFTP_Logical_t CanFTP_Server_Session_Agent_BlockConroller_CheckAndResetClientResponse(CanFTP_Server_Session_Agent_BlockConroller_t* agent)
+{
+    if (agent->responeses.isClientResponseRequested == CANFTP_TRUE)
+    {
+        agent->responeses.isClientResponseRequested = CANFTP_FALSE;
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
+    }
+}
+/*
+    Сбросить флаги обработки блока, если запрошено
+*/
+CanFTP_Logical_t CanFTP_Server_Session_Agent_BlockConroller_ResetBlockFlagsIfRequested(CanFTP_Server_Session_Agent_BlockConroller_t* agent)
+{
+    if (agent->requests.blockFramesFlagsResetRequst == CANFTP_TRUE)
+    {
+        CanFTP_Session_FileBlock_ResetFramesFlags(&(agent->fileBlock));
+    }
+
+    agent->requests.blockFramesFlagsResetRequst = CANFTP_FALSE;
+}
+/*
+    Сбросить контроллер перед отправкой блока
+*/
+void CanFTP_Server_Session_Agent_BlockConroller_ResetBeforeBlockStart(CanFTP_Server_Session_Agent_BlockConroller_t* agent)
+{
+    CanFTP_FrameIndex_t frameIndex = 0;
+
+    if (CanFTP_Session_FileBlock_GetFirstUnandledFrameIndex(&(agent->fileBlock), &(frameIndex)))
+    {
+        agent->currentFrameIndex = frameIndex;
+    }
+    else
+    {   
+        // В случае отработки данной логики, как минимум один кадр должен быть не обработан
+        CanFTP_ThrowError();
+    }
+}
+/*
+    Сбросить контроллер перед отправкой нового блока
+*/
+CanFTP_FileLength_t CanFTP_Server_Session_Agent_BlockConroller_NextBlock(CanFTP_Server_Session_Agent_BlockConroller_t* agent)
+{
+    agent->requests.blockFramesFlagsResetRequst = CANFTP_FALSE;
+    agent->statuses.newBlockIsHanling = CANFTP_TRUE;
+    CanFTP_Session_FileBlock_ResetFramesFlags(&(agent->fileBlock));
+
+    agent->firstBlockByteIndex += agent->fileBlock.length;
+    agent->currentBlockIndex++;
+
+    return agent->firstBlockByteIndex;
+}

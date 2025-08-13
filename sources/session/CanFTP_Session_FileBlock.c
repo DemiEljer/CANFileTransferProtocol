@@ -44,7 +44,7 @@ void CanFTP_Session_FileBlock_ResetFramesFlags(CanFTP_Session_FileBlock_t* block
     Сконфигурировать блок
 */
 void CanFTP_Session_FileBlock_Configure(CanFTP_Session_FileBlock_t* block
-    , CanFTP_BloclIndex_t index
+    , CanFTP_BlockIndex_t index
     , CanFTP_BlockLength_t length)
 {
     block->index = index;
@@ -54,7 +54,7 @@ void CanFTP_Session_FileBlock_Configure(CanFTP_Session_FileBlock_t* block
     Конфигурация с переносом данных
 */
 void CanFTP_Session_FileBlock_ConfigureWithData(CanFTP_Session_FileBlock_t* block
-    , CanFTP_BloclIndex_t index
+    , CanFTP_BlockIndex_t index
     , CanFTP_BlockLength_t length
     , uint8_t* data)
 {
@@ -304,4 +304,71 @@ CanFTP_FrameIndex_t CanFTP_Session_FileBlock_GetSubblockesCount(CanFTP_Session_F
 {
     return (block->length / (CANFTP_FILEBLOCK_FRAMESIZE * CANFTP_FILEBLOCK_SUBBBLOCKSIZE)) 
             + ((block->length % (CANFTP_FILEBLOCK_FRAMESIZE * CANFTP_FILEBLOCK_SUBBBLOCKSIZE)) > 0 ? 1 : 0);
+}
+/*
+    Получить индекс первого не обработанного фрейма
+*/
+CanFTP_Logical_t CanFTP_Session_FileBlock_GetFirstUnandledFrameIndex(CanFTP_Session_FileBlock_t* block, CanFTP_FrameIndex_t* returnIndex)
+{
+    uint32_t frameIndex = 0;
+    uint32_t framesCount = CanFTP_Session_FileBlock_GetFramesCount(block);
+    
+    for (frameIndex = 0; frameIndex < framesCount; frameIndex++)
+    {
+        if (block->framesFlags[frameIndex] != CANFTP_TRUE)
+        {
+            *(returnIndex) = frameIndex;
+
+            return CANFTP_TRUE;
+        }
+    }
+
+    return CANFTP_FALSE;
+}
+/*
+    Получить индекс первого не обработанного фрейма
+*/
+CanFTP_Logical_t CanFTP_Session_FileBlock_GetNextUnandledFrameIndex(CanFTP_Session_FileBlock_t* block, CanFTP_FrameIndex_t startIndex, CanFTP_FrameIndex_t* returnIndex)
+{
+    uint32_t frameIndex = 0;
+    uint32_t framesCount = CanFTP_Session_FileBlock_GetFramesCount(block);
+    
+    for (frameIndex = startIndex + 1; frameIndex < framesCount; frameIndex++)
+    {
+        if (block->framesFlags[frameIndex] != CANFTP_TRUE)
+        {
+            *(returnIndex) = frameIndex;
+
+            return CANFTP_TRUE;
+        }
+    }
+
+    return CANFTP_FALSE;
+}
+/*
+    Сравнение двух CRC-сумм
+*/
+CanFTP_Logical_t CanFTP_Session_FileBlock_CompareCRC(uint8_t* originCrcArray, uint8_t* anotherCrcArray)
+{
+    uint8_t crcByteIndex = 0;
+    for (crcByteIndex = 0; crcByteIndex < CANFTP_FILEBLOCK_CRCLENGTH; crcByteIndex++)
+    {
+        if (originCrcArray[crcByteIndex] != anotherCrcArray[crcByteIndex])
+        {
+            return CANFTP_FALSE;
+        }
+    }
+
+    return CANFTP_FALSE;
+}
+/*
+    Очистить массив CRC-суммы
+*/
+void CanFTP_Session_FileBlock_ClearCRC(uint8_t* crcArray)
+{
+    uint8_t crcByteIndex = 0;
+    for (crcByteIndex = 0; crcByteIndex < CANFTP_FILEBLOCK_CRCLENGTH; crcByteIndex++)
+    {
+        crcArray[crcByteIndex] = 0;
+    }
 }

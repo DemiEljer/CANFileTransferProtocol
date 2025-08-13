@@ -19,6 +19,22 @@ typedef struct _CanFTP_Server CanFTP_Server_t;
 typedef void (*CanFTP_Server_MessageSendCallback_t)(CanFTP_Server_t* server, CanFTP_CanMessage_t* message);
 // Тип функции события находждения клиента
 typedef void (*CanFTP_Server_ClientFoundCallback_t)(CanFTP_Server_t* server, CanFTP_Server_Client_t* client);
+// Тип функции события завершения сессии
+typedef void (*CanFTP_Server_SessionFinishCallback_t)(CanFTP_Server_t* server
+    , CanFTP_Server_Session_t* session
+    , CanFTP_SessionStatus_t status);
+// Тип функции запроса установки параметров блока
+typedef void (*CanFTP_Server_GetFileBlockCallback_t)(CanFTP_Server_t* server
+    , CanFTP_Server_Session_t* session
+    , CanFTP_Session_FileBlock_t* fileBlock
+    , CanFTP_FileLength_t startByteIndex
+    , CanFTP_FileLength_t bytesCount);
+// Тип функции события освобождения клиента из сессии
+typedef void (*CanFTP_Server_ClientReleaseCallback_t)(CanFTP_Server_t* server
+    , CanFTP_Server_Session_t* session
+    , CanFTP_Server_Client_t* client
+    , CanFTP_SessionStatus_t status);
+
 
 /*
     Структура сервера
@@ -58,6 +74,12 @@ typedef struct _CanFTP_Server
         CanFTP_Server_MessageSendCallback_t sendMessageCallback;
         // Событие находления клиента
         CanFTP_Server_ClientFoundCallback_t clientFoundCallback;
+        // Обратный вызов события завершения сессии
+        CanFTP_Server_SessionFinishCallback_t sessionFinishedCallback;
+        // Обратный вызов запроса блока файла
+        CanFTP_Server_GetFileBlockCallback_t getFileBlockCallback;
+        // Обратный вызов особождения клиента из сессии
+        CanFTP_Server_ClientReleaseCallback_t clientReleaseCallback;
 
     } callbacks;
     // Параметры управления сервером

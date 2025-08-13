@@ -27,11 +27,18 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
         client->statuses.sessionIsStarted = CANFTP_FALSE;
         client->statuses.sessionIsFinished = CANFTP_FALSE;
         client->statuses.sessionStatus = CANFTP_SESSIONSTATUS_OK;
+        client->statuses.isBlockStarted = CANFTP_FALSE;
+        client->statuses.isBlockFinished = CANFTP_FALSE;
+        client->statuses.isNextBlockReady = CANFTP_FALSE;
     }
     CanFTP_TimeTrigger_SetInterval(&(client->lostConnectionTrigger), CANFTP_SERVER_SESSION_LOSTCONNECTION_TIMEOUT);
     CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
     CanFTP_TimeTrigger_Update(&(client->repeateSendingTrigger));
     CanFTP_IterationsHandler_Reset(&(client->repeateSendingCounter));
+    // Сброс полей
+    {
+        client->isDisposeEventCalled = CANFTP_FALSE;
+    }
 }
 /*
     Подготовить клиента
@@ -48,7 +55,6 @@ void CanFTP_Server_Session_Client_Dispose(CanFTP_Server_Session_Client_t *client
     if (CanFTP_Server_Session_Client_IsInSession(client))
     {
         client->serverClient->isInSession = CANFTP_FALSE;
-        client->serverClient = CANFTP_NULL;
         client->statuses.isDisposed = CANFTP_TRUE;
     }
 }
@@ -81,8 +87,7 @@ void CanFTP_Server_Session_Client_UpdateSendingParams(CanFTP_Server_Session_Clie
 */
 CanFTP_Logical_t CanFTP_Server_Session_Client_IsInSession(CanFTP_Server_Session_Client_t *client)
 {
-    return client->serverClient != CANFTP_NULL
-           && client->statuses.isDisposed == CANFTP_FALSE;
+    return client->statuses.isDisposed == CANFTP_FALSE;
 }
 /*
     Проверить клиента
@@ -97,10 +102,19 @@ CanFTP_Logical_t CanFTP_Server_Session_Client_Check(CanFTP_Server_Session_Client
     }
     else if (!CanFTP_IterationsHandler_CheckCount(&(client->repeateSendingCounter)))
     {
-        CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_REQUESTSSENDINGOVERCONE);
+        CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_REQUESTSSENDINGOVERCOME);
 
         return CANFTP_FALSE;
     }
     
     return client->statuses.sessionStatus == CANFTP_SESSIONSTATUS_OK;
+}
+/*
+    Сброс флагов при переходе к следующему блоку
+*/
+void CanFTP_Server_Session_Client_NextBlockReset(CanFTP_Server_Session_Client_t *client)
+{
+    client->statuses.isBlockStarted = CANFTP_FALSE;
+    client->statuses.isBlockFinished = CANFTP_FALSE;
+    client->statuses.isNextBlockReady = CANFTP_FALSE;
 }

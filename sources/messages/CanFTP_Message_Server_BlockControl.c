@@ -12,12 +12,12 @@ void CanFTP_Message_Server_BlockControl_Unpack(CanFTP_Message_Server_BlockContro
 
         if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_START)
         {
-            messageModel->start.blockIndex = (CanFTP_BloclIndex_t)(
-                  (CanFTP_BloclIndex_t)((messageCan->data[0] >> 4) & 0x0F) 
-                | (CanFTP_BloclIndex_t)((messageCan->data[1] >> 0) & 0xFF) << 4
-                | (CanFTP_BloclIndex_t)((messageCan->data[2] >> 0) & 0xFF) << 12
-                | (CanFTP_BloclIndex_t)((messageCan->data[3] >> 0) & 0xFF) << 20
-                | (CanFTP_BloclIndex_t)((messageCan->data[4] >> 0) & 0x0F) << 28
+            messageModel->start.blockIndex = (CanFTP_BlockIndex_t)(
+                  (CanFTP_BlockIndex_t)((messageCan->data[0] >> 4) & 0x0F) 
+                | (CanFTP_BlockIndex_t)((messageCan->data[1] >> 0) & 0xFF) << 4
+                | (CanFTP_BlockIndex_t)((messageCan->data[2] >> 0) & 0xFF) << 12
+                | (CanFTP_BlockIndex_t)((messageCan->data[3] >> 0) & 0xFF) << 20
+                | (CanFTP_BlockIndex_t)((messageCan->data[4] >> 0) & 0x0F) << 28
             );
             messageModel->start.blockLength = (CanFTP_BlockLength_t)(
                   (CanFTP_BlockLength_t)((messageCan->data[4] >> 4) & 0x0F) 
@@ -26,12 +26,12 @@ void CanFTP_Message_Server_BlockControl_Unpack(CanFTP_Message_Server_BlockContro
         }
         else if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_FINISH)
         {
-            messageModel->start.blockIndex = (CanFTP_BloclIndex_t)(
-                  (CanFTP_BloclIndex_t)((messageCan->data[0] >> 4) & 0x0F) 
-                | (CanFTP_BloclIndex_t)((messageCan->data[1] >> 0) & 0xFF) << 4
-                | (CanFTP_BloclIndex_t)((messageCan->data[2] >> 0) & 0xFF) << 12
-                | (CanFTP_BloclIndex_t)((messageCan->data[3] >> 0) & 0xFF) << 20
-                | (CanFTP_BloclIndex_t)((messageCan->data[4] >> 0) & 0x0F) << 28
+            messageModel->start.blockIndex = (CanFTP_BlockIndex_t)(
+                  (CanFTP_BlockIndex_t)((messageCan->data[0] >> 4) & 0x0F) 
+                | (CanFTP_BlockIndex_t)((messageCan->data[1] >> 0) & 0xFF) << 4
+                | (CanFTP_BlockIndex_t)((messageCan->data[2] >> 0) & 0xFF) << 12
+                | (CanFTP_BlockIndex_t)((messageCan->data[3] >> 0) & 0xFF) << 20
+                | (CanFTP_BlockIndex_t)((messageCan->data[4] >> 0) & 0x0F) << 28
             );
         }
         else if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_FEEDBACKACK)

@@ -5,16 +5,17 @@
 */
 void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t* session, CanFTP_Message_Client_SessionControl_t* message)
 {
-    if (CanFTP_Server_Session_IsActive(session))
+    CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_CheckClientIsInSession(session, message->deviceCode);
+
+    if (client != CANFTP_NULL)
     {
-        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), message->deviceCode);
-
-        if (client != CANFTP_NULL)
+        if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_REGISTRATIONACK)
         {
-            // Обновление метки времени потери связи с клиентом
-            CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
-
-            if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_REGISTRATIONACK)
+            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_REGISTRATING)
+            {
+                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
+            }
+            else
             {
                 if (message->registrationAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
                 {
@@ -26,7 +27,14 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
                     // Тут пока ничего не делаем
                 }
             }
-            else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATIONACK)
+        }
+        else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATIONACK)
+        {
+            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_CONFIGURING)
+            {
+                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
+            }
+            else
             {
                 if (message->configurationAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
                 {
@@ -40,7 +48,14 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
                     // Тут пока ничего не делаем
                 }
             }
-            else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_STARTSESSIONACK)
+        }
+        else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_STARTSESSIONACK)
+        {
+            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_STARTING)
+            {
+                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
+            }
+            else
             {
                 if (message->startSessionAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
                 {
@@ -52,13 +67,13 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
                     // Тут пока ничего не делаем
                 }
             }
-            else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_FINISHSESSIONACK)
-            {
-                // Подтверждение окончания сессии
-                client->statuses.sessionIsFinished = CANFTP_TRUE;
-                // Чтение статуса сессии
-                CanFTP_Server_Session_Client_SetSessionStatus(client, message->finishSessionAck.sessionStatus);
-            }
+        }
+        else if (message->messageType == CANFT_MESSAGE_CLIENT_SESSIONCONTROL_FINISHSESSIONACK)
+        {
+            // Подтверждение окончания сессии
+            client->statuses.sessionIsFinished = CANFTP_TRUE;
+            // Чтение статуса сессии
+            CanFTP_Server_Session_Client_SetSessionStatus(client, message->finishSessionAck.sessionStatus);
         }
     }
 }
@@ -67,14 +82,31 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
 */
 void CanFTP_Server_Session_MessageRecieve_BlockControl(CanFTP_Server_Session_t* session, CanFTP_Message_Client_BlockControl_t* message)
 {
-    if (CanFTP_Server_Session_IsActive(session))
-    {
-        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), message->deviceCode);
+    CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_CheckClientIsInSession(session, message->deviceCode);
 
-        if (client != CANFTP_NULL)
+    if (client != CANFTP_NULL)
+    {
+        if (message->messageType == CANFT_MESSAGE_CLIENT_BLOCKCONTROL_START)
         {
-            // Обновление метки времени потери связи с клиентом
-            CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
+            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_BLOCK_STARTING)
+            {
+                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
+            }
+            else
+            {
+                client->statuses.isBlockStarted = CANFTP_TRUE;
+            }
+        }
+        else if (message->messageType == CANFT_MESSAGE_CLIENT_BLOCKCONTROL_FINISH)
+        {
+            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_BLOCK_FINISHING)
+            {
+                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
+            }
+            else
+            {
+                client->statuses.isNextBlockReady = CANFTP_TRUE;
+            }
         }
     }
 }
@@ -83,14 +115,21 @@ void CanFTP_Server_Session_MessageRecieve_BlockControl(CanFTP_Server_Session_t* 
 */
 void CanFTP_Server_Session_MessageRecieve_SubBlocksStatuses(CanFTP_Server_Session_t* session, CanFTP_Message_Client_SubBlocksStatuses_t* message)
 {
-    if (CanFTP_Server_Session_IsActive(session))
-    {
-        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), message->deviceCode);
+    CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_CheckClientIsInSession(session, message->deviceCode);
 
-        if (client != CANFTP_NULL)
+    if (client != CANFTP_NULL)
+    {
+        if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_BLOCK_FINISHING)
         {
-            // Обновление метки времени потери связи с клиентом
-            CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
+            CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
+        }
+        else
+        {
+            CanFTP_Session_FileBlock_MergeFramesFlags(&(session->agents.blockController.fileBlock), message->subblocksReciecedFlags);
+
+            CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(&(session->agents.blockController)
+                , message->deviceCode
+                , CANFTP_CLIENTBLOCKHANDLINGSTATUS_SUBBLOCKESMISSING);
         }
     }
 }
@@ -99,14 +138,30 @@ void CanFTP_Server_Session_MessageRecieve_SubBlocksStatuses(CanFTP_Server_Sessio
 */
 void CanFTP_Server_Session_MessageRecieve_BlockCRC(CanFTP_Server_Session_t* session, CanFTP_Message_Client_BlockCRC_t* message)
 {
-    if (CanFTP_Server_Session_IsActive(session))
-    {
-        CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), message->deviceCode);
+    CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_CheckClientIsInSession(session, message->deviceCode);
 
-        if (client != CANFTP_NULL)
+    if (client != CANFTP_NULL)
+    {
+        if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_BLOCK_FINISHING)
         {
-            // Обновление метки времени потери связи с клиентом
-            CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
+            CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
+        }
+        else
+        {
+            if (CanFTP_Session_FileBlock_CompareCRC(session->agents.blockController.fileBlockCRC, message->crcElements))
+            {
+                CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(&(session->agents.blockController)
+                    , message->deviceCode
+                    , CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKISRECIEVED);
+            }
+            else
+            {
+                CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(&(session->agents.blockController)
+                    , message->deviceCode
+                    , CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT);
+                // Выставление запроса на сброс флагов обработки блока
+                session->agents.blockController.requests.blockFramesFlagsResetRequst = CANFTP_TRUE;
+            }
         }
     }
 }
@@ -190,7 +245,31 @@ void CanFTP_Server_Session_MessageSend_BlockControl(CanFTP_Server_Session_t* ses
     CanFTP_Message_Server_BlockControl_t messageModel;
     // Обработка сообщения
     {
+        messageModel.sessionCode = session->code;
 
+        if (CanFTP_Server_Session_Agent_BlockConroller_CheckAndResetClientResponse(&(session->agents.blockController)))
+        {
+            messageModel.messageType = CANFT_MESSAGE_SERVER_BLOCKCONTROL_FEEDBACKACK;
+
+            messageModel.feedbackAck.deviceCode = session->agents.blockController.responeses.clientIndex;
+            messageModel.feedbackAck.blockHandlingStatus = session->agents.blockController.responeses.blockStatus;
+        }
+        else
+        {
+            if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_BLOCK_STARTING)
+            {
+                messageModel.messageType = CANFT_MESSAGE_SERVER_BLOCKCONTROL_START;
+
+                messageModel.start.blockIndex = session->agents.blockController.fileBlock.index;
+                messageModel.start.blockLength = session->agents.blockController.fileBlock.length;
+            }
+            else if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_BLOCK_FINISHING)
+            {
+                messageModel.messageType = CANFT_MESSAGE_SERVER_BLOCKCONTROL_FINISH;
+
+                messageModel.finish.blockIndex = session->agents.blockController.fileBlock.index;
+            }
+        }
     }
     // Упаковка сообщения и отправка
     {
@@ -207,7 +286,11 @@ void CanFTP_Server_Session_MessageSend_DataFrame(CanFTP_Server_Session_t* sessio
     CanFTP_Message_Server_DataFrame_t messageModel;
     // Обработка сообщения
     {
-
+        messageModel.sessionCode = session->code;
+        messageModel.frameIndex = session->agents.blockController.currentFrameIndex;
+        CanFTP_Session_FileBlock_GetFrame(&(session->agents.blockController.fileBlock)
+            , session->agents.blockController.currentFrameIndex
+            , messageModel.data);
     }
     // Упаковка сообщения и отправка
     {

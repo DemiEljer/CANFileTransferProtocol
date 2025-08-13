@@ -28,7 +28,7 @@ typedef struct _CanFTP_Message_Server_BlockControl
     struct
     {
         // Индекс блока
-        CanFTP_BloclIndex_t blockIndex;
+        CanFTP_BlockIndex_t blockIndex;
         // Длина блока
         CanFTP_BlockLength_t blockLength;
 
@@ -37,7 +37,7 @@ typedef struct _CanFTP_Message_Server_BlockControl
     struct
     {
         // Индекс блока
-        CanFTP_BloclIndex_t blockIndex;
+        CanFTP_BlockIndex_t blockIndex;
 
     } finish;
     // FEEDBACKACK

@@ -41,6 +41,10 @@ CanFTP_Logical_t CanFTP_Server_Session_Client_IsInSession(CanFTP_Server_Session_
     Проверить клиента
 */
 CanFTP_Logical_t CanFTP_Server_Session_Client_Check(CanFTP_Server_Session_Client_t *client);
+/*
+    Сброс флагов при переходе к следующему блоку
+*/
+void CanFTP_Server_Session_Client_NextBlockReset(CanFTP_Server_Session_Client_t *client);
 
 
 #endif // CANFTP_SERVER_SESSION_CLIENT_H_

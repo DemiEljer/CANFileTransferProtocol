@@ -31,7 +31,7 @@ typedef uint8_t CanFTP_DeviceCode_t;
 // Тип кода устройства
 typedef uint16_t CanFTP_DeviceSerialCode_t;
 // Тип мндекса блока кода
-typedef uint32_t CanFTP_BloclIndex_t;
+typedef uint32_t CanFTP_BlockIndex_t;
 // Тип длины блока кода
 typedef uint16_t CanFTP_BlockLength_t;
 // Тип версии протокола

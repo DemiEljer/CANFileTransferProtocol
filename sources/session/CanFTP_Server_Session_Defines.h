@@ -10,6 +10,7 @@
 #include "CanFTP_SessionStatus.h"
 #include "CanFTP_Server_Session_FileConfiguration.h"
 #include "CanFTP_Server_Session_Agents.h"
+#include "CanFTP_Server_Session_Debug.h"
 
 // Структура сессии на стороне серевера
 typedef struct _CanFTP_Server_Session CanFTP_Server_Session_t;
@@ -26,6 +27,11 @@ typedef void (*CanFTP_Server_Session_GetFileBlockCallback_t)(void* server
     , CanFTP_Session_FileBlock_t* fileBlock
     , CanFTP_FileLength_t startByteIndex
     , CanFTP_FileLength_t bytesCount);
+// Тип функции события освобождения клиента из сессии
+typedef void (*CanFTP_Server_Session_ClientReleaseCallback_t)(void* server
+    , CanFTP_Server_Session_t* session
+    , CanFTP_Server_Client_t* client
+    , CanFTP_SessionStatus_t status);
 
 /*
     Структура сессии на стороне серевера
@@ -50,6 +56,8 @@ typedef struct _CanFTP_Server_Session
         CanFTP_Server_Session_Agent_RegistrationConroller_t registrationConrtoller;
         // Контроллер управления сессией
         CanFTP_Server_Session_Agent_SessionConroller_t sessionController;
+        // Контроллер управления отправкой блока
+        CanFTP_Server_Session_Agent_BlockConroller_t blockController;
 
     } agents;
     // Запросы к сессии
@@ -83,6 +91,8 @@ typedef struct _CanFTP_Server_Session
         CanFTP_Server_Session_SessionFinishCallback_t sessionFinishedCallback;
         // Обратный вызов запроса блока файла
         CanFTP_Server_Session_GetFileBlockCallback_t getFileBlockCallback;
+        // Обратный вызов особождения клиента из сессии
+        CanFTP_Server_Session_ClientReleaseCallback_t clientReleaseCallback;
 
     } callbacks;
     // Указатель на сервер, с которым ассоциирована сессия

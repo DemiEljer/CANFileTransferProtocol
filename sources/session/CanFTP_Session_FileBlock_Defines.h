@@ -22,7 +22,7 @@
 typedef struct _CanFTP_Session_FileBLock
 {
     // Индекс блока
-    CanFTP_BloclIndex_t index;
+    CanFTP_BlockIndex_t index;
     // Длина блока
     CanFTP_BlockLength_t length;
     // Количество данных

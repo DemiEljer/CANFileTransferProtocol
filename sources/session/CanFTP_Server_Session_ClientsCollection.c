@@ -292,3 +292,99 @@ void CanFTP_Server_Session_ClientsCollection_DeleteAllUnfinished(CanFTP_Server_S
         }
     }
 }
+/*
+    Сброс флагов при переходе к следующему блоку
+*/
+void CanFTP_Server_Session_ClientsCollection_NextBlockReset(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        CanFTP_Server_Session_Client_NextBlockReset(&(collection->clients[clientIndex]));
+    }
+}
+/*
+    Проврить, что все клиенты начали чтение блока
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsBlockStarted(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+    CanFTP_DeviceCode_t blockStartedClientsCount = 0;
+    CanFTP_DeviceCode_t disposedClientsCount = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.isBlockStarted == CANFTP_TRUE)
+        {
+            blockStartedClientsCount++;
+        }
+        else if (!CanFTP_Server_Session_Client_IsInSession(&(collection->clients[clientIndex])))
+        {
+            disposedClientsCount++;
+        }
+    }
+
+    return (blockStartedClientsCount + disposedClientsCount) == collection->clientsCount
+            && blockStartedClientsCount > 0;
+}
+/*
+    Удалить всех клиентов, не начавших чтение блока
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnstarted(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.isBlockStarted != CANFTP_TRUE)
+        {
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_SESSIONFINISHINGFAILED);
+        }
+    }
+}
+/*
+    Проврить, что все клиенты окончили чтение блока
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsBlockFinished(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+    CanFTP_DeviceCode_t blockFinishedClientsCount = 0;
+    CanFTP_DeviceCode_t disposedClientsCount = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.isBlockFinished == CANFTP_TRUE
+            && collection->clients[clientIndex].statuses.isNextBlockReady == CANFTP_TRUE)
+        {
+            blockFinishedClientsCount++;
+        }
+        else if (!CanFTP_Server_Session_Client_IsInSession(&(collection->clients[clientIndex])))
+        {
+            disposedClientsCount++;
+        }
+    }
+
+    return (blockFinishedClientsCount + disposedClientsCount) == collection->clientsCount
+            && blockFinishedClientsCount > 0;
+}
+/*
+    Удалить всех клиентов, не окончавших чтение блока
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnfinished(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.isBlockFinished == CANFTP_TRUE
+            && collection->clients[clientIndex].statuses.isNextBlockReady == CANFTP_TRUE)
+        {
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_SESSIONFINISHINGFAILED);
+        }
+    }
+}

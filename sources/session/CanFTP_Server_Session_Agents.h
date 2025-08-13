@@ -27,5 +27,45 @@ void CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(CanFTP_Ser
     , CanFTP_TimeInterval_t interval
     // Количество отправляемых сообщений
     , CanFTP_IterationCounter_t maxCount);
+/*
+    Сбросить контроллер блока
+*/
+void CanFTP_Server_Session_Agent_BlockConroller_Reset(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
+/*
+    Обновить параметры отправки соообщений
+*/
+void CanFTP_Server_Session_Agent_BlockConroller_UpdateSendingParams(CanFTP_Server_Session_Agent_BlockConroller_t* agent
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t controlInterval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t controlMaxCount
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t dataInterval
+    // Максимальное количество итераций отправки блока
+    , CanFTP_IterationCounter_t blockMaxCount);
+/*
+    Выставить запрос на отправку ответа клиенту
+*/
+void CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(CanFTP_Server_Session_Agent_BlockConroller_t* agent
+    // Индекс клиента
+    , CanFTP_DeviceCode_t clientIndex
+    // Статус обработки блока
+    , CanFTP_ClientBlockHandlingStatus_t blockStatus);
+/*
+    Проверит, выставлен ли запрос на ответ клиенту и сбросить его
+*/
+CanFTP_Logical_t CanFTP_Server_Session_Agent_BlockConroller_CheckAndResetClientResponse(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
+/*
+    Сбросить флаги обработки блока, если запрошено
+*/
+CanFTP_Logical_t CanFTP_Server_Session_Agent_BlockConroller_ResetBlockFlagsIfRequested(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
+/*
+    Сбросить контроллер перед отправкой блока
+*/
+void CanFTP_Server_Session_Agent_BlockConroller_ResetBeforeBlockStart(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
+/*
+    Сбросить контроллер перед отправкой нового блока
+*/
+CanFTP_FileLength_t CanFTP_Server_Session_Agent_BlockConroller_NextBlock(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
 
 #endif // CANFTP_SERVER_SESSION_AGENTS_H_

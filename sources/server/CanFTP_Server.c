@@ -53,6 +53,9 @@ void CanFTP_Server_Init(CanFTP_Server_t *server)
     // Инициализация обратных вызовов
     {
         server->callbacks.clientFoundCallback = CANFTP_NULL;
+        server->callbacks.sessionFinishedCallback = CANFTP_NULL;
+        server->callbacks.getFileBlockCallback = CANFTP_NULL;
+        server->callbacks.clientReleaseCallback = CANFTP_NULL;
     }
     CanFTP_Server_Session_Configuration_Reset(&(server->defaultSessionConfiguration));
 
@@ -114,6 +117,9 @@ CanFTP_Server_Session_t* CanFTP_Server_CreateNewSession(CanFTP_Server_t *server)
             // Инициализация обратных связей
             {
                 newSession->callbacks.sendMessageCallback = (CanFTP_Server_Session_MessageSendCallback_t)server->callbacks.sendMessageCallback;
+                newSession->callbacks.sessionFinishedCallback = (CanFTP_Server_Session_SessionFinishCallback_t)server->callbacks.sessionFinishedCallback;
+                newSession->callbacks.getFileBlockCallback = (CanFTP_Server_Session_GetFileBlockCallback_t)server->callbacks.getFileBlockCallback;
+                newSession->callbacks.clientReleaseCallback = (CanFTP_Server_Session_ClientReleaseCallback_t)server->callbacks.clientReleaseCallback;
             }
             CanFTP_Server_Session_Configuration_Copy(&(newSession->configuration), &(server->defaultSessionConfiguration));
         }

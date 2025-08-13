@@ -80,11 +80,13 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
         session->callbacks.sendMessageCallback = CANFTP_NULL;
         session->callbacks.sessionFinishedCallback = CANFTP_NULL;
         session->callbacks.getFileBlockCallback = CANFTP_NULL;
+        session->callbacks.clientReleaseCallback = CANFTP_NULL;
     }
     // Инициализация агентов
     {
         CanFTP_Server_Session_Agent_RegistrationConroller_Reset(&(session->agents.registrationConrtoller));
         CanFTP_Server_Session_Agent_SessionConroller_Reset(&(session->agents.sessionController));
+        CanFTP_Server_Session_Agent_BlockConroller_Reset(&(session->agents.blockController));
     }
     // Сброс параметров клиентов
     {
