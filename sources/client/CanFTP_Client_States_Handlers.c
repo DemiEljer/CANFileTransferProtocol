@@ -175,12 +175,12 @@ uint32_t CanFTP_Client_State_PING_RESPONSING_Body(CanFTP_FinalStateMachine_t *fm
         {
             if (client->agents.pingController.pingResponsesAck[0] != CANFTP_TRUE)
             {
-                client->agents.pingController.requestedMessageIndex = CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1;
+                client->agents.pingController.requestedMessageIndex = CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1;
                 CanFTP_Client_MessageSend_PingResponse(client);
             }
             if (client->agents.pingController.pingResponsesAck[1] != CANFTP_TRUE)
             {
-                client->agents.pingController.requestedMessageIndex = CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2;
+                client->agents.pingController.requestedMessageIndex = CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2;
                 CanFTP_Client_MessageSend_PingResponse(client);
             }
         }

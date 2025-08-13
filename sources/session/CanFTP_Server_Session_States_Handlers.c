@@ -42,6 +42,8 @@ void CanFTP_Server_Session_IterationEventHandler(CanFTP_FinalStateMachine_t *fms
             {
                 // Выставления флага подтверждения вызова события
                 client->isDisposeEventCalled = CANFTP_TRUE;
+                // Отправка сообщения удаления клиента
+                CanFTP_Server_Session_MessageSend_ClientDelete(session, client);
                 // Вызов события
                 session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
             }

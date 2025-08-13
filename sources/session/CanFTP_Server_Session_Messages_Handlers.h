@@ -22,19 +22,23 @@ void CanFTP_Server_Session_MessageRecieve_SubBlocksStatuses(CanFTP_Server_Sessio
 void CanFTP_Server_Session_MessageRecieve_BlockCRC(CanFTP_Server_Session_t* session, CanFTP_Message_Client_BlockCRC_t* message);
 
 /*
-    Обработчик приема сообщения Registration
+    Обработчик отправки сообщения Registration
 */
 void CanFTP_Server_Session_MessageSend_Registration(CanFTP_Server_Session_t* session);
 /*
-    Обработчик приема сообщения SessionControl
+    Обработчик отправки сообщения SessionControl
 */
 void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* session);
 /*
-    Обработчик приема сообщения BlockContro
+    Обработчик отправки сообщения ClientDelete
+*/
+void CanFTP_Server_Session_MessageSend_ClientDelete(CanFTP_Server_Session_t* session, CanFTP_Server_Session_Client_t* client);
+/*
+    Обработчик отправки сообщения BlockContro
 */
 void CanFTP_Server_Session_MessageSend_BlockControl(CanFTP_Server_Session_t* session);
 /*
-    Обработчик приема сообщения DataFrame
+    Обработчик отправки сообщения DataFrame
 */
 void CanFTP_Server_Session_MessageSend_DataFrame(CanFTP_Server_Session_t* session);
 /*

@@ -31,23 +31,23 @@ void CanFTP_Client_MessageRecieve_DataFrame(void* invoker, CanFTP_Message_Server
 
 
 /*
-    Обработчик приема сообщения PingResponse
+    Обработчик отправки сообщения PingResponse
 */
 void CanFTP_Client_MessageSend_PingResponse(CanFTP_Client_t* client);
 /*
-    Обработчик приема сообщения SessionControl
+    Обработчик отправки сообщения SessionControl
 */
 void CanFTP_Client_MessageSend_SessionControl(CanFTP_Client_t* client);
 /*
-    Обработчик приема сообщения BlockControl
+    Обработчик отправки сообщения BlockControl
 */
 void CanFTP_Client_MessageSend_BlockControl(CanFTP_Client_t* client);
 /*
-    Обработчик приема сообщения SubBlocksStatuses
+    Обработчик отправки сообщения SubBlocksStatuses
 */
 void CanFTP_Client_MessageSend_SubBlocksStatuses(CanFTP_Client_t* client);
 /*
-    Обработчик приема сообщения BlockCRC
+    Обработчик отправки сообщения BlockCRC
 */
 void CanFTP_Client_MessageSend_BlockCRC(CanFTP_Client_t* client);
 /*

@@ -25,11 +25,11 @@ void CanFTP_Server_MessageRecieve_SubBlocksStatuses(void* invoker, CanFTP_Messag
 void CanFTP_Server_MessageRecieve_BlockCRC(void* invoker, CanFTP_Message_Client_BlockCRC_t* message);
 
 /*
-    Обработчик приема сообщения Ping
+    Обработчик отправки сообщения Ping
 */
 void CanFTP_Server_MessageSend_Ping(CanFTP_Server_t* server);
 /*
-    Обработчик приема сообщения PingResponseAck
+    Обработчик отправки сообщения PingResponseAck
 */
 void CanFTP_Server_MessageSend_PingResponseAck(CanFTP_Server_t* server);
 /*

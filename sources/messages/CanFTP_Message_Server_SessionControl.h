@@ -4,15 +4,17 @@
 #include "CanFTP_Messages_Handlers.h"
 #include "CanFTP_SoftwareVersion.h"
 #include "CanFTP_ClientSessionAckStatus.h"
+#include "CanFTP_SessionStatus.h"
 
 /*
     Тип сообщения при управлении сессией
 */
 typedef enum _CanFTP_Message_Server_SessionControl_Type
 {
-    CANFT_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION = 0,
-    CANFT_MESSAGE_SERVER_SESSIONCONTROL_START = 1,
-    CANFT_MESSAGE_SERVER_SESSIONCONTROL_FINISH = 2,
+    CANFTP_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION = 0,
+    CANFTP_MESSAGE_SERVER_SESSIONCONTROL_START = 1,
+    CANFTP_MESSAGE_SERVER_SESSIONCONTROL_FINISH = 2,
+    CANFTP_MESSAGE_SERVER_SESSIONCONTROL_DELETECLIENT = 3,
 } CanFTP_Message_Server_SessionControl_Type_t;
 
 /*
@@ -49,11 +51,20 @@ typedef struct _CanFTP_Message_Server_SessionControl
     struct
     {
         // Статус завершения операции
-        CanFTP_ClientSessionAckStatus_t status;
+        CanFTP_SessionStatus_t sessionStatus;
         // Новая версия программного обеспечения
         CanFTP_SoftwareVersion_t newSoftVersion;
 
     } finish;
+    // DELETECLIENT
+    struct
+    {
+        // Статус завершения операции
+        CanFTP_SessionStatus_t sessionStatus;
+        // Новая версия программного обеспечения
+        CanFTP_DeviceCode_t deviceCode;
+
+    } deleteClient;
 
 } CanFTP_Message_Server_SessionControl_t;
 

@@ -10,7 +10,7 @@ void CanFTP_Message_Client_PingResponse_Unpack(CanFTP_Message_Client_PingRespons
         messageModel->deviceCode = CanFTP_CanIdentifier_UnpackDeviceSerialCode(messageCan->id);
         messageModel->messageType = (CanFTP_Message_Client_PingResponse_Type_t)(messageCan->data[0] & 0x0F);
 
-        if (messageModel->messageType == CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1)
+        if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1)
         {
             messageModel->response1.deviceSerial = (CanFTP_DeviceSerial_t)(
                   (CanFTP_DeviceSerial_t)((messageCan->data[0] >> 4) & 0x0F) 
@@ -29,7 +29,7 @@ void CanFTP_Message_Client_PingResponse_Unpack(CanFTP_Message_Client_PingRespons
                 | (CanFTP_DeviceType_t)((messageCan->data[7] >> 0) & 0x0F) << 12
             );
         }
-        else if (messageModel->messageType == CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
+        else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
         {
             messageModel->response2.deviceSerial = (CanFTP_DeviceSerial_t)(
                   (CanFTP_DeviceSerial_t)((messageCan->data[0] >> 4) & 0x0F) 
@@ -68,7 +68,7 @@ void CanFTP_Message_Client_PingResponse_Pack(CanFTP_Message_Client_PingResponse_
     {
         messageDataVector[0] |= messageModel->messageType & 0x0F;
 
-        if (messageModel->messageType == CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1)
+        if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1)
         {
             messageDataVector[0] |= ((messageModel->response1.deviceSerial >> 0) & 0x0F) << 4;
             messageDataVector[1] |= ((messageModel->response1.deviceSerial >> 4) & 0xFF) << 0;
@@ -81,7 +81,7 @@ void CanFTP_Message_Client_PingResponse_Pack(CanFTP_Message_Client_PingResponse_
             messageDataVector[6] |= ((messageModel->response1.deviceType >> 4) & 0xFF) << 0;
             messageDataVector[7] |= ((messageModel->response1.deviceType >> 12) & 0x0F) << 0;                        
         }
-        else if (messageModel->messageType == CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
+        else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
         {
             messageDataVector[0] |= ((messageModel->response2.deviceSerial >> 0) & 0x0F) << 4;
             messageDataVector[1] |= ((messageModel->response2.deviceSerial >> 4) & 0xFF) << 0;

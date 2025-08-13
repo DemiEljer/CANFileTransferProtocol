@@ -165,3 +165,26 @@ void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session)
     session->requests.stopRequest = CANFTP_TRUE;
     session->requests.deleteRequest = CANFTP_TRUE;
 }
+/*
+    Получить процент завршения работы сессии
+*/
+float CanFTP_Server_Session_GetFinishingPercent(CanFTP_Server_Session_t *session)
+{
+    if (session->fileConfiguration.fileLength == 0)
+    {
+        return 1.0F;
+    }
+    else
+    {
+        float resultPercent = (float)session->agents.blockController.firstBlockByteIndex / (float)session->fileConfiguration.fileLength;
+
+        if (resultPercent > 1.0F)
+        {
+            return 1.0F;
+        }
+        else
+        {
+            return resultPercent;
+        }
+    }
+}

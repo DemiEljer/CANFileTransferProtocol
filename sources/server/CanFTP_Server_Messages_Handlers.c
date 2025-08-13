@@ -10,7 +10,7 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
 
     if (CanFTP_Server_GetState(server) == CANFTP_SERVERSTATE_PING)
     {
-        if (message->messageType == CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1)
+        if (message->messageType == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1)
         {
             CanFTP_Server_Client_t* client = CanFTP_Server_ClientsCollection_GetBySerial(&(server->clients), message->response1.deviceSerial);
             if (client == CANFTP_NULL)
@@ -30,7 +30,7 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
             {
                 // Назначение параметров ответа
                 server->agents.pingController.responsingDeviceSerial = message->response1.deviceSerial;
-                server->agents.pingController.responsingMessageType = CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1;
+                server->agents.pingController.responsingMessageType = CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1;
 
                 CanFTP_Server_MessageSend_PingResponseAck(server);
             }
@@ -44,7 +44,7 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
                 }
             }
         }
-        else if (message->messageType == CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
+        else if (message->messageType == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
         {
             CanFTP_Server_Client_t* client = CanFTP_Server_ClientsCollection_GetBySerial(&(server->clients), message->response2.deviceSerial);
             if (client == CANFTP_NULL)
@@ -63,7 +63,7 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
             {
                 // Назначение параметров ответа
                 server->agents.pingController.responsingDeviceSerial = message->response2.deviceSerial;
-                server->agents.pingController.responsingMessageType = CANFT_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2;
+                server->agents.pingController.responsingMessageType = CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2;
 
                 CanFTP_Server_MessageSend_PingResponseAck(server);
             }
@@ -149,7 +149,7 @@ void CanFTP_Server_MessageRecieve_BlockCRC(void* invoker, CanFTP_Message_Client_
 }
 
 /*
-    Обработчик приема сообщения Ping
+    Обработчик отправки сообщения Ping
 */
 void CanFTP_Server_MessageSend_Ping(CanFTP_Server_t* server)
 {
@@ -167,7 +167,7 @@ void CanFTP_Server_MessageSend_Ping(CanFTP_Server_t* server)
     }
 }
 /*
-    Обработчик приема сообщения PingResponseAck
+    Обработчик отправки сообщения PingResponseAck
 */
 void CanFTP_Server_MessageSend_PingResponseAck(CanFTP_Server_t* server)
 {

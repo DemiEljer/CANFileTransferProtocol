@@ -39,5 +39,9 @@ void CanFTP_Server_Session_Stop(CanFTP_Server_Session_t *session);
     Запрос на удаление сессии
 */
 void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session);
+/*
+    Получить процент завршения работы сессии
+*/
+float CanFTP_Server_Session_GetFinishingPercent(CanFTP_Server_Session_t *session);
 
 #endif // CANFTP_SERVER_SESSION_H_

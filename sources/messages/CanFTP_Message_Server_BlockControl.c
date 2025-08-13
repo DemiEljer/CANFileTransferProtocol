@@ -10,7 +10,7 @@ void CanFTP_Message_Server_BlockControl_Unpack(CanFTP_Message_Server_BlockContro
         messageModel->sessionCode = CanFTP_CanIdentifier_UnpackSessionCode(messageCan->id);
         messageModel->messageType = (CanFTP_Message_Server_BlockControl_Type_t)(messageCan->data[0] & 0x0F);
 
-        if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_START)
+        if (messageModel->messageType == CANFTP_MESSAGE_SERVER_BLOCKCONTROL_START)
         {
             messageModel->start.blockIndex = (CanFTP_BlockIndex_t)(
                   (CanFTP_BlockIndex_t)((messageCan->data[0] >> 4) & 0x0F) 
@@ -24,7 +24,7 @@ void CanFTP_Message_Server_BlockControl_Unpack(CanFTP_Message_Server_BlockContro
                 | (CanFTP_BlockLength_t)((messageCan->data[5] >> 0) & 0x7F) << 4
             );
         }
-        else if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_FINISH)
+        else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_BLOCKCONTROL_FINISH)
         {
             messageModel->start.blockIndex = (CanFTP_BlockIndex_t)(
                   (CanFTP_BlockIndex_t)((messageCan->data[0] >> 4) & 0x0F) 
@@ -34,7 +34,7 @@ void CanFTP_Message_Server_BlockControl_Unpack(CanFTP_Message_Server_BlockContro
                 | (CanFTP_BlockIndex_t)((messageCan->data[4] >> 0) & 0x0F) << 28
             );
         }
-        else if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_FEEDBACKACK)
+        else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_BLOCKCONTROL_FEEDBACKACK)
         {
             messageModel->feedbackAck.deviceCode = (CanFTP_DeviceIdentifier_t)(
                   (CanFTP_DeviceIdentifier_t)((messageCan->data[0] >> 4) & 0x0F) 
@@ -59,7 +59,7 @@ void CanFTP_Message_Server_BlockControl_Pack(CanFTP_Message_Server_BlockControl_
     {
         messageDataVector[0] |= messageModel->messageType & 0x0F;
 
-        if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_START)
+        if (messageModel->messageType == CANFTP_MESSAGE_SERVER_BLOCKCONTROL_START)
         {
             messageDataVector[0] |= ((messageModel->start.blockIndex >> 0) & 0x0F) << 4;
             messageDataVector[1] |= ((messageModel->start.blockIndex >> 4) & 0xFF) << 0;
@@ -69,7 +69,7 @@ void CanFTP_Message_Server_BlockControl_Pack(CanFTP_Message_Server_BlockControl_
                                     | (((messageModel->start.blockLength >> 0) & 0x0F) << 4);
             messageDataVector[5] |= (((messageModel->start.blockLength >> 4) & 0x7F) << 0);
         }
-        else if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_FINISH)
+        else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_BLOCKCONTROL_FINISH)
         {
             messageDataVector[0] |= ((messageModel->finish.blockIndex >> 0) & 0x0F) << 4;
             messageDataVector[1] |= ((messageModel->finish.blockIndex >> 4) & 0xFF) << 0;
@@ -77,7 +77,7 @@ void CanFTP_Message_Server_BlockControl_Pack(CanFTP_Message_Server_BlockControl_
             messageDataVector[3] |= ((messageModel->finish.blockIndex >> 20) & 0xFF) << 0;
             messageDataVector[4] |= (((messageModel->finish.blockIndex >> 28) & 0x0F) << 0);
         }
-        else if (messageModel->messageType == CANFT_MESSAGE_SERVER_BLOCKCONTROL_FEEDBACKACK)
+        else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_BLOCKCONTROL_FEEDBACKACK)
         {
             messageDataVector[0] |= ((messageModel->feedbackAck.deviceCode >> 0) & 0x0F) << 4;
             messageDataVector[1] |= (((messageModel->feedbackAck.deviceCode >> 4) & 0x0F) << 0)

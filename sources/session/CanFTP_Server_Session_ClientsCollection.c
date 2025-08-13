@@ -159,7 +159,7 @@ CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsRegistratio
         // В случае не прохождения регистрации, клиент удаляется
         if (collection->clients[clientIndex].statuses.isRegistrated != CANFTP_TRUE)
         {
-            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_REGISTRATIONFAIL);
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_REGISTRATIONFAILED);
         }
         else
         {
@@ -341,7 +341,7 @@ void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnstarted(CanFTP_Serv
         // В случае не прохождения регистрации, клиент удаляется
         if (collection->clients[clientIndex].statuses.isBlockStarted != CANFTP_TRUE)
         {
-            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_SESSIONFINISHINGFAILED);
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_BLOCKSTARTINGFAILED);
         }
     }
 }
@@ -381,10 +381,10 @@ void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnfinished(CanFTP_Ser
     for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
     {
         // В случае не прохождения регистрации, клиент удаляется
-        if (collection->clients[clientIndex].statuses.isBlockFinished == CANFTP_TRUE
-            && collection->clients[clientIndex].statuses.isNextBlockReady == CANFTP_TRUE)
+        if (collection->clients[clientIndex].statuses.isBlockFinished != CANFTP_TRUE
+            || collection->clients[clientIndex].statuses.isNextBlockReady != CANFTP_TRUE)
         {
-            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_SESSIONFINISHINGFAILED);
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_BLOCKFINISHINFFAILED);
         }
     }
 }

@@ -11,11 +11,11 @@ void CanFTP_Message_Client_BlockControl_Unpack(CanFTP_Message_Client_BlockContro
         messageModel->deviceCode = CanFTP_CanIdentifier_UnpackDeviceCode(messageCan->id);
         messageModel->messageType = (CanFTP_Message_Client_BlockControl_Type_t)(messageCan->data[0] & 0x0F);
 
-        if (messageModel->messageType == CANFT_MESSAGE_CLIENT_BLOCKCONTROL_START)
+        if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_START)
         {
             // Ничего не делаем
         }
-        else if (messageModel->messageType == CANFT_MESSAGE_CLIENT_BLOCKCONTROL_FINISH)
+        else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_FINISH)
         {
             messageModel->finishBlockAck.blockHandlingStatus = (CanFTP_ClientBlockHandlingStatus_t)((messageCan->data[0] >> 4) & 0x0F);
         }
@@ -36,11 +36,11 @@ void CanFTP_Message_Client_BlockControl_Pack(CanFTP_Message_Client_BlockControl_
     {
         messageDataVector[0] |= messageModel->messageType & 0x0F;
 
-        if (messageModel->messageType == CANFT_MESSAGE_CLIENT_BLOCKCONTROL_START)
+        if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_START)
         {
             // Ничего не делаем
         }
-        else if (messageModel->messageType == CANFT_MESSAGE_CLIENT_BLOCKCONTROL_FINISH)
+        else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_FINISH)
         {
             messageDataVector[0] |= (messageModel->finishBlockAck.blockHandlingStatus & 0x0F) << 4;
         }
