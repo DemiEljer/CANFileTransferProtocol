@@ -91,6 +91,8 @@ CanFTP_Server_Session_Client_t* CanFTP_Server_Session_ClientsCollection_GetClien
     else
     {
         CanFTP_ThrowError();
+
+        return CANFTP_NULL;
     }
 }
 /*

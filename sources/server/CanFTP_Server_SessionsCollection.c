@@ -132,7 +132,16 @@ CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_CreateNewSession(CanFT
 */
 CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_GetSessionByCode(CanFTP_Server_SessionsCollection_t* collection, CanFTP_SessionCode_t sessionCode)
 {
-    return collection->sessions[sessionCode];
+    if (sessionCode >= CANFTP_SERVER_SESSIONS_MAXCOUNT)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_NULL;
+    }
+    else
+    {
+        return collection->sessions[sessionCode];
+    }
 }
 /*
     Остановить активные сессии
@@ -184,6 +193,8 @@ CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_GetActiveSessionByInde
 {
     if (index >= collection->activeSessionsCount)
     {
+        CanFTP_ThrowError();
+
         return CANFTP_NULL;
     }
     else
