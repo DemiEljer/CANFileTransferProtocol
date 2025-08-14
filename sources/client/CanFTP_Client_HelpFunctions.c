@@ -8,6 +8,7 @@ CanFTP_Logical_t CanFTP_Client_IsInActiveSession(CanFTP_Client_t* client)
     return CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_REGISTRATED
             || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_CONFIGURED
             || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_STARTED
+            || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_STARTED
             || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_RECIEVING
             || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_FINISHED
             || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY

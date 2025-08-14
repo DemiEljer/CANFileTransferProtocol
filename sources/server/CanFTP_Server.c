@@ -6,6 +6,13 @@
 */
 void CanFTP_Server_Init(CanFTP_Server_t *server)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     server->state = (CanFTP_ServerState_t*)&(server->fms.fms.state);
     // Инициализация обработчиков состояний
     {
@@ -70,6 +77,13 @@ void CanFTP_Server_Init(CanFTP_Server_t *server)
 */
 void CanFTP_Server_Invoke(CanFTP_Server_t *server)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }    
+
     CanFTP_FinalStateMachine_Invoke(CanFTP_FinalStateMachine_Cast(server));
 }
 /*
@@ -77,6 +91,13 @@ void CanFTP_Server_Invoke(CanFTP_Server_t *server)
 */
 void CanFTP_Server_RecieveCanMessage(CanFTP_Server_t *server, CanFTP_CanMessage_t* canMessage)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     CanFTP_Messages_Hub_RecieveMessage(&(server->messagesHub), canMessage, server);
 }
 /*
@@ -84,17 +105,37 @@ void CanFTP_Server_RecieveCanMessage(CanFTP_Server_t *server, CanFTP_CanMessage_
 */
 CanFTP_Logical_t CanFTP_Server_StartPing(CanFTP_Server_t *server, CanFTP_Logical_t requestLogicLocking)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_FALSE;
+    }
+
     if (CanFTP_Server_PingPermition(server))
     {
         server->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
         server->agents.pingController.requsts.terminationRequest = requestLogicLocking == CANFTP_FALSE ? CANFTP_TERMINATIONREQUEST_NOTERMINATION : CANFTP_TERMINATIONREQUEST_TERMINATE;
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
     }
 }
 /*
     Запустить процесс разблокировки логик клиентов
 */
-CanFTP_Logical_t CanFTP_Server_StartRelease(CanFTP_Server_t *server)
+void CanFTP_Server_StartRelease(CanFTP_Server_t *server)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     server->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
     server->agents.pingController.requsts.terminationRequest = CANFTP_TERMINATIONREQUEST_RELEASE;
 }
@@ -103,6 +144,13 @@ CanFTP_Logical_t CanFTP_Server_StartRelease(CanFTP_Server_t *server)
 */
 CanFTP_LinkedList_ElementsCount_t CanFTP_Server_GetClientsCount(CanFTP_Server_t *server)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return 0;
+    }
+
     return server->clients.elementsCount;
 }
 /*
@@ -110,6 +158,13 @@ CanFTP_LinkedList_ElementsCount_t CanFTP_Server_GetClientsCount(CanFTP_Server_t 
 */
 CanFTP_Server_Client_t* CanFTP_Server_GetClientByIndex(CanFTP_Server_t *server, CanFTP_LinkedList_ElementsCount_t clientIndex)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_NULL;
+    }
+
     return CanFTP_Server_ClientsCollection_GetAt(&(server->clients), clientIndex);
 }
 /*
@@ -117,6 +172,13 @@ CanFTP_Server_Client_t* CanFTP_Server_GetClientByIndex(CanFTP_Server_t *server, 
 */
 void CanFTP_Server_StopPing(CanFTP_Server_t *server)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     server->agents.pingController.requsts.requestPinging = CANFTP_FALSE;
     server->agents.pingController.requsts.terminationRequest = CANFTP_TERMINATIONREQUEST_NOTERMINATION;
 }
@@ -125,6 +187,13 @@ void CanFTP_Server_StopPing(CanFTP_Server_t *server)
 */
 CanFTP_Server_Session_t* CanFTP_Server_CreateNewSession(CanFTP_Server_t *server)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_NULL;
+    }
+
     if (CanFTP_Server_CreateSessionPermition(server))
     {
         CanFTP_Server_Session_t* newSession = CanFTP_Server_SessionsCollection_CreateNewSession(&(server->sessions), server);
@@ -153,6 +222,13 @@ CanFTP_Server_Session_t* CanFTP_Server_CreateNewSession(CanFTP_Server_t *server)
 */
 CanFTP_SessionCode_t CanFTP_Server_GetActiveSessionsCount(CanFTP_Server_t *server)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return 0;
+    }
+
     return server->sessions.activeSessionsCount;
 }
 /*
@@ -160,5 +236,12 @@ CanFTP_SessionCode_t CanFTP_Server_GetActiveSessionsCount(CanFTP_Server_t *serve
 */
 CanFTP_Server_Session_t* CanFTP_Server_GetActiveSessionByIndex(CanFTP_Server_t *server, CanFTP_SessionCode_t index)
 {
+    if (server == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_NULL;
+    }
+
     return CanFTP_Server_SessionsCollection_GetActiveSessionByIndex(&(server->sessions), index);
 }

@@ -7,6 +7,13 @@
 */
 void CanFTP_Client_Init(CanFTP_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }    
+
     client->state = (CanFTP_ClientState_t*)&(client->fms.fms.state);
     // Инициализация обработчиков состояний
     {
@@ -122,6 +129,13 @@ void CanFTP_Client_Init(CanFTP_Client_t *client)
 */
 void CanFTP_Client_Invoke(CanFTP_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }    
+
     CanFTP_FinalStateMachine_Invoke(CanFTP_FinalStateMachine_Cast(client));
 }
 /*
@@ -129,6 +143,13 @@ void CanFTP_Client_Invoke(CanFTP_Client_t *client)
 */
 void CanFTP_Client_RecieveCanMessage(CanFTP_Client_t *client, CanFTP_CanMessage_t* canMessage)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }    
+
     CanFTP_Messages_Hub_RecieveMessage(&(client->messagesHub), canMessage, client);
 }
 /*
@@ -136,6 +157,13 @@ void CanFTP_Client_RecieveCanMessage(CanFTP_Client_t *client, CanFTP_CanMessage_
 */
 void CanFTP_Client_InitRanmod(CanFTP_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }    
+
     CanFTP_Random_Init(&(client->agents.random), client->devicveConfig.serialNumber);
 }
 /*
@@ -143,6 +171,13 @@ void CanFTP_Client_InitRanmod(CanFTP_Client_t *client)
 */
 void CanFTP_Client_TerminateSession(CanFTP_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }    
+
     client->agents.sessionController.requsts.requestSession = CANFTP_FALSE;
 }
 /*
@@ -150,6 +185,13 @@ void CanFTP_Client_TerminateSession(CanFTP_Client_t *client)
 */
 void CanFTP_Client_LockLogic(CanFTP_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }    
+
     if (client->callbacks.lockLogicRequestCallback != CANFTP_NULL)
     {
         client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_TRUE;
@@ -160,6 +202,13 @@ void CanFTP_Client_LockLogic(CanFTP_Client_t *client)
 */
 void CanFTP_Client_UnlockLogic(CanFTP_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }    
+
     if (client->callbacks.unlockLogicRequestCallback != CANFTP_NULL)
     {
         client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_FALSE;
@@ -170,6 +219,13 @@ void CanFTP_Client_UnlockLogic(CanFTP_Client_t *client)
 */
 CanFTP_Logical_t CanFTP_Client_CheckIsPinging(CanFTP_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_FALSE;
+    } 
+
     return CanFTP_Client_IsPinging(client);
 }
 /*
@@ -177,5 +233,12 @@ CanFTP_Logical_t CanFTP_Client_CheckIsPinging(CanFTP_Client_t *client)
 */
 CanFTP_Logical_t CanFTP_Client_CheckIsInSession(CanFTP_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_FALSE;
+    }
+
     return CanFTP_Client_IsInActiveSession(client);
 }

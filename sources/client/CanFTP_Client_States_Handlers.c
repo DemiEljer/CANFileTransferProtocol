@@ -600,7 +600,7 @@ uint32_t CanFTP_Client_State_BLOCK_STARTED_Body(CanFTP_FinalStateMachine_t *fms,
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_ClientState_t resultState = CANFTP_CLIENTSTATE_BLOCK_RECIEVING;
+    CanFTP_ClientState_t resultState = CANFTP_CLIENTSTATE_BLOCK_STARTED;
 
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)

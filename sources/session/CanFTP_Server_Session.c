@@ -6,6 +6,13 @@
 */
 void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, CanFTP_SessionCode_t sessionCode)
 {
+    if (session == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     session->server = server;
     session->code = sessionCode;
     session->status = CANFTP_SESSIONSTATUS_OK;
@@ -103,6 +110,8 @@ void CanFTP_Server_Session_Dispose(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return;
     }
 
@@ -120,6 +129,8 @@ void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return;
     }
 
@@ -135,6 +146,8 @@ void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *sessio
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return;
     }
 
@@ -151,6 +164,8 @@ void CanFTP_Server_Session_InitNewSoftVersion(CanFTP_Server_Session_t *session, 
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return;
     }
 
@@ -163,6 +178,8 @@ void CanFTP_Server_Session_Invoke(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return;
     }
 
@@ -175,6 +192,8 @@ void CanFTP_Server_Session_Start(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return;
     }
 
@@ -187,6 +206,8 @@ void CanFTP_Server_Session_Stop(CanFTP_Server_Session_t *session)
 {       
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return;
     }
 
@@ -199,6 +220,8 @@ void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return;
     }
 
@@ -208,10 +231,12 @@ void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session)
 /*
     Получить процент завршения работы сессии
 */
-float CanFTP_Server_Session_GetFinishingPercent(CanFTP_Server_Session_t *session)
+float CanFTP_Server_Session_GetCompletingPercent(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return 0.0F;
     }
 
@@ -240,6 +265,8 @@ CanFTP_Logical_t CanFTP_Server_Session_CheckIsActive(CanFTP_Server_Session_t *se
 {
     if (session == CANFTP_NULL)
     {
+        CanFTP_ThrowError();
+
         return CANFTP_FALSE;
     }
 
@@ -250,6 +277,13 @@ CanFTP_Logical_t CanFTP_Server_Session_CheckIsActive(CanFTP_Server_Session_t *se
 */
 CanFTP_DeviceCode_t CanFTP_Server_Session_GetClientsCount(CanFTP_Server_Session_t *session)
 {
+    if (session == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return 0;
+    }
+
     return session->clients.clientsCount;
 }
 /*
@@ -257,6 +291,13 @@ CanFTP_DeviceCode_t CanFTP_Server_Session_GetClientsCount(CanFTP_Server_Session_
 */
 CanFTP_DeviceCode_t CanFTP_Server_Session_GetActiveClientsCount(CanFTP_Server_Session_t *session)
 {
+    if (session == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return 0;
+    }
+
     return CanFTP_Server_Session_ClientsCollection_GetNotDisposedCount(&(session->clients));
 }
 /*
@@ -264,5 +305,12 @@ CanFTP_DeviceCode_t CanFTP_Server_Session_GetActiveClientsCount(CanFTP_Server_Se
 */
 CanFTP_Server_Session_Client_t* CanFTP_Server_Session_GetClientByIndex(CanFTP_Server_Session_t *session, CanFTP_DeviceCode_t index)
 {
+    if (session == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_NULL;
+    }
+
     return CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), index);
 }

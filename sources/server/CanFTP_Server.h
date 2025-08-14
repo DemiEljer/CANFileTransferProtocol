@@ -22,7 +22,7 @@ CanFTP_Logical_t CanFTP_Server_StartPing(CanFTP_Server_t *server, CanFTP_Logical
 /*
     Запустить процесс разблокировки логик клиентов
 */
-CanFTP_Logical_t CanFTP_Server_StartRelease(CanFTP_Server_t *server);
+void CanFTP_Server_StartRelease(CanFTP_Server_t *server);
 /*
     Остановить процесс Ping
 */

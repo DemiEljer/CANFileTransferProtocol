@@ -149,8 +149,6 @@ CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_GetSessionByCode(CanFT
 CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_TerminateActiveSessions(CanFTP_Server_SessionsCollection_t* collection)
 {
     CanFTP_SessionCode_t i = 0;
-    // Количество активных сессий до проверки
-    CanFTP_SessionCode_t previouseActiveSessionsCount = collection->activeSessionsCount;
     // Счетчик активных проверенных сессий
     CanFTP_SessionCode_t checkedActiveSessionsCount = 0;
     // Проверка только в том случае, если есть активные сессии
@@ -160,26 +158,13 @@ CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_TerminateActiveSession
         {
             if (collection->sessions[i] != CANFTP_NULL)
             {
-                // Удаляем сессию, если выставлен соответсвующий статус
-                if (collection->sessions[i]->statuses.canBeDisposed == CANFTP_TRUE)
-                {
-                    CanFTP_Server_Session_Dispose(collection->sessions[i]);
-                    // Удаляем сессию из памяти
-                    free(collection->sessions[i]);
-                    // Обнуляем указатель на сессию
-                    collection->sessions[i] = CANFTP_NULL;
-                    // Уменьшаем счетчик активных сессий
-                    collection->activeSessionsCount--;
-                }
-                else
-                {
-                    CanFTP_Server_Session_Delete(collection->sessions[i]);
-                }
+                // Удаление сессии
+                CanFTP_Server_Session_Delete(collection->sessions[i]);
                 // Увеличиваем счетчик активных проверенных сессий
                 checkedActiveSessionsCount++;
             }
             // Проверка граничных условий прекращения дальнейшей проверки
-            if (checkedActiveSessionsCount == previouseActiveSessionsCount)
+            if (checkedActiveSessionsCount == collection->activeSessionsCount)
             {
                 break;
             }

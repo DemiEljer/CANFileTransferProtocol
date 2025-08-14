@@ -42,7 +42,7 @@ void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session);
 /*
     Получить процент завршения работы сессии
 */
-float CanFTP_Server_Session_GetFinishingPercent(CanFTP_Server_Session_t *session);
+float CanFTP_Server_Session_GetCompletingPercent(CanFTP_Server_Session_t *session);
 /*
     Проверить, находится ли сессия в активном состоянии
 */
