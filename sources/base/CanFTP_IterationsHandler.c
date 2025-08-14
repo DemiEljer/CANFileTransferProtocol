@@ -28,5 +28,5 @@ CanFTP_Logical_t CanFTP_IterationsHandler_Handle(CanFTP_IterationsHandler_t *con
 */
 CanFTP_Logical_t CanFTP_IterationsHandler_CheckCount(CanFTP_IterationsHandler_t *controller)
 {
-    return controller->currentIterationsCount > controller->maxIterationsCount;
+    return controller->currentIterationsCount <= controller->maxIterationsCount;
 }

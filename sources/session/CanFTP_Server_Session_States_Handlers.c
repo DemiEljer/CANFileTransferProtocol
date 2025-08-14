@@ -151,7 +151,7 @@ uint32_t CanFTP_Server_Session_State_REGISTRATING_Body(CanFTP_FinalStateMachine_
 
         if (currentClient != CANFTP_NULL)
         {
-            if (currentClient->statuses.isConfigurated
+            if (currentClient->statuses.isRegistrated
                 || !CanFTP_Server_Session_Client_IsInSession(currentClient))
             {
                 // В случае, если клиент зарегистрирован или вышел из сессии, переходим к другому
@@ -388,7 +388,7 @@ void CanFTP_Server_Session_State_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
     // Обратный вызов завершения сессии
     if (session->callbacks.sessionFinishedCallback != CANFTP_NULL)
     {
-        session->callbacks.sessionFinishedCallback(session->server, session, session->status);
+        session->callbacks.sessionFinishedCallback(session->server, session, session->status, CanFTP_Server_Session_ClientsCollection_GetNotDisposedCount(&(session->clients)));
     }
 
     DEBUG_SESSION_PRINTSTATE("FINISHED", session->code)
@@ -597,10 +597,8 @@ uint32_t CanFTP_Server_Session_State_BLOCK_FINISHING_Body(CanFTP_FinalStateMachi
     // Верификация прошедших регистрацию клиентов
     else if (CanFTP_Server_Session_ClientsCollection_CheckClientsBlockFinished(&(session->clients)))
     {
-        if (CanFTP_Server_Session_Agent_BlockConroller_ResetBlockFlagsIfRequested(&(session->agents.blockController)))
-        {
-            CanFTP_Session_FileBlock_ResetFramesFlags(&(session->agents.blockController.fileBlock));
-        }
+        CanFTP_Server_Session_Agent_BlockConroller_ResetBlockFlagsIfRequested(&(session->agents.blockController));
+
         // Проверка, что были приняты все субблоки
         if (CanFTP_Session_FileBlock_VerifySubblocks(&(session->agents.blockController.fileBlock)))
         {
@@ -608,7 +606,7 @@ uint32_t CanFTP_Server_Session_State_BLOCK_FINISHING_Body(CanFTP_FinalStateMachi
             // Если передан весь файл, то завершаем сессию
             if (CanFTP_Server_Session_Agent_BlockConroller_NextBlock(&(session->agents.blockController)) >= session->fileConfiguration.fileLength)
             {
-                resultState = CANFTP_SESSIONSTATE_BLOCK_FINISHING;
+                resultState = CANFTP_SESSIONSTATE_FINISHING;
             }
             else
             {

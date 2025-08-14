@@ -16,7 +16,7 @@ void CanFTP_Message_Server_SessionControl_Unpack(CanFTP_Message_Server_SessionCo
                   (CanFTP_PageIndex_t)((messageCan->data[0] >> 4) & 0x0F) << 0
                 | (CanFTP_PageIndex_t)((messageCan->data[1] >> 0) & 0x0F) << 4
             );
-            messageModel->configuration.pageIndex = (CanFTP_FileLength_t)(
+            messageModel->configuration.fileLength = (CanFTP_FileLength_t)(
                   (CanFTP_FileLength_t)((messageCan->data[1] >> 4) & 0x0F) << 0
                 | (CanFTP_FileLength_t)((messageCan->data[2] >> 0) & 0xFF) << 4
                 | (CanFTP_FileLength_t)((messageCan->data[3] >> 0) & 0xFF) << 12
@@ -36,9 +36,9 @@ void CanFTP_Message_Server_SessionControl_Unpack(CanFTP_Message_Server_SessionCo
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_FINISH)
         {
-            messageModel->finish.sessionStatus = (CanFTP_ClientSessionAckStatus_t)(
-                  (CanFTP_ClientSessionAckStatus_t)((messageCan->data[0] >> 4) & 0x0F) << 0
-                | (CanFTP_ClientSessionAckStatus_t)((messageCan->data[1] >> 0) & 0x0F) << 4
+            messageModel->finish.sessionStatus = (CanFTP_SessionStatus_t)(
+                  (CanFTP_SessionStatus_t)((messageCan->data[0] >> 4) & 0x0F) << 0
+                | (CanFTP_SessionStatus_t)((messageCan->data[1] >> 0) & 0x0F) << 4
             );
             messageModel->finish.newSoftVersion.lowerPart = (CanFTP_DeviceSoftwareVersionPart_t)(
                   (CanFTP_DeviceSoftwareVersionPart_t)((messageCan->data[1] >> 4) & 0x0F) << 0
@@ -55,9 +55,9 @@ void CanFTP_Message_Server_SessionControl_Unpack(CanFTP_Message_Server_SessionCo
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_DELETECLIENT)
         {
-            messageModel->deleteClient.sessionStatus = (CanFTP_ClientSessionAckStatus_t)(
-                  (CanFTP_ClientSessionAckStatus_t)((messageCan->data[0] >> 4) & 0x0F) << 0
-                | (CanFTP_ClientSessionAckStatus_t)((messageCan->data[1] >> 0) & 0x0F) << 4
+            messageModel->deleteClient.sessionStatus = (CanFTP_SessionStatus_t)(
+                  (CanFTP_SessionStatus_t)((messageCan->data[0] >> 4) & 0x0F) << 0
+                | (CanFTP_SessionStatus_t)((messageCan->data[1] >> 0) & 0x0F) << 4
             );
             messageModel->deleteClient.deviceCode = (CanFTP_DeviceCode_t)(
                   (CanFTP_DeviceCode_t)((messageCan->data[1] >> 4) & 0x0F) << 0
@@ -85,11 +85,11 @@ void CanFTP_Message_Server_SessionControl_Pack(CanFTP_Message_Server_SessionCont
         {
             messageDataVector[0] |= ((messageModel->configuration.pageIndex >> 0) & 0x0F) << 4;
             messageDataVector[1] |= (((messageModel->configuration.pageIndex >> 4) & 0x0F) << 0) 
-                                    | (((messageModel->configuration.pageIndex >> 0) & 0x0F) << 4);
-            messageDataVector[2] |= (((messageModel->configuration.pageIndex >> 4) & 0xFF) << 0);
-            messageDataVector[3] |= (((messageModel->configuration.pageIndex >> 12) & 0xFF) << 0);
-            messageDataVector[4] |= (((messageModel->configuration.pageIndex >> 20) & 0xFF) << 0);
-            messageDataVector[5] |= (((messageModel->configuration.pageIndex >> 28) & 0x0F) << 0)
+                                    | (((messageModel->configuration.fileLength >> 0) & 0x0F) << 4);
+            messageDataVector[2] |= (((messageModel->configuration.fileLength >> 4) & 0xFF) << 0);
+            messageDataVector[3] |= (((messageModel->configuration.fileLength >> 12) & 0xFF) << 0);
+            messageDataVector[4] |= (((messageModel->configuration.fileLength >> 20) & 0xFF) << 0);
+            messageDataVector[5] |= (((messageModel->configuration.fileLength >> 28) & 0x0F) << 0)
                                     | (((messageModel->configuration.repeateBlockCount >> 0) & 0x0F) << 4);
             messageDataVector[6] |= (((messageModel->configuration.repeateBlockCount >> 4) & 0x03) << 0)
                                     | (((messageModel->configuration.repeateAckCount >> 0) & 0x3F) << 2);
@@ -101,7 +101,7 @@ void CanFTP_Message_Server_SessionControl_Pack(CanFTP_Message_Server_SessionCont
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_FINISH)
         {
-            messageDataVector[0] = ((messageModel->finish.sessionStatus >> 0) & 0x0F) << 4;
+            messageDataVector[0] |= ((messageModel->finish.sessionStatus >> 0) & 0x0F) << 4;
             messageDataVector[1] |= (((messageModel->finish.sessionStatus >> 4) & 0x0F) << 0) 
                                     | (((messageModel->finish.newSoftVersion.lowerPart >> 0) & 0x0F) << 4);
             messageDataVector[2] |= (((messageModel->finish.newSoftVersion.lowerPart >> 4) & 0x0F) << 0)
@@ -112,7 +112,7 @@ void CanFTP_Message_Server_SessionControl_Pack(CanFTP_Message_Server_SessionCont
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_DELETECLIENT)
         {
-            messageDataVector[0] = ((messageModel->deleteClient.sessionStatus >> 0) & 0x0F) << 4;
+            messageDataVector[0] |= ((messageModel->deleteClient.sessionStatus >> 0) & 0x0F) << 4;
             messageDataVector[1] |= (((messageModel->deleteClient.sessionStatus >> 4) & 0x0F) << 0) 
                                     | (((messageModel->deleteClient.deviceCode >> 0) & 0x0F) << 4);
             messageDataVector[2] |= (((messageModel->deleteClient.deviceCode >> 4) & 0x0F) << 0);

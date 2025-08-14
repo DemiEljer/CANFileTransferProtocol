@@ -58,7 +58,7 @@ CanFTP_Logical_t CanFTP_Server_Session_Agent_BlockConroller_CheckAndResetClientR
 /*
     Сбросить флаги обработки блока, если запрошено
 */
-CanFTP_Logical_t CanFTP_Server_Session_Agent_BlockConroller_ResetBlockFlagsIfRequested(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
+void CanFTP_Server_Session_Agent_BlockConroller_ResetBlockFlagsIfRequested(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
 /*
     Сбросить контроллер перед отправкой блока
 */

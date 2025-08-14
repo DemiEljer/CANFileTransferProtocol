@@ -23,5 +23,13 @@ CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_CreateNewSession(CanFT
     Получить указатель на сессию по ее коду
 */
 CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_GetSessionByCode(CanFTP_Server_SessionsCollection_t* collection, CanFTP_SessionCode_t sessionCode);
+/*
+    Остановить активные сессии
+*/
+CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_TerminateActiveSessions(CanFTP_Server_SessionsCollection_t* collection);
+/*
+    Получить активную сессию по иднексу
+*/
+CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_GetActiveSessionByIndex(CanFTP_Server_SessionsCollection_t *collection, CanFTP_SessionCode_t index);
 
 #endif // CANFTP_SERVER_SESSIONSCOLLECTION_H_

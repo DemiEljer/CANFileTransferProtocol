@@ -28,9 +28,25 @@ CanFTP_Logical_t CanFTP_Server_StartRelease(CanFTP_Server_t *server);
 */
 void CanFTP_Server_StopPing(CanFTP_Server_t *server);
 /*
+    Получить количество клиентов
+*/
+CanFTP_LinkedList_ElementsCount_t CanFTP_Server_GetClientsCount(CanFTP_Server_t *server);
+/*
+    Получить клиента по индексу
+*/
+CanFTP_Server_Client_t* CanFTP_Server_GetClientByIndex(CanFTP_Server_t *server, CanFTP_LinkedList_ElementsCount_t clientIndex);
+/*
     Создать экземпляр сессии
 */
 CanFTP_Server_Session_t* CanFTP_Server_CreateNewSession(CanFTP_Server_t *server);
+/*
+    Получить количество активных сессий
+*/
+CanFTP_SessionCode_t CanFTP_Server_GetActiveSessionsCount(CanFTP_Server_t *server);
+/*
+    Получить активную сессию по иднексу
+*/
+CanFTP_Server_Session_t* CanFTP_Server_GetActiveSessionByIndex(CanFTP_Server_t *server, CanFTP_SessionCode_t index);
 
 
 #endif // CANFTP_SERVER_H_

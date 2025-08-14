@@ -120,6 +120,12 @@ uint32_t CanFTP_Server_State_SESSION_Body(CanFTP_FinalStateMachine_t *fms, void*
 
     CanFTP_ServerState_t resultState = CANFTP_SERVERSTATE_SESSION;
 
+    // Вызов логики остановки у даления сессий
+    if (server->agents.pingController.requsts.terminationRequest == CANFTP_TERMINATIONREQUEST_RELEASE)
+    {
+        CanFTP_Server_SessionsCollection_TerminateActiveSessions(&(server->sessions));
+    }
+    // Вызов или проверка активных сессий
     if (server->controls.doesServerInvokeSessions == CANFTP_TRUE)
     {
         // Вызлов логик созданных сессий

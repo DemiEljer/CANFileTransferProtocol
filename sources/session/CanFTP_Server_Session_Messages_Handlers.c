@@ -11,11 +11,7 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
     {
         if (message->messageType == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_REGISTRATIONACK)
         {
-            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_REGISTRATING)
-            {
-                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
-            }
-            else
+            if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_REGISTRATING)
             {
                 if (message->registrationAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
                 {
@@ -30,11 +26,7 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
         }
         else if (message->messageType == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATIONACK)
         {
-            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_CONFIGURING)
-            {
-                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
-            }
-            else
+            if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_CONFIGURING)
             {
                 if (message->configurationAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
                 {
@@ -51,11 +43,7 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
         }
         else if (message->messageType == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_STARTSESSIONACK)
         {
-            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_STARTING)
-            {
-                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
-            }
-            else
+            if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_STARTING)
             {
                 if (message->startSessionAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
                 {
@@ -88,22 +76,14 @@ void CanFTP_Server_Session_MessageRecieve_BlockControl(CanFTP_Server_Session_t* 
     {
         if (message->messageType == CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_START)
         {
-            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_BLOCK_STARTING)
-            {
-                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
-            }
-            else
+            if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_BLOCK_STARTING)
             {
                 client->statuses.isBlockStarted = CANFTP_TRUE;
             }
         }
         else if (message->messageType == CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_FINISH)
         {
-            if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_BLOCK_FINISHING)
-            {
-                CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
-            }
-            else
+            if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_BLOCK_FINISHING)
             {
                 client->statuses.isNextBlockReady = CANFTP_TRUE;
             }
@@ -119,17 +99,15 @@ void CanFTP_Server_Session_MessageRecieve_SubBlocksStatuses(CanFTP_Server_Sessio
 
     if (client != CANFTP_NULL)
     {
-        if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_BLOCK_FINISHING)
-        {
-            CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
-        }
-        else
+        if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_BLOCK_FINISHING)
         {
             CanFTP_Session_FileBlock_MergeFramesFlags(&(session->agents.blockController.fileBlock), message->subblocksReciecedFlags);
 
             CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(&(session->agents.blockController)
                 , message->deviceCode
                 , CANFTP_CLIENTBLOCKHANDLINGSTATUS_SUBBLOCKESMISSING);
+
+            client->statuses.isBlockFinished = CANFTP_TRUE;
         }
     }
 }
@@ -142,11 +120,7 @@ void CanFTP_Server_Session_MessageRecieve_BlockCRC(CanFTP_Server_Session_t* sess
 
     if (client != CANFTP_NULL)
     {
-        if (CanFTP_Server_Session_GetState(session) != CANFTP_SESSIONSTATE_BLOCK_FINISHING)
-        {
-            CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
-        }
-        else
+        if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_BLOCK_FINISHING)
         {
             if (CanFTP_Session_FileBlock_CompareCRC(session->agents.blockController.fileBlockCRC, message->crcElements))
             {
@@ -162,6 +136,8 @@ void CanFTP_Server_Session_MessageRecieve_BlockCRC(CanFTP_Server_Session_t* sess
                 // Выставление запроса на сброс флагов обработки блока
                 session->agents.blockController.requests.blockFramesFlagsResetRequst = CANFTP_TRUE;
             }
+
+            client->statuses.isBlockFinished = CANFTP_TRUE;
         }
     }
 }
@@ -209,7 +185,7 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
             messageModel.messageType = CANFTP_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION;
 
             messageModel.configuration.pageIndex = session->fileConfiguration.pageIndex;
-            messageModel.configuration.pageIndex = session->fileConfiguration.fileLength;
+            messageModel.configuration.fileLength = session->fileConfiguration.fileLength;
             messageModel.configuration.repeateBlockCount = session->configuration.repeateBlockCount;
             messageModel.configuration.repeateAckCount = session->configuration.repeateAckCount;
             messageModel.configuration.repeateInterval = session->configuration.repeateAckInterval;

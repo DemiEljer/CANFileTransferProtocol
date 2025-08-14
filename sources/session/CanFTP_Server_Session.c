@@ -94,13 +94,18 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
     }
     CanFTP_Server_Session_Configuration_Reset(&(session->configuration));
     CanFTP_Server_Session_ClientsCollection_Init(&(session->clients));
-    CanFTP_Server_Session_FileConfiguration_Init(&(session->fileConfiguration));
+    CanFTP_Server_Session_FileConfiguration_Reset(&(session->fileConfiguration));
 }
 /*
     Удалить сессию
 */
 void CanFTP_Server_Session_Dispose(CanFTP_Server_Session_t *session)
 {
+    if (session == CANFTP_NULL)
+    {
+        return;
+    }
+
     // Удаление клиентов
     CanFTP_Server_Session_ClientsCollection_Dispose(&(session->clients));
     // Гарантированное выставление флага, что сессия может быть удалена
@@ -113,6 +118,11 @@ void CanFTP_Server_Session_Dispose(CanFTP_Server_Session_t *session)
 */
 void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_DeviceCode_t clientsCount, CanFTP_Server_Client_t** serverClients)
 {
+    if (session == CANFTP_NULL)
+    {
+        return;
+    }
+
     CanFTP_Server_Session_ClientsCollection_InitClients(&(session->clients), session->code, clientsCount, serverClients);
     CanFTP_Server_Session_ClientsCollection_GetSoftVewrsion(&(session->clients), &(session->fileConfiguration.newSoftVersion));
 
@@ -123,6 +133,11 @@ void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_
 */
 void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session, CanFTP_PageIndex_t pageIndex, CanFTP_FileLength_t fileLength)
 {
+    if (session == CANFTP_NULL)
+    {
+        return;
+    }
+
     CanFTP_Server_Session_FileConfiguration_InitBaseParamns(&(session->fileConfiguration)
         , pageIndex
         , fileLength);
@@ -134,6 +149,11 @@ void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *sessio
 */
 void CanFTP_Server_Session_InitNewSoftVersion(CanFTP_Server_Session_t *session, CanFTP_SoftwareVersion_t* newSoftVersion)
 {
+    if (session == CANFTP_NULL)
+    {
+        return;
+    }
+
     CanFTP_SoftwareVersion_Copy(&(session->fileConfiguration.newSoftVersion), newSoftVersion);
 }
 /*
@@ -141,6 +161,11 @@ void CanFTP_Server_Session_InitNewSoftVersion(CanFTP_Server_Session_t *session, 
 */
 void CanFTP_Server_Session_Invoke(CanFTP_Server_Session_t *session)
 {
+    if (session == CANFTP_NULL)
+    {
+        return;
+    }
+
     CanFTP_FinalStateMachine_Invoke(CanFTP_FinalStateMachine_Cast(session));
 }
 /*
@@ -148,13 +173,23 @@ void CanFTP_Server_Session_Invoke(CanFTP_Server_Session_t *session)
 */
 void CanFTP_Server_Session_Start(CanFTP_Server_Session_t *session)
 {
+    if (session == CANFTP_NULL)
+    {
+        return;
+    }
+
     session->requests.startRequest = CANFTP_TRUE;
 }
 /*
     Запрос на остановка сессии
 */
 void CanFTP_Server_Session_Stop(CanFTP_Server_Session_t *session)
-{
+{       
+    if (session == CANFTP_NULL)
+    {
+        return;
+    }
+
     session->requests.stopRequest = CANFTP_TRUE;
 }
 /*
@@ -162,6 +197,11 @@ void CanFTP_Server_Session_Stop(CanFTP_Server_Session_t *session)
 */
 void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session)
 {
+    if (session == CANFTP_NULL)
+    {
+        return;
+    }
+
     session->requests.stopRequest = CANFTP_TRUE;
     session->requests.deleteRequest = CANFTP_TRUE;
 }
@@ -170,6 +210,11 @@ void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session)
 */
 float CanFTP_Server_Session_GetFinishingPercent(CanFTP_Server_Session_t *session)
 {
+    if (session == CANFTP_NULL)
+    {
+        return 0.0F;
+    }
+
     if (session->fileConfiguration.fileLength == 0)
     {
         return 1.0F;
@@ -187,4 +232,37 @@ float CanFTP_Server_Session_GetFinishingPercent(CanFTP_Server_Session_t *session
             return resultPercent;
         }
     }
+}
+/*
+    Проверить, находится ли сессия в активном состоянии
+*/
+CanFTP_Logical_t CanFTP_Server_Session_CheckIsActive(CanFTP_Server_Session_t *session)
+{
+    if (session == CANFTP_NULL)
+    {
+        return CANFTP_FALSE;
+    }
+
+    return CanFTP_Server_Session_IsActive(session);
+}
+/*
+    Получить количество клиентов
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_GetClientsCount(CanFTP_Server_Session_t *session)
+{
+    return session->clients.clientsCount;
+}
+/*
+    Получить количество активных клиентов
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_GetActiveClientsCount(CanFTP_Server_Session_t *session)
+{
+    return CanFTP_Server_Session_ClientsCollection_GetNotDisposedCount(&(session->clients));
+}
+/*
+    Получить клиента по индексу
+*/
+CanFTP_Server_Session_Client_t* CanFTP_Server_Session_GetClientByIndex(CanFTP_Server_Session_t *session, CanFTP_DeviceCode_t index)
+{
+    return CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), index);
 }

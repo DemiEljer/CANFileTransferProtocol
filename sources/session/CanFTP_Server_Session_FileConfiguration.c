@@ -1,9 +1,9 @@
 #include "CanFTP_Server_Session_FileConfiguration.h"
 
 /*
-    Инициализация конфигурации файла
+    Сбросить конфигурацию файла
 */
-void CanFTP_Server_Session_FileConfiguration_Init(CanFTP_Server_Session_FileConfiguration_t* configuration)
+void CanFTP_Server_Session_FileConfiguration_Reset(CanFTP_Server_Session_FileConfiguration_t* configuration)
 {
     configuration->pageIndex = 0;
     configuration->fileLength = 0;

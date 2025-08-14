@@ -22,7 +22,8 @@ typedef void (*CanFTP_Server_ClientFoundCallback_t)(CanFTP_Server_t* server, Can
 // Тип функции события завершения сессии
 typedef void (*CanFTP_Server_SessionFinishCallback_t)(CanFTP_Server_t* server
     , CanFTP_Server_Session_t* session
-    , CanFTP_SessionStatus_t status);
+    , CanFTP_SessionStatus_t status
+    , CanFTP_DeviceCode_t activeClientsCount);
 // Тип функции запроса установки параметров блока
 typedef void (*CanFTP_Server_GetFileBlockCallback_t)(CanFTP_Server_t* server
     , CanFTP_Server_Session_t* session

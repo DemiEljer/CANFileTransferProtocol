@@ -43,5 +43,21 @@ void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session);
     Получить процент завршения работы сессии
 */
 float CanFTP_Server_Session_GetFinishingPercent(CanFTP_Server_Session_t *session);
+/*
+    Проверить, находится ли сессия в активном состоянии
+*/
+CanFTP_Logical_t CanFTP_Server_Session_CheckIsActive(CanFTP_Server_Session_t *session);
+/*
+    Получить количество клиентов
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_GetClientsCount(CanFTP_Server_Session_t *session);
+/*
+    Получить количество активных клиентов
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_GetActiveClientsCount(CanFTP_Server_Session_t *session);
+/*
+    Получить клиента по индексу
+*/
+CanFTP_Server_Session_Client_t* CanFTP_Server_Session_GetClientByIndex(CanFTP_Server_Session_t *session, CanFTP_DeviceCode_t index);
 
 #endif // CANFTP_SERVER_SESSION_H_

@@ -62,6 +62,10 @@ void CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(CanFTP_Server_S
 */
 void CanFTP_Server_Session_ClientsCollection_Check(CanFTP_Server_Session_ClientsCollection_t* collection);
 /*
+    Получить количество ну удаленных клиентов
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_GetNotDisposedCount(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
     Проврить, что остались не удаленные клиенты
 */
 CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckIsNotDisposedLeft(CanFTP_Server_Session_ClientsCollection_t* collection);

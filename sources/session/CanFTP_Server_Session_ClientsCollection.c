@@ -47,10 +47,17 @@ void CanFTP_Server_Session_ClientsCollection_InitClients(CanFTP_Server_Session_C
     // Инициализация клиентов
     for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
     {
-        CanFTP_Server_Session_Client_Init(&(collection->clients[clientIndex])
-            , sessionCode
-            , serverClients[clientIndex]
-            , clientIndex);
+        if (serverClients[clientIndex] == CANFTP_NULL)
+        {
+            CanFTP_ThrowError();
+        }
+        else
+        {
+            CanFTP_Server_Session_Client_Init(&(collection->clients[clientIndex])
+                , sessionCode
+                , serverClients[clientIndex]
+                , clientIndex);
+        }
     }
 }
 /*
@@ -128,6 +135,24 @@ void CanFTP_Server_Session_ClientsCollection_Check(CanFTP_Server_Session_Clients
             CanFTP_Server_Session_Client_Dispose(&(collection->clients[clientIndex]));
         }
     }
+}
+/*
+    Получить количество ну удаленных клиентов
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_GetNotDisposedCount(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+    CanFTP_DeviceCode_t notDisposedCount = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        if (CanFTP_Server_Session_Client_IsInSession(&(collection->clients[clientIndex])))
+        {
+            notDisposedCount++;
+        }
+    }
+
+    return notDisposedCount;
 }
 /*
     Проврить, что остались не удаленные клиенты

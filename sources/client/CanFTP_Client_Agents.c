@@ -122,7 +122,7 @@ void CanFTP_Client_Agent_SessionController_SetSessionStatus(CanFTP_Client_Agent_
     // В случае возникновения ошибки, убирается запрос на активацию сессии
     if (agent->statuses.sessionStatus != CANFTP_SESSIONSTATUS_OK)
     {
-        agent->requsts.configurationRequest = CANFTP_FALSE;
+        agent->requsts.requestSession = CANFTP_FALSE;
     }
 }
 /*

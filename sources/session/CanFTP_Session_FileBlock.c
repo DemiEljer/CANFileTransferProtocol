@@ -359,7 +359,7 @@ CanFTP_Logical_t CanFTP_Session_FileBlock_CompareCRC(uint8_t* originCrcArray, ui
         }
     }
 
-    return CANFTP_FALSE;
+    return CANFTP_TRUE;
 }
 /*
     Очистить массив CRC-суммы

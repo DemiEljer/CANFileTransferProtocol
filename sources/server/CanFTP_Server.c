@@ -50,6 +50,10 @@ void CanFTP_Server_Init(CanFTP_Server_t *server)
     {
         CanFTP_Server_Agent_PingControler_Reset(&(server->agents.pingController));
     }
+    // Инициализация флагов управления
+    {
+        server->controls.doesServerInvokeSessions = CANFTP_FALSE;
+    }
     // Инициализация обратных вызовов
     {
         server->callbacks.clientFoundCallback = CANFTP_NULL;
@@ -57,8 +61,9 @@ void CanFTP_Server_Init(CanFTP_Server_t *server)
         server->callbacks.getFileBlockCallback = CANFTP_NULL;
         server->callbacks.clientReleaseCallback = CANFTP_NULL;
     }
+    CanFTP_Server_ClientsCollection_Init(&(server->clients));
+    CanFTP_Server_SessionsCollection_Init(&(server->sessions));
     CanFTP_Server_Session_Configuration_Reset(&(server->defaultSessionConfiguration));
-
 }
 /*
     Вызов логики обработки клиента
@@ -90,11 +95,22 @@ CanFTP_Logical_t CanFTP_Server_StartPing(CanFTP_Server_t *server, CanFTP_Logical
 */
 CanFTP_Logical_t CanFTP_Server_StartRelease(CanFTP_Server_t *server)
 {
-    if (CanFTP_Server_PingPermition(server))
-    {
-        server->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
-        server->agents.pingController.requsts.terminationRequest = CANFTP_TERMINATIONREQUEST_RELEASE;
-    }
+    server->agents.pingController.requsts.requestPinging = CANFTP_TRUE;
+    server->agents.pingController.requsts.terminationRequest = CANFTP_TERMINATIONREQUEST_RELEASE;
+}
+/*
+    Получить количество клиентов
+*/
+CanFTP_LinkedList_ElementsCount_t CanFTP_Server_GetClientsCount(CanFTP_Server_t *server)
+{
+    return server->clients.elementsCount;
+}
+/*
+    Получить клиента по индексу
+*/
+CanFTP_Server_Client_t* CanFTP_Server_GetClientByIndex(CanFTP_Server_t *server, CanFTP_LinkedList_ElementsCount_t clientIndex)
+{
+    return CanFTP_Server_ClientsCollection_GetAt(&(server->clients), clientIndex);
 }
 /*
     Остановить процесс Ping
@@ -102,6 +118,7 @@ CanFTP_Logical_t CanFTP_Server_StartRelease(CanFTP_Server_t *server)
 void CanFTP_Server_StopPing(CanFTP_Server_t *server)
 {
     server->agents.pingController.requsts.requestPinging = CANFTP_FALSE;
+    server->agents.pingController.requsts.terminationRequest = CANFTP_TERMINATIONREQUEST_NOTERMINATION;
 }
 /*
     Создать экземпляр сессии
@@ -130,4 +147,18 @@ CanFTP_Server_Session_t* CanFTP_Server_CreateNewSession(CanFTP_Server_t *server)
     {
         return CANFTP_NULL;
     }
+}
+/*
+    Получить количество активных сессий
+*/
+CanFTP_SessionCode_t CanFTP_Server_GetActiveSessionsCount(CanFTP_Server_t *server)
+{
+    return server->sessions.activeSessionsCount;
+}
+/*
+    Получить активную сессию по иднексу
+*/
+CanFTP_Server_Session_t* CanFTP_Server_GetActiveSessionByIndex(CanFTP_Server_t *server, CanFTP_SessionCode_t index)
+{
+    return CanFTP_Server_SessionsCollection_GetActiveSessionByIndex(&(server->sessions), index);
 }

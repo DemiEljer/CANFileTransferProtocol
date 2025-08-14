@@ -235,7 +235,7 @@ void CanFTP_Client_MessageRecieve_BlockControl(void* invoker, CanFTP_Message_Ser
             {
                 // В случае нарущения последовательности индексов блоков, выставляется ошибка
                 if (message->start.blockIndex != client->agents.sessionController.session.block.index
-                    && (message->start.blockIndex + 1) != client->agents.sessionController.session.block.index)
+                    && message->start.blockIndex != (client->agents.sessionController.session.block.index + 1))
                 {
                     CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_BLOCKSEQUENCEFAILED);
                 }
@@ -248,7 +248,7 @@ void CanFTP_Client_MessageRecieve_BlockControl(void* invoker, CanFTP_Message_Ser
                 else
                 {
                     // Сброс статуса приема блока, если передается следующий блок
-                    if ((message->start.blockIndex + 1) == client->agents.sessionController.session.block.index)
+                    if (message->start.blockIndex == (client->agents.sessionController.session.block.index + 1))
                     {
                         client->agents.sessionController.statuses.blockHandlingStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT;
                         client->agents.sessionController.statuses.newBlockIsHandling = CANFTP_TRUE;
@@ -437,10 +437,12 @@ void CanFTP_Client_MessageSend_BlockControl(CanFTP_Client_t* client)
 
         if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_STARTED)
         {
-            // Ничего не запроняем
+            messageModel.messageType = CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_START;
         }
         else if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY)
         {
+            messageModel.messageType = CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_FINISH;
+
             messageModel.finishBlockAck.blockHandlingStatus = client->agents.sessionController.statuses.blockHandlingStatus;
         }
     }

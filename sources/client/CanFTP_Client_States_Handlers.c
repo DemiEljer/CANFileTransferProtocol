@@ -30,6 +30,11 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
         if (client->callbacks.lockLogicRequestCallback != CANFTP_NULL)
         {
             client->agents.logicLockController.statuses.isLocked = client->callbacks.lockLogicRequestCallback(client);
+            // В случае, если не получилось заблокировать логику, снять запрос
+            if (!client->agents.logicLockController.statuses.isLocked)
+            {
+                client->agents.logicLockController.requsts.requestToLockLogic == CANFTP_FALSE;
+            }
         }
         else
         {
@@ -43,6 +48,11 @@ void CanFTP_Client_IterationEventHandler(CanFTP_FinalStateMachine_t *fms)
         if (client->callbacks.unlockLogicRequestCallback != CANFTP_NULL)
         {
             client->agents.logicLockController.statuses.isLocked = !client->callbacks.unlockLogicRequestCallback(client);
+            // В случае, если не получилось разблокировать логику, выставить запрос
+            if (client->agents.logicLockController.statuses.isLocked)
+            {
+                client->agents.logicLockController.requsts.requestToLockLogic == CANFTP_TRUE;
+            }
         }
         else
         {
@@ -499,7 +509,7 @@ void CanFTP_Client_State_SESSION_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
     // Проверка, что был передан весь файл
-    if (client->agents.sessionController.statuses.resultFileLength != client->agents.sessionController.session.configuration.fileLength)
+    if (client->agents.sessionController.statuses.resultFileLength < client->agents.sessionController.session.configuration.fileLength)
     {
         CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_FILEUNFINISHED);
     }

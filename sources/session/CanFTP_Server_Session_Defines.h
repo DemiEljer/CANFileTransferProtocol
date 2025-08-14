@@ -20,7 +20,8 @@ typedef void (*CanFTP_Server_Session_MessageSendCallback_t)(void* server, CanFTP
 // Тип функции события завершения сессии
 typedef void (*CanFTP_Server_Session_SessionFinishCallback_t)(void* server
     , CanFTP_Server_Session_t* session
-    , CanFTP_SessionStatus_t status);
+    , CanFTP_SessionStatus_t status
+    , CanFTP_DeviceCode_t activeClientsCount);
 // Тип функции запроса установки параметров блока
 typedef void (*CanFTP_Server_Session_GetFileBlockCallback_t)(void* server
     , CanFTP_Server_Session_t* session
