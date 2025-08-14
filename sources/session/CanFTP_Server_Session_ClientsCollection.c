@@ -47,17 +47,10 @@ void CanFTP_Server_Session_ClientsCollection_InitClients(CanFTP_Server_Session_C
     // Инициализация клиентов
     for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
     {
-        if (serverClients[clientIndex] == CANFTP_NULL)
-        {
-            CanFTP_ThrowError();
-        }
-        else
-        {
-            CanFTP_Server_Session_Client_Init(&(collection->clients[clientIndex])
-                , sessionCode
-                , serverClients[clientIndex]
-                , clientIndex);
-        }
+        CanFTP_Server_Session_Client_Init(&(collection->clients[clientIndex])
+            , sessionCode
+            , serverClients[clientIndex]
+            , clientIndex);
     }
 }
 /*

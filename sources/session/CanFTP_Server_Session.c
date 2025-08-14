@@ -115,12 +115,12 @@ void CanFTP_Server_Session_Dispose(CanFTP_Server_Session_t *session)
         return;
     }
 
-    // Удаление клиентов
-    CanFTP_Server_Session_ClientsCollection_Dispose(&(session->clients));
-    // Гарантированное выставление флага, что сессия может быть удалена
-    session->statuses.canBeDisposed = CANFTP_TRUE;
     // Выставление запросов на удаление
     CanFTP_Server_Session_Delete(session);
+    // Гарантированное выставление флага, что сессия может быть удалена
+    session->statuses.canBeDisposed = CANFTP_TRUE;
+    // Удаление клиентов
+    CanFTP_Server_Session_ClientsCollection_Dispose(&(session->clients));
 }
 /*
     Проициализовать клиентов, участвующих в сессии

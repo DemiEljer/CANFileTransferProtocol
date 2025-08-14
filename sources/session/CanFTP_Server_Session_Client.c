@@ -13,12 +13,6 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
 {
     client->assosiation.sessionCode = sessionCode;
     client->assosiation.deviceCode = clientCode;
-    // Связывание с клиентом на стороне сервера
-    if (serverClient != CANFTP_NULL)
-    {
-        client->serverClient = serverClient;
-        client->serverClient->isInSession = CANFTP_TRUE;
-    }
     // Инициализация статусов
     {
         client->statuses.isDisposed = CANFTP_FALSE;
@@ -30,6 +24,19 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
         client->statuses.isBlockStarted = CANFTP_FALSE;
         client->statuses.isBlockFinished = CANFTP_FALSE;
         client->statuses.isNextBlockReady = CANFTP_FALSE;
+    }
+    // Связывание с клиентом на стороне сервера
+    if (serverClient != CANFTP_NULL
+        && !CanFTP_Server_Client_IsInSession(serverClient))
+    {
+        client->serverClient = serverClient;
+        client->serverClient->isInSession = CANFTP_TRUE;
+    }
+    else
+    {
+        CanFTP_ThrowError();
+        // Выставляем флаг, что он уже удален
+        client->statuses.isDisposed = CANFTP_TRUE;
     }
     CanFTP_TimeTrigger_SetInterval(&(client->lostConnectionTrigger), CANFTP_SERVER_SESSION_LOSTCONNECTION_TIMEOUT);
     CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));

@@ -26,26 +26,26 @@ void CanFTP_Server_Session_IterationEventHandler(CanFTP_FinalStateMachine_t *fms
         {
             CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_NOCLIENTSLEFT);
         }
-    }
-    // Вызов событией особождения клиентов
-    if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
-    {
-        CanFTP_DeviceCode_t clientIndex = 0;
-
-        for (clientIndex = 0; clientIndex < session->clients.clientsCount; clientIndex++)
+        // Вызов событией особождения клиентов
+        if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
         {
-            CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), clientIndex);
-            // Вызов события освобождения клиента
-            if (client != CANFTP_NULL
-                && client->isDisposeEventCalled == CANFTP_FALSE
-                && !CanFTP_Server_Session_Client_IsInSession(client))
+            CanFTP_DeviceCode_t clientIndex = 0;
+
+            for (clientIndex = 0; clientIndex < session->clients.clientsCount; clientIndex++)
             {
-                // Выставления флага подтверждения вызова события
-                client->isDisposeEventCalled = CANFTP_TRUE;
-                // Отправка сообщения удаления клиента
-                CanFTP_Server_Session_MessageSend_ClientDelete(session, client);
-                // Вызов события
-                session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+                CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), clientIndex);
+                // Вызов события освобождения клиента
+                if (client != CANFTP_NULL
+                    && client->isDisposeEventCalled == CANFTP_FALSE
+                    && !CanFTP_Server_Session_Client_IsInSession(client))
+                {
+                    // Выставления флага подтверждения вызова события
+                    client->isDisposeEventCalled = CANFTP_TRUE;
+                    // Отправка сообщения удаления клиента
+                    CanFTP_Server_Session_MessageSend_ClientDelete(session, client);
+                    // Вызов события
+                    session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+                }
             }
         }
     }
@@ -390,6 +390,27 @@ void CanFTP_Server_Session_State_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
     if (session->callbacks.sessionFinishedCallback != CANFTP_NULL)
     {
         session->callbacks.sessionFinishedCallback(session->server, session, session->status, CanFTP_Server_Session_ClientsCollection_GetNotDisposedCount(&(session->clients)));
+    }
+    // Вызов событией особождения клиентов
+    if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
+    {
+        CanFTP_DeviceCode_t clientIndex = 0;
+
+        for (clientIndex = 0; clientIndex < session->clients.clientsCount; clientIndex++)
+        {
+            CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), clientIndex);
+            // Вызов события освобождения клиента
+            if (client != CANFTP_NULL
+                && client->isDisposeEventCalled == CANFTP_FALSE)
+            {
+                // Выставления флага подтверждения вызова события
+                client->isDisposeEventCalled = CANFTP_TRUE;
+                // Вызов удаления клиента
+                CanFTP_Server_Session_Client_Dispose(client);
+                // Вызов события
+                session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+            }
+        }
     }
 
     DEBUG_SESSION_PRINTSTATE("FINISHED", session->code)
