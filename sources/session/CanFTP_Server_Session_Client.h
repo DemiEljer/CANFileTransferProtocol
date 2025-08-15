@@ -26,6 +26,10 @@ void CanFTP_Server_Session_Client_Dispose(CanFTP_Server_Session_Client_t *client
 */
 void CanFTP_Server_Session_Client_SetSessionStatus(CanFTP_Server_Session_Client_t *client, CanFTP_SessionStatus_t status);
 /*
+    Получить статус сессии
+*/
+CanFTP_SessionStatus_t CanFTP_Server_Session_Client_GetSessionStatus(CanFTP_Server_Session_Client_t *client);
+/*
     Обновить параметры отпавки сообщений
 */
 void CanFTP_Server_Session_Client_UpdateSendingParams(CanFTP_Server_Session_Client_t *client

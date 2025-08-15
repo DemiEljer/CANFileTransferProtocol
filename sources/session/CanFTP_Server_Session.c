@@ -273,6 +273,34 @@ CanFTP_Logical_t CanFTP_Server_Session_CheckIsActive(CanFTP_Server_Session_t *se
     return CanFTP_Server_Session_IsActive(session);
 }
 /*
+    Проверить, что сессия может быть удалена
+*/
+CanFTP_Logical_t CanFTP_Server_Session_CheckCanBeDisposed(CanFTP_Server_Session_t *session)
+{
+    if (session == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_FALSE;
+    }
+
+    return session->statuses.canBeDisposed;
+}
+/*
+    Получить статус сессии
+*/
+CanFTP_SessionStatus_t CanFTP_Server_Session_GetStatus(CanFTP_Server_Session_t *session)
+{
+    if (session == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_SESSIONSTATUS_OK;
+    }
+
+    return session->status;
+}
+/*
     Получить количество клиентов
 */
 CanFTP_DeviceCode_t CanFTP_Server_Session_GetClientsCount(CanFTP_Server_Session_t *session)

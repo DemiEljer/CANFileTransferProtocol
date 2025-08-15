@@ -11,6 +11,13 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
     // Код клиента
     , CanFTP_DeviceCode_t clientCode)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     client->assosiation.sessionCode = sessionCode;
     client->assosiation.deviceCode = clientCode;
     // Инициализация статусов
@@ -52,6 +59,13 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
 */
 void CanFTP_Server_Session_Client_Prepare(CanFTP_Server_Session_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
 }
 /*
@@ -59,6 +73,13 @@ void CanFTP_Server_Session_Client_Prepare(CanFTP_Server_Session_Client_t *client
 */
 void CanFTP_Server_Session_Client_Dispose(CanFTP_Server_Session_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     if (CanFTP_Server_Session_Client_IsInSession(client))
     {
         client->serverClient->isInSession = CANFTP_FALSE;
@@ -70,10 +91,31 @@ void CanFTP_Server_Session_Client_Dispose(CanFTP_Server_Session_Client_t *client
 */
 void CanFTP_Server_Session_Client_SetSessionStatus(CanFTP_Server_Session_Client_t *client, CanFTP_SessionStatus_t status)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     if (client->statuses.sessionStatus == CANFTP_SESSIONSTATUS_OK)
     {
         client->statuses.sessionStatus = status;
     }
+}
+/*
+    Получить статус сессии
+*/
+CanFTP_SessionStatus_t CanFTP_Server_Session_Client_GetSessionStatus(CanFTP_Server_Session_Client_t *client)
+{
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_SESSIONSTATUS_OK;
+    }
+
+    return client->statuses.sessionStatus;
 }
 /*
     Обновить параметры отпавки сообщений
@@ -84,6 +126,13 @@ void CanFTP_Server_Session_Client_UpdateSendingParams(CanFTP_Server_Session_Clie
     // Количество отправляемых сообщений
     , CanFTP_IterationCounter_t maxCount)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     CanFTP_TimeTrigger_SetInterval(&(client->repeateSendingTrigger), interval);
     CanFTP_TimeTrigger_Update(&(client->repeateSendingTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(client->repeateSendingCounter), maxCount);
@@ -94,6 +143,13 @@ void CanFTP_Server_Session_Client_UpdateSendingParams(CanFTP_Server_Session_Clie
 */
 CanFTP_Logical_t CanFTP_Server_Session_Client_IsInSession(CanFTP_Server_Session_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_FALSE;
+    }
+
     return client->statuses.isDisposed == CANFTP_FALSE;
 }
 /*
@@ -101,6 +157,13 @@ CanFTP_Logical_t CanFTP_Server_Session_Client_IsInSession(CanFTP_Server_Session_
 */
 CanFTP_Logical_t CanFTP_Server_Session_Client_Check(CanFTP_Server_Session_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return CANFTP_FALSE;
+    }
+
     if (CanFTP_TimeTrigger_HasFired(&(client->lostConnectionTrigger)))
     {
         CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_LOSTCONNECTION);
@@ -121,6 +184,13 @@ CanFTP_Logical_t CanFTP_Server_Session_Client_Check(CanFTP_Server_Session_Client
 */
 void CanFTP_Server_Session_Client_NextBlockReset(CanFTP_Server_Session_Client_t *client)
 {
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
     client->statuses.isBlockStarted = CANFTP_FALSE;
     client->statuses.isBlockFinished = CANFTP_FALSE;
     client->statuses.isNextBlockReady = CANFTP_FALSE;

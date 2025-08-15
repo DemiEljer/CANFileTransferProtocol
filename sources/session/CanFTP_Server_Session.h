@@ -48,6 +48,14 @@ float CanFTP_Server_Session_GetCompletingPercent(CanFTP_Server_Session_t *sessio
 */
 CanFTP_Logical_t CanFTP_Server_Session_CheckIsActive(CanFTP_Server_Session_t *session);
 /*
+    Проверить, что сессия может быть удалена
+*/
+CanFTP_Logical_t CanFTP_Server_Session_CheckCanBeDisposed(CanFTP_Server_Session_t *session);
+/*
+    Получить статус сессии
+*/
+CanFTP_SessionStatus_t CanFTP_Server_Session_GetStatus(CanFTP_Server_Session_t *session);
+/*
     Получить количество клиентов
 */
 CanFTP_DeviceCode_t CanFTP_Server_Session_GetClientsCount(CanFTP_Server_Session_t *session);
