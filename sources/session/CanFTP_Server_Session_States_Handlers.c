@@ -637,7 +637,7 @@ uint32_t CanFTP_Server_Session_State_BLOCK_FINISHING_Body(CanFTP_FinalStateMachi
         }
         else
         {
-            if (CanFTP_IterationsHandler_CheckCount(&(session->agents.blockController.sendBlockCounter)))
+            if (CanFTP_IterationsHandler_Handle(&(session->agents.blockController.sendBlockCounter)))
             {
                 resultState = CANFTP_SESSIONSTATE_BLOCK_STARTING;
             }
