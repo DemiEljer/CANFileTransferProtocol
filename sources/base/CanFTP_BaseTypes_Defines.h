@@ -19,7 +19,7 @@ typedef uint32_t CanFTP_DeviceSerial_t;
 // Тип идентификатора устройства
 typedef uint16_t CanFTP_DeviceIdentifier_t;
 // Тип идентификатора устройства
-typedef uint16_t CanFTP_DeviceType_t;
+typedef uint32_t CanFTP_DeviceType_t;
 // Тип идентификатора устройства
 typedef uint8_t CanFTP_DeviceSoftwareVersionPart_t;
 // Тип кода сессии сессии

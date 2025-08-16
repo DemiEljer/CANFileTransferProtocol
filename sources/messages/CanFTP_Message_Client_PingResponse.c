@@ -26,7 +26,7 @@ void CanFTP_Message_Client_PingResponse_Unpack(CanFTP_Message_Client_PingRespons
             messageModel->response1.deviceType = (CanFTP_DeviceType_t)(
                   (CanFTP_DeviceType_t)((messageCan->data[5] >> 4) & 0x0F) 
                 | (CanFTP_DeviceType_t)((messageCan->data[6] >> 0) & 0xFF) << 4
-                | (CanFTP_DeviceType_t)((messageCan->data[7] >> 0) & 0x0F) << 12
+                | (CanFTP_DeviceType_t)((messageCan->data[7] >> 0) & 0xFF) << 12
             );
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
@@ -79,7 +79,7 @@ void CanFTP_Message_Client_PingResponse_Pack(CanFTP_Message_Client_PingResponse_
             messageDataVector[5] |= (((messageModel->response1.deviceIdentifier >> 4) & 0x0F) << 0)
                                     | (((messageModel->response1.deviceType >> 0) & 0x0F) << 4);
             messageDataVector[6] |= ((messageModel->response1.deviceType >> 4) & 0xFF) << 0;
-            messageDataVector[7] |= ((messageModel->response1.deviceType >> 12) & 0x0F) << 0;                        
+            messageDataVector[7] |= ((messageModel->response1.deviceType >> 12) & 0xFF) << 0;                        
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
         {

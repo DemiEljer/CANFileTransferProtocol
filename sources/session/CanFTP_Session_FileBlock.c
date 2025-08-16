@@ -163,13 +163,40 @@ CanFTP_Logical_t CanFTP_Session_FileBlock_VerifySubblocks(CanFTP_Session_FileBlo
 void CanFTP_Session_FileBlock_MergeFramesFlags(CanFTP_Session_FileBlock_t* block
     , CanFTP_Logical_t* framesFlags)
 {
+    CanFTP_FrameIndex_t blockFramesCount = CanFTP_Session_FileBlock_GetFramesCount(block);
+
     uint32_t i = 0;
     // Объединить флаги обработки кадров (в случае, если кадр не обработан, то он сбрасывается)
-    for (i = 0; i < CANFTP_FILEBLOCK_FRAMESCOUNT; i++)
+    for (i = 0; i < blockFramesCount; i++)
     {
         if (framesFlags[i] != CANFTP_TRUE)
         {
             block->framesFlags[i] = CANFTP_FALSE;
+            block->subblocksFlags[i / CANFTP_FILEBLOCK_SUBBBLOCKSIZE] = CANFTP_FALSE;
+        }
+    }
+}
+/*
+    Объединить флаги обработки субблоков блока файла
+*/
+void CanFTP_Session_FileBlock_MergeSubblocksFlags(CanFTP_Session_FileBlock_t* block
+    , CanFTP_Logical_t* subblocksFlags)
+{ 
+    CanFTP_FrameIndex_t subblocksCount = CanFTP_Session_FileBlock_GetSubblockesCount(block);
+
+    uint32_t i = 0;
+    uint32_t j = 0;
+    // Объединить флаги обработки кадров (в случае, если кадр не обработан, то он сбрасывается)
+    for (i = 0; i < subblocksCount; i++)
+    {
+        if (subblocksFlags[i] != CANFTP_TRUE)
+        {
+            block->subblocksFlags[i] = CANFTP_FALSE;
+
+            for (j = 0; j < CANFTP_FILEBLOCK_SUBBBLOCKSIZE; j++)
+            {
+                block->framesFlags[i * CANFTP_FILEBLOCK_SUBBBLOCKSIZE + j] = CANFTP_FALSE;
+            }
         }
     }
 }

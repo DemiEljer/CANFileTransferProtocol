@@ -101,7 +101,7 @@ void CanFTP_Server_Session_MessageRecieve_SubBlocksStatuses(CanFTP_Server_Sessio
     {
         if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_BLOCK_FINISHING)
         {
-            CanFTP_Session_FileBlock_MergeFramesFlags(&(session->agents.blockController.fileBlock), message->subblocksReciecedFlags);
+            CanFTP_Session_FileBlock_MergeSubblocksFlags(&(session->agents.blockController.fileBlock), message->subblocksReciecedFlags);
 
             CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(&(session->agents.blockController)
                 , message->deviceCode

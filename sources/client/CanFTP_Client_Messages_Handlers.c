@@ -93,7 +93,7 @@ void CanFTP_Client_MessageRecieve_PingResponseAck(void* invoker, CanFTP_Message_
 
     if (CanFTP_Client_IsPinging(client)
         // Проверка, что сообщение адресовано данному клиенту
-        && message->deviceSerial == client->devicveConfig.serialNumber)
+        && message->deviceSerial == client->deviceConfig.serialNumber)
     {
         CanFTP_TimeTrigger_Update(&(client->agents.pingController.coolingDownTrigger));
 
@@ -110,7 +110,7 @@ void CanFTP_Client_MessageRecieve_Registration(void* invoker, CanFTP_Message_Ser
     // Проверка условий обработки данного сообшения
     if (!CanFTP_Client_CheckIfMessageCorrespondingToActiveSession(client, message->sessionCode))
     {
-        if (message->deviceSerial == client->devicveConfig.serialNumber
+        if (message->deviceSerial == client->deviceConfig.serialNumber
             && client->agents.pingController.statuses.isProtocolVersionVerified == CANFTP_TRUE
             && client->control.sessionStartPermition == CANFTP_TRUE)
         {
@@ -344,24 +344,24 @@ void CanFTP_Client_MessageSend_PingResponse(CanFTP_Client_t* client)
     // Обработка сообщения
     {
         // Инициализация кода устройства, полученного из серийного номера
-        messageModel.deviceCode = (client->devicveConfig.serialNumber & 0xFFFF) + ((client->devicveConfig.serialNumber >> 8) & 0xFFFF);
+        messageModel.deviceCode = (client->deviceConfig.serialNumber & 0xFFFF) + ((client->deviceConfig.serialNumber >> 8) & 0xFFFF);
 
         if (client->agents.pingController.requestedMessageIndex == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1)
         {
             messageModel.messageType = CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1;
 
-            messageModel.response1.deviceSerial = client->devicveConfig.serialNumber;
-            messageModel.response1.deviceIdentifier = client->devicveConfig.identifier;
-            messageModel.response1.deviceType = client->devicveConfig.type;
+            messageModel.response1.deviceSerial = client->deviceConfig.serialNumber;
+            messageModel.response1.deviceIdentifier = client->deviceConfig.identifier;
+            messageModel.response1.deviceType = client->deviceConfig.type;
         }  
         else if (client->agents.pingController.requestedMessageIndex == CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2)
         {
             messageModel.messageType = CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2;
 
-            messageModel.response2.deviceSerial = client->devicveConfig.serialNumber;
-            messageModel.response2.deviceSoftVersion.lowerPart = client->devicveConfig.softVersion.lowerPart;
-            messageModel.response2.deviceSoftVersion.middlePart = client->devicveConfig.softVersion.middlePart;
-            messageModel.response2.deviceSoftVersion.higherPart = client->devicveConfig.softVersion.higherPart;
+            messageModel.response2.deviceSerial = client->deviceConfig.serialNumber;
+            messageModel.response2.deviceSoftVersion.lowerPart = client->deviceConfig.softVersion.lowerPart;
+            messageModel.response2.deviceSoftVersion.middlePart = client->deviceConfig.softVersion.middlePart;
+            messageModel.response2.deviceSoftVersion.higherPart = client->deviceConfig.softVersion.higherPart;
         }
     }
     // Упаковка сообщения и отправка

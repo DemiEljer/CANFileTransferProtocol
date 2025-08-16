@@ -82,6 +82,8 @@ void CanFTP_Server_Session_Client_Dispose(CanFTP_Server_Session_Client_t *client
 
     if (CanFTP_Server_Session_Client_IsInSession(client))
     {
+        CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+
         client->serverClient->isInSession = CANFTP_FALSE;
         client->statuses.isDisposed = CANFTP_TRUE;
     }

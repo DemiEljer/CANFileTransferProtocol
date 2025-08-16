@@ -115,7 +115,7 @@ void CanFTP_Client_Init(CanFTP_Client_t *client)
     }
     // Сброс конфигурации
     {
-        CanFTP_DeviceConfig_Reset(&(client->devicveConfig));
+        CanFTP_DeviceConfig_Reset(&(client->deviceConfig));
     }
     // Сброс флагов управления
     {
@@ -164,7 +164,7 @@ void CanFTP_Client_InitRanmod(CanFTP_Client_t *client)
         return;
     }    
 
-    CanFTP_Random_Init(&(client->agents.random), client->devicveConfig.serialNumber);
+    CanFTP_Random_Init(&(client->agents.random), client->deviceConfig.serialNumber);
 }
 /*
     Принудительно остановить сессию
@@ -192,10 +192,7 @@ void CanFTP_Client_LockLogic(CanFTP_Client_t *client)
         return;
     }    
 
-    if (client->callbacks.lockLogicRequestCallback != CANFTP_NULL)
-    {
-        client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_TRUE;
-    }
+    client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_TRUE;
 }
 /*
     Разблокировать логику
@@ -209,10 +206,7 @@ void CanFTP_Client_UnlockLogic(CanFTP_Client_t *client)
         return;
     }    
 
-    if (client->callbacks.unlockLogicRequestCallback != CANFTP_NULL)
-    {
-        client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_FALSE;
-    }
+    client->agents.logicLockController.requsts.requestToLockLogic = CANFTP_FALSE;
 }
 /*
     Проверить, находится ли клиент в состоянии Ping

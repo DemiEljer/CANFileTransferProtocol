@@ -17,7 +17,7 @@ typedef void (*CanFTP_Client_MessageSendCallback_t)(CanFTP_Client_t* client, Can
 // Тип функции обратной связи запроса к внешней логике
 typedef CanFTP_Logical_t (*CanFTP_Client_RequestCallback_t)(CanFTP_Client_t* client);
 // Тип функции обратного вызова согласования сессии
-typedef CanFTP_Logical_t (*CanFTP_Client_SessionConfigurationCallback)(CanFTP_Client_t* client, CanFTP_Client_Session_Configuration_t* sessionConfiguration);
+typedef CanFTP_Logical_t (*CanFTP_Client_SessionConfigurationCallback_t)(CanFTP_Client_t* client, CanFTP_Client_Session_Configuration_t* sessionConfiguration);
 // Тип функции обратной связи успешного приема блока файла
 typedef CanFTP_Logical_t (*CanFTP_Client_BlockRecieceCallback_t)(CanFTP_Client_t* client
     , CanFTP_FileLength_t startByteIndex
@@ -60,7 +60,7 @@ typedef struct _CanFTP_Client
     // Хаб приема сообщений
     CanFTP_Messages_Hub_t messagesHub;
     // Конфигурация устройства
-    CanFTP_DeviceConfig_t devicveConfig;
+    CanFTP_DeviceConfig_t deviceConfig;
     // Параметры управления
     struct
     {
@@ -82,10 +82,10 @@ typedef struct _CanFTP_Client
         // Обратный вызов запроса на разблокировку логики (0 - не разблокирована, 1 - разблокирована)
         CanFTP_Client_RequestCallback_t unlockLogicRequestCallback;
         // Обратный вызов конфигурации сессии (0 - сессия не прошла валидацию, 1 - сессия прошла валидацию)
-        CanFTP_Client_SessionConfigurationCallback sessionConfigureationCallback;
-        // Обратная связь успешного приема блока файла 
+        CanFTP_Client_SessionConfigurationCallback_t sessionConfigureationCallback;
+        // Обратный вызов успешного приема блока файла 
         CanFTP_Client_BlockRecieceCallback_t blockRecieceCallback;
-        // Обратная связь завершения сессии
+        // Обратный вызов завершения сессии
         CanFTP_Client_SessionFinishedCallback_t sessionFinishedCallback;
 
     } callbacks;

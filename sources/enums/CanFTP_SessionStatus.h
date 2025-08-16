@@ -65,19 +65,19 @@ typedef enum _CanFTP_SessionStatus
     /*
         Ошибка. Ошибка окончания сессии
     */
-    CANFTP_SESSIONSTATUS_ERROR_SESSIONFINISHINGFAILED = 13,
+    CANFTP_SESSIONSTATUS_ERROR_SESSIONFINISHINGFAILED = 14,
     /*
         Ошибка. Превышено количество попыток отправки блока
     */
-    CANFTP_SESSIONSTATUS_ERROR_BLOCKSENDINGOVERCOME = 14,
+    CANFTP_SESSIONSTATUS_ERROR_BLOCKSENDINGOVERCOME = 15,
     /*
         Ошибка. Ошибка начала чтения блока
     */
-    CANFTP_SESSIONSTATUS_ERROR_BLOCKSTARTINGFAILED = 15,
+    CANFTP_SESSIONSTATUS_ERROR_BLOCKSTARTINGFAILED = 16,
     /*
         Ошибка. Ошибка окончания чтения блока
     */
-    CANFTP_SESSIONSTATUS_ERROR_BLOCKFINISHINFFAILED = 16,
+    CANFTP_SESSIONSTATUS_ERROR_BLOCKFINISHINFFAILED = 17,
 
 } CanFTP_SessionStatus_t;
 

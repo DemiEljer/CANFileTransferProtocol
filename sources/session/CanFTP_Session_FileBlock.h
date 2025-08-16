@@ -46,6 +46,11 @@ void CanFTP_Session_FileBlock_SetFrame(CanFTP_Session_FileBlock_t* block
 void CanFTP_Session_FileBlock_MergeFramesFlags(CanFTP_Session_FileBlock_t* block
     , CanFTP_Logical_t* framesFlags);
 /*
+    Объединить флаги обработки субблоков блока файла
+*/
+void CanFTP_Session_FileBlock_MergeSubblocksFlags(CanFTP_Session_FileBlock_t* block
+    , CanFTP_Logical_t* subblocksFlags);
+/*
     Верификация, что весь блок файла был обработан
 */
 CanFTP_Logical_t CanFTP_Session_FileBlock_VerifySubblocks(CanFTP_Session_FileBlock_t* block);
