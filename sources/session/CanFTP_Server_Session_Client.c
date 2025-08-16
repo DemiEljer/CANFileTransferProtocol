@@ -20,6 +20,10 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
 
     client->assosiation.sessionCode = sessionCode;
     client->assosiation.deviceCode = clientCode;
+    // Инициализация запросов
+    {
+        client->requests.disposeBecauseSessionHasFinished = CANFTP_FALSE;
+    } 
     // Инициализация статусов
     {
         client->statuses.isDisposed = CANFTP_FALSE;
@@ -82,7 +86,11 @@ void CanFTP_Server_Session_Client_Dispose(CanFTP_Server_Session_Client_t *client
 
     if (CanFTP_Server_Session_Client_IsInSession(client))
     {
-        CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        // Если клиент не удаляется по факту звершения сессии
+        if (client->requests.disposeBecauseSessionHasFinished != CANFTP_TRUE)
+        {
+            CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
+        }
 
         client->serverClient->isInSession = CANFTP_FALSE;
         client->statuses.isDisposed = CANFTP_TRUE;

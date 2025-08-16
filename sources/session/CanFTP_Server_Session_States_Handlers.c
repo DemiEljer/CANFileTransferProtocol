@@ -405,6 +405,8 @@ void CanFTP_Server_Session_State_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
             {
                 // Выставления флага подтверждения вызова события
                 client->isDisposeEventCalled = CANFTP_TRUE;
+                // Выставление запроса на штаное удаление клиента
+                client->requests.disposeBecauseSessionHasFinished = CANFTP_TRUE;
                 // Вызов удаления клиента
                 CanFTP_Server_Session_Client_Dispose(client);
                 // Вызов события

@@ -19,6 +19,13 @@ typedef struct _CanFTP_Server_Session_Client
     CanFTP_Server_Client_t* serverClient;
     // Ассоциация клиента и сессии
     CanFTP_Session_ClientAssosiation_t assosiation;
+    // Запросы
+    struct
+    {
+        // Запрос удаление клиента по факту завершения сессии
+        CanFTP_Logical_t disposeBecauseSessionHasFinished;
+
+    } requests;
     // Статусы клиента
     struct {
         // Флаг, что клиент был удален
