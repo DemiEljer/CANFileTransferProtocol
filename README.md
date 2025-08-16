@@ -802,19 +802,11 @@ void ClientHasBeenReleasedEvent(CanFTP_Server_t *server, CanFTP_Server_Session_t
     printf("=== Client \"%u\" has been released from session \"%u\" :: %u\r\n", client->configuration.serialNumber, session->code, status);
 }
 
-void InitFileBlock(CanFTP_Server_t *server, CanFTP_Server_Session_t* session, CanFTP_Session_FileBlock_t* block, CanFTP_FileLength_t startByte, CanFTP_FileLength_t count)
+void InitFileBlock(CanFTP_Server_t *server, CanFTP_Server_Session_t* session, CanFTP_Session_FileBlock_t* block, CanFTP_FileLength_t firstByteIndex, CanFTP_FileLength_t bytesCount)
 {
-    uint8_t* data = malloc(count);
+    printf("=== Server session block has been requested be session \"%u\"\r\n", session->code);
 
-    int i = 0;
-    for (i = 0; i < count; i++)
-    {   
-        data[i] = file[startByte + i];
-    }
-
-    CanFTP_Session_FileBlock_MoveBlockData(block, data);
-
-    free(data);
+    CanFTP_Session_FileBlock_MoveBlockData(block, (uint8_t*)(file + firstByteIndex));
 }
 
 CanFTP_Server_t server;
