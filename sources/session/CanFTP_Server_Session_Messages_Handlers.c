@@ -108,6 +108,11 @@ void CanFTP_Server_Session_MessageRecieve_SubBlocksStatuses(CanFTP_Server_Sessio
                 , CANFTP_CLIENTBLOCKHANDLINGSTATUS_SUBBLOCKESMISSING);
 
             client->statuses.isBlockFinished = CANFTP_TRUE;
+            // Выставление статуса обработки блока
+            client->statuses.blockStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_SUBBLOCKESMISSING;
+
+            // Отправка сообщения подтверждения
+            CanFTP_Server_Session_MessageSend_BlockControl(session);
         }
     }
 }
@@ -127,6 +132,8 @@ void CanFTP_Server_Session_MessageRecieve_BlockCRC(CanFTP_Server_Session_t* sess
                 CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(&(session->agents.blockController)
                     , message->deviceCode
                     , CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKISRECIEVED);
+                // Выставление статуса обработки блока
+                client->statuses.blockStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKISRECIEVED;
             }
             else
             {
@@ -135,7 +142,11 @@ void CanFTP_Server_Session_MessageRecieve_BlockCRC(CanFTP_Server_Session_t* sess
                     , CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT);
                 // Выставление запроса на сброс флагов обработки блока
                 session->agents.blockController.requests.blockFramesFlagsResetRequst = CANFTP_TRUE;
+                // Выставление статуса обработки блока
+                client->statuses.blockStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT;
             }
+            // Отправка сообщения подтверждения
+            CanFTP_Server_Session_MessageSend_BlockControl(session);
 
             client->statuses.isBlockFinished = CANFTP_TRUE;
         }

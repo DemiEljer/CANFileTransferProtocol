@@ -125,6 +125,10 @@ CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsBlockFinish
     Удалить всех клиентов, не окончавших чтение блока
 */
 void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnfinished(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Удалить всех клиентов, не принявших блок
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnrecieved(CanFTP_Server_Session_ClientsCollection_t* collection);
 
 
 #endif // CANFTP_SERVER_SESSION_CLIENTSCOLLECTION_H_

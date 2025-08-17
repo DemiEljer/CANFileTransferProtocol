@@ -638,9 +638,35 @@ uint32_t CanFTP_Server_Session_State_BLOCK_FINISHING_Body(CanFTP_FinalStateMachi
     else if (CanFTP_Server_Session_ClientsCollection_CheckClientsBlockFinished(&(session->clients)))
     {
         CanFTP_Server_Session_Agent_BlockConroller_ResetBlockFlagsIfRequested(&(session->agents.blockController));
+        // Флаг перехода к следующему блоку
+        CanFTP_Logical_t movingToNextBlockFlag = CANFTP_FALSE;
 
         // Проверка, что были приняты все субблоки
         if (CanFTP_Session_FileBlock_VerifySubblocks(&(session->agents.blockController.fileBlock)))
+        {
+            movingToNextBlockFlag = CANFTP_TRUE;
+        }
+        else
+        {
+            if (CanFTP_IterationsHandler_Handle(&(session->agents.blockController.sendBlockCounter)))
+            {
+                resultState = CANFTP_SESSIONSTATE_BLOCK_STARTING;
+            }
+            else
+            {
+                // Удаляем всех клиентов, которые не приняли блок
+                if (CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnrecieved(&(session->clients)) > 0)
+                {
+                    movingToNextBlockFlag = CANFTP_TRUE;
+                }
+                else
+                {
+                    CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_BLOCKSENDINGOVERCOME);
+                }
+            }
+        }
+        // В случае переъода к следующему блоку, отрабатываем данную логику
+        if (movingToNextBlockFlag == CANFTP_TRUE)
         {
             CanFTP_IterationsHandler_Reset(&(session->agents.blockController.sendBlockCounter));
             // Если передан весь файл, то завершаем сессию
@@ -651,17 +677,6 @@ uint32_t CanFTP_Server_Session_State_BLOCK_FINISHING_Body(CanFTP_FinalStateMachi
             else
             {
                 resultState = CANFTP_SESSIONSTATE_BLOCK_STARTING;
-            }
-        }
-        else
-        {
-            if (CanFTP_IterationsHandler_Handle(&(session->agents.blockController.sendBlockCounter)))
-            {
-                resultState = CANFTP_SESSIONSTATE_BLOCK_STARTING;
-            }
-            else
-            {
-                CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_BLOCKSENDINGOVERCOME);
             }
         }
     }

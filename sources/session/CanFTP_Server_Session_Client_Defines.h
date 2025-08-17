@@ -6,6 +6,7 @@
 #include "CanFTP_Session_FileBlock_Defines.h"
 #include "CanFTP_Server_Client.h"
 #include "CanFTP_SessionStatus.h"
+#include "CanFTP_ClientBlockHandlingStatus.h"
 #include "CanFTP_TimeHandlers.h"
 #include "CanFTP_IterationsHandler.h"
 #include "stdlib.h"
@@ -46,6 +47,8 @@ typedef struct _CanFTP_Server_Session_Client
         CanFTP_Logical_t isBlockFinished;
         // Подтверждение готовности принимать следущий блок
         CanFTP_Logical_t isNextBlockReady;
+        // Статус обработки блока файла
+        CanFTP_ClientBlockHandlingStatus_t blockStatus;
 
     } statuses;
     // Триггер потери связи с клиентом

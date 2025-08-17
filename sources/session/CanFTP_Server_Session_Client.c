@@ -35,6 +35,7 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
         client->statuses.isBlockStarted = CANFTP_FALSE;
         client->statuses.isBlockFinished = CANFTP_FALSE;
         client->statuses.isNextBlockReady = CANFTP_FALSE;
+        client->statuses.blockStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT;
     }
     // Связывание с клиентом на стороне сервера
     if (serverClient != CANFTP_NULL
@@ -226,4 +227,5 @@ void CanFTP_Server_Session_Client_NextBlockReset(CanFTP_Server_Session_Client_t 
     client->statuses.isBlockStarted = CANFTP_FALSE;
     client->statuses.isBlockFinished = CANFTP_FALSE;
     client->statuses.isNextBlockReady = CANFTP_FALSE;
+    client->statuses.blockStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT;
 }

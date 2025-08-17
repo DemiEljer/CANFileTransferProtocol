@@ -424,3 +424,26 @@ void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnfinished(CanFTP_Ser
         }
     }
 }
+/*
+    Удалить всех клиентов, не принявших блок
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnrecieved(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+    CanFTP_DeviceCode_t recivedBlockCount = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        // В случае не прохождения регистрации, клиент удаляется
+        if (collection->clients[clientIndex].statuses.blockStatus != CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKISRECIEVED)
+        {
+            CanFTP_Server_Session_Client_SetSessionStatus(&(collection->clients[clientIndex]), CANFTP_SESSIONSTATUS_ERROR_BLOCKSENDINGOVERCOME);
+        }
+        else 
+        {
+            recivedBlockCount++;
+        }
+    }
+
+    return recivedBlockCount;
+}
