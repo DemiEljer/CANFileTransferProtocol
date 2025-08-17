@@ -101,9 +101,9 @@ void CanFTP_Server_Session_ClientsCollection_Prepare(CanFTP_Server_Session_Clien
     }
 }
 /*
-    Обновить параметры отпавки сообщений
+    Обновить параметры отпавки сообщений управления
 */
-void CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(CanFTP_Server_Session_ClientsCollection_t *collection
+void CanFTP_Server_Session_ClientsCollection_UpdateControlSendingParams(CanFTP_Server_Session_ClientsCollection_t *collection
     // Интервал времени отправки
     , CanFTP_TimeInterval_t interval
     // Количество отправляемых сообщений
@@ -113,7 +113,23 @@ void CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(CanFTP_Server_S
 
     for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
     {
-        CanFTP_Server_Session_Client_UpdateSendingParams(&(collection->clients[clientIndex]), interval, maxCount);
+        CanFTP_Server_Session_Client_UpdateControlSendingParams(&(collection->clients[clientIndex]), interval, maxCount);
+    }
+}
+/*
+    Обновить параметры отпавки сообщений удапения клиентов
+*/
+void CanFTP_Server_Session_ClientsCollection_UpdateDeletingSendingParams(CanFTP_Server_Session_ClientsCollection_t *collection
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t interval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t maxCount)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        CanFTP_Server_Session_Client_UpdateDeletingSendingParams(&(collection->clients[clientIndex]), interval, maxCount);
     }
 }
 /*

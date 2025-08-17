@@ -35,16 +35,27 @@ void CanFTP_Server_Session_IterationEventHandler(CanFTP_FinalStateMachine_t *fms
             {
                 CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), clientIndex);
                 // Вызов события освобождения клиента
-                if (client != CANFTP_NULL
-                    && client->isDisposeEventCalled == CANFTP_FALSE
-                    && !CanFTP_Server_Session_Client_IsInSession(client))
+                if (client != CANFTP_NULL)
                 {
-                    // Выставления флага подтверждения вызова события
-                    client->isDisposeEventCalled = CANFTP_TRUE;
-                    // Отправка сообщения удаления клиента
-                    CanFTP_Server_Session_MessageSend_ClientDelete(session, client);
-                    // Вызов события
-                    session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+                    if (!CanFTP_Server_Session_Client_IsInSession(client))
+                    {
+                        if (client->isDisposeEventCalled == CANFTP_FALSE)
+                        {
+                            // Выставления флага подтверждения вызова события
+                            client->isDisposeEventCalled = CANFTP_TRUE;
+                            // Вызов события
+                            session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+                        }
+                        // Проверка логики циклической отправки сообщений удаления клиента
+                        if (CanFTP_TimeTrigger_HasFired_Udpate(&(client->deletingSendingTrigger)))
+                        {
+                            if (CanFTP_IterationsHandler_Handle(&(client->deletingSendingCounter)))
+                            {
+                                // Отправка сообщения удаления клиента
+                                CanFTP_Server_Session_MessageSend_DeleteClient(session, client);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -125,9 +136,12 @@ void CanFTP_Server_Session_State_REGISTRATING_Enter(CanFTP_FinalStateMachine_t *
     // Подготовка клиентов к сессии
     CanFTP_Server_Session_ClientsCollection_Prepare(&(session->clients));
     // Обновление параметров отправки сообщений
-    CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(&(session->clients)
+    CanFTP_Server_Session_ClientsCollection_UpdateControlSendingParams(&(session->clients)
         , session->configuration.registrationInterval
         , session->configuration.registrationRepeateCount);
+    CanFTP_Server_Session_ClientsCollection_UpdateDeletingSendingParams(&(session->clients)
+        , session->configuration.sessionControlInterval
+        , session->configuration.sessionControlRepeateCount);
 
     DEBUG_SESSION_PRINTSTATE("REGISTRATING", session->code)
 }
@@ -245,8 +259,10 @@ uint32_t CanFTP_Server_Session_State_CONFIGURING_Body(CanFTP_FinalStateMachine_t
 void CanFTP_Server_Session_State_CONFIGURING_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel)
 {
     CanFTP_Server_Session_t* session = (CanFTP_Server_Session_t*)(fms);
-
-    
+    // Обновление параметров удавления клиентов
+    CanFTP_Server_Session_ClientsCollection_UpdateDeletingSendingParams(&(session->clients)
+        , session->configuration.sessionControlInterval
+        , session->configuration.sessionControlRepeateCount);
 }
 
 #endif // SERVER_SESSION_STATE_CONFIGURING_

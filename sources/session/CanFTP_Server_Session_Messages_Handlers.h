@@ -32,7 +32,7 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
 /*
     Обработчик отправки сообщения ClientDelete
 */
-void CanFTP_Server_Session_MessageSend_ClientDelete(CanFTP_Server_Session_t* session, CanFTP_Server_Session_Client_t* client);
+void CanFTP_Server_Session_MessageSend_DeleteClient(CanFTP_Server_Session_t* session, CanFTP_Server_Session_Client_t* client);
 /*
     Обработчик отправки сообщения BlockContro
 */

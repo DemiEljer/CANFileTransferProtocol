@@ -30,9 +30,17 @@ void CanFTP_Server_Session_Client_SetSessionStatus(CanFTP_Server_Session_Client_
 */
 CanFTP_SessionStatus_t CanFTP_Server_Session_Client_GetSessionStatus(CanFTP_Server_Session_Client_t *client);
 /*
-    Обновить параметры отпавки сообщений
+    Обновить параметры отпавки сообщений управления
 */
-void CanFTP_Server_Session_Client_UpdateSendingParams(CanFTP_Server_Session_Client_t *client
+void CanFTP_Server_Session_Client_UpdateControlSendingParams(CanFTP_Server_Session_Client_t *client
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t interval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t maxCount);
+/*
+    Обновить параметры отпавки сообщений удаления клиента из сессии
+*/
+void CanFTP_Server_Session_Client_UpdateDeletingSendingParams(CanFTP_Server_Session_Client_t *client
     // Интервал времени отправки
     , CanFTP_TimeInterval_t interval
     // Количество отправляемых сообщений

@@ -201,12 +201,15 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
                     CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
                 }
             }
+
+            // Сброс счетчика количества повторений подтверждений приема
+            CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
         }
         else if (message->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_DELETECLIENT)
         {
             if (message->deleteClient.deviceCode == client->agents.sessionController.clientAssosiation.deviceCode)
             {
-                if (message->finish.sessionStatus != CANFTP_SESSIONSTATUS_OK)
+                if (message->deleteClient.sessionStatus != CANFTP_SESSIONSTATUS_OK)
                 {
                     CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), message->deleteClient.sessionStatus);
                 }
@@ -214,6 +217,9 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
                 {
                     CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_ALRAMTERMINATED);
                 }
+
+                // Сброс счетчика количества повторений подтверждений приема
+                CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
             }
         }
     }

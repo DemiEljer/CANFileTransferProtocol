@@ -52,7 +52,9 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
     CanFTP_TimeTrigger_SetInterval(&(client->lostConnectionTrigger), CANFTP_SERVER_SESSION_LOSTCONNECTION_TIMEOUT);
     CanFTP_TimeTrigger_Update(&(client->lostConnectionTrigger));
     CanFTP_TimeTrigger_Update(&(client->repeateSendingTrigger));
+    CanFTP_TimeTrigger_Update(&(client->deletingSendingTrigger));
     CanFTP_IterationsHandler_Reset(&(client->repeateSendingCounter));
+    CanFTP_IterationsHandler_Reset(&(client->deletingSendingCounter));
     // Сброс полей
     {
         client->isDisposeEventCalled = CANFTP_FALSE;
@@ -128,9 +130,9 @@ CanFTP_SessionStatus_t CanFTP_Server_Session_Client_GetSessionStatus(CanFTP_Serv
     return client->statuses.sessionStatus;
 }
 /*
-    Обновить параметры отпавки сообщений
+    Обновить параметры отпавки сообщений управления
 */
-void CanFTP_Server_Session_Client_UpdateSendingParams(CanFTP_Server_Session_Client_t *client
+void CanFTP_Server_Session_Client_UpdateControlSendingParams(CanFTP_Server_Session_Client_t *client
     // Интервал времени отправки
     , CanFTP_TimeInterval_t interval
     // Количество отправляемых сообщений
@@ -147,6 +149,26 @@ void CanFTP_Server_Session_Client_UpdateSendingParams(CanFTP_Server_Session_Clie
     CanFTP_TimeTrigger_Update(&(client->repeateSendingTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(client->repeateSendingCounter), maxCount);
     CanFTP_IterationsHandler_Reset(&(client->repeateSendingCounter));
+}
+/*
+    Обновить параметры отпавки сообщений удаления клиента из сессии
+*/
+void CanFTP_Server_Session_Client_UpdateDeletingSendingParams(CanFTP_Server_Session_Client_t *client
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t interval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t maxCount)
+{
+    if (client == CANFTP_NULL)
+    {
+        CanFTP_ThrowError();
+
+        return;
+    }
+
+    CanFTP_TimeTrigger_SetInterval(&(client->deletingSendingTrigger), interval);
+    CanFTP_TimeTrigger_Update(&(client->deletingSendingTrigger));
+    CanFTP_IterationsHandler_SetMaxCount(&(client->deletingSendingCounter), maxCount);
 }
 /*
     Проверить, что клиент активно участвует в сессии

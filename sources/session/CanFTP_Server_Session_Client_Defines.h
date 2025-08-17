@@ -56,6 +56,10 @@ typedef struct _CanFTP_Server_Session_Client
     CanFTP_IterationsHandler_t repeateSendingCounter;
     // Флаг, что было вызвано событие освобождения клиента
     CanFTP_Logical_t isDisposeEventCalled;
+    // Количество итераций отправки сообшения удаления клиента из сессии
+    CanFTP_TimeTrigger_t deletingSendingTrigger;
+    // Метка времени отправки сообщения удаления клиента из сессии
+    CanFTP_IterationsHandler_t deletingSendingCounter;
 
 } CanFTP_Server_Session_Client_t;
 

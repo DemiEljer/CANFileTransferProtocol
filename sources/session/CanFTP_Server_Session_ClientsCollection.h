@@ -50,9 +50,17 @@ CanFTP_Server_Session_Client_t* CanFTP_Server_Session_ClientsCollection_GetClien
 */
 void CanFTP_Server_Session_ClientsCollection_Prepare(CanFTP_Server_Session_ClientsCollection_t* collection);
 /*
-    Обновить параметры отпавки сообщений
+    Обновить параметры отпавки сообщений управления
 */
-void CanFTP_Server_Session_ClientsCollection_UpdateSendingParams(CanFTP_Server_Session_ClientsCollection_t *collection
+void CanFTP_Server_Session_ClientsCollection_UpdateControlSendingParams(CanFTP_Server_Session_ClientsCollection_t *collection
+    // Интервал времени отправки
+    , CanFTP_TimeInterval_t interval
+    // Количество отправляемых сообщений
+    , CanFTP_IterationCounter_t maxCount);
+/*
+    Обновить параметры отпавки сообщений удапения клиентов
+*/
+void CanFTP_Server_Session_ClientsCollection_UpdateDeletingSendingParams(CanFTP_Server_Session_ClientsCollection_t *collection
     // Интервал времени отправки
     , CanFTP_TimeInterval_t interval
     // Количество отправляемых сообщений

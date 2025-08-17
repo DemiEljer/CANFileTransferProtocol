@@ -25,8 +25,12 @@ CanFTP_Logical_t CanFTP_Client_CheckIfMessageCorrespondingToActiveSession(CanFTP
     {
         // Обновление метки времеи в случае получения сообщения от сервера
         CanFTP_TimeTrigger_Update(&(client->agents.sessionController.lostConnectionTrigger));
-        // Сброс счетчика количества повторений подтверждений приема
-        CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
+        // Обновление количество ответов на запросы только в случае, если клиент не завршеает сессию
+        if (CanFTP_Client_GetState(client) != CANFTP_CLIENTSTATE_SESSION_FINISHED)
+        {
+            // Сброс счетчика количества повторений подтверждений приема
+            CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
+        }
 
         return CanFTP_Client_GetState(client) != CANFTP_CLIENTSTATE_SESSION_FINISHED;
     }

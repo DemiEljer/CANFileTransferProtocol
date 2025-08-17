@@ -154,8 +154,8 @@ void CanFTP_Server_Session_MessageSend_Registration(CanFTP_Server_Session_t* ses
 
         if (client != CANFTP_NULL)
         {
-            messageModel.deviceSerial = client->serverClient->configuration.serialNumber;
             messageModel.sessionCode = client->assosiation.sessionCode; 
+            messageModel.deviceSerial = client->serverClient->configuration.serialNumber;
             messageModel.deviceCode = client->assosiation.deviceCode;  
         }
         else
@@ -216,11 +216,12 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
 /*
     Обработчик отправки сообщения ClientDelete
 */
-void CanFTP_Server_Session_MessageSend_ClientDelete(CanFTP_Server_Session_t* session, CanFTP_Server_Session_Client_t* client)
+void CanFTP_Server_Session_MessageSend_DeleteClient(CanFTP_Server_Session_t* session, CanFTP_Server_Session_Client_t* client)
 {
     CanFTP_Message_Server_SessionControl_t messageModel;
     // Обработка сообщения
     {
+        messageModel.sessionCode = session->code;
         messageModel.messageType = CANFTP_MESSAGE_SERVER_SESSIONCONTROL_DELETECLIENT;
 
         messageModel.deleteClient.sessionStatus = client->statuses.sessionStatus;
