@@ -60,12 +60,6 @@ void CanFTP_Server_Session_Agent_BlockConroller_Reset(CanFTP_Server_Session_Agen
     {
         agent->requests.blockFramesFlagsResetRequst = CANFTP_FALSE;
     }
-    // Сброс ответов клиенту
-    {
-        agent->responeses.isClientResponseRequested = CANFTP_FALSE;
-        agent->responeses.clientIndex = 0;
-        agent->responeses.blockStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT;
-    }
     // Сброс статусов
     {
         agent->statuses.newBlockIsHanling = CANFTP_TRUE;
@@ -100,35 +94,6 @@ void CanFTP_Server_Session_Agent_BlockConroller_UpdateSendingParams(CanFTP_Serve
     CanFTP_TimeTrigger_SetInterval(&(agent->sendDataMessageTrigger), dataInterval);
     CanFTP_TimeTrigger_Update(&(agent->sendDataMessageTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(agent->sendBlockCounter), blockMaxCount);
-}
-/*
-    Выставить запрос на отправку ответа клиенту
-*/
-void CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(CanFTP_Server_Session_Agent_BlockConroller_t* agent
-    // Индекс клиента
-    , CanFTP_DeviceCode_t clientIndex
-    // Статус обработки блока
-    , CanFTP_ClientBlockHandlingStatus_t blockStatus)
-{
-    agent->responeses.isClientResponseRequested = CANFTP_TRUE;
-    agent->responeses.clientIndex = clientIndex;
-    agent->responeses.blockStatus = blockStatus;
-}
-/*
-    Проверит, выставлен ли запрос на ответ клиенту и сбросить его
-*/
-CanFTP_Logical_t CanFTP_Server_Session_Agent_BlockConroller_CheckAndResetClientResponse(CanFTP_Server_Session_Agent_BlockConroller_t* agent)
-{
-    if (agent->responeses.isClientResponseRequested == CANFTP_TRUE)
-    {
-        agent->responeses.isClientResponseRequested = CANFTP_FALSE;
-
-        return CANFTP_TRUE;
-    }
-    else
-    {
-        return CANFTP_FALSE;
-    }
 }
 /*
     Сбросить флаги обработки блока, если запрошено

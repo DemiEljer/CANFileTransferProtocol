@@ -34,9 +34,13 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
 */
 void CanFTP_Server_Session_MessageSend_DeleteClient(CanFTP_Server_Session_t* session, CanFTP_Server_Session_Client_t* client);
 /*
-    Обработчик отправки сообщения BlockContro
+    Обработчик отправки сообщения BlockControl
 */
 void CanFTP_Server_Session_MessageSend_BlockControl(CanFTP_Server_Session_t* session);
+/*
+    Обработчик отправки сообщения BlockFeedbackAck
+*/
+void CanFTP_Server_Session_MessageSend_BlockFeedbackAck(CanFTP_Server_Session_t* session, CanFTP_Server_Session_Client_t* client);
 /*
     Обработчик отправки сообщения DataFrame
 */

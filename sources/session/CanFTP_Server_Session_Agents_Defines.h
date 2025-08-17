@@ -43,17 +43,6 @@ typedef struct _CanFTP_Server_Session_Agent_BlockConroller
         CanFTP_Logical_t blockFramesFlagsResetRequst;
 
     } requests;
-    // Структура ответов клиенту
-    struct 
-    {
-        // Флаг, что запрашивается ответ клиенту
-        CanFTP_Logical_t isClientResponseRequested;
-        // Код устройства
-        CanFTP_DeviceCode_t clientIndex;
-        // Статус обработки блока
-        CanFTP_ClientBlockHandlingStatus_t blockStatus;
-
-    } responeses;
     // Статусы
     struct
     {

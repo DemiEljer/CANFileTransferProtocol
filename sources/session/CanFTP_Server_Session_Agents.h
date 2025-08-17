@@ -44,18 +44,6 @@ void CanFTP_Server_Session_Agent_BlockConroller_UpdateSendingParams(CanFTP_Serve
     // Максимальное количество итераций отправки блока
     , CanFTP_IterationCounter_t blockMaxCount);
 /*
-    Выставить запрос на отправку ответа клиенту
-*/
-void CanFTP_Server_Session_Agent_BlockConroller_SetClientResponse(CanFTP_Server_Session_Agent_BlockConroller_t* agent
-    // Индекс клиента
-    , CanFTP_DeviceCode_t clientIndex
-    // Статус обработки блока
-    , CanFTP_ClientBlockHandlingStatus_t blockStatus);
-/*
-    Проверит, выставлен ли запрос на ответ клиенту и сбросить его
-*/
-CanFTP_Logical_t CanFTP_Server_Session_Agent_BlockConroller_CheckAndResetClientResponse(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
-/*
     Сбросить флаги обработки блока, если запрошено
 */
 void CanFTP_Server_Session_Agent_BlockConroller_ResetBlockFlagsIfRequested(CanFTP_Server_Session_Agent_BlockConroller_t* agent);
