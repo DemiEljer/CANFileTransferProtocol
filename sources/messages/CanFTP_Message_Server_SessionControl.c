@@ -23,12 +23,14 @@ void CanFTP_Message_Server_SessionControl_Unpack(CanFTP_Message_Server_SessionCo
                 | (CanFTP_FileLength_t)((messageCan->data[4] >> 0) & 0xFF) << 20
                 | (CanFTP_FileLength_t)((messageCan->data[5] >> 0) & 0x0F) << 28
             );
-            messageModel->configuration.repeateBlockCount = (CanFTP_SendingRepeate_t)(
+            messageModel->configuration.repeateAckCount = (CanFTP_SendingRepeate_t)(
                   (CanFTP_SendingRepeate_t)((messageCan->data[5] >> 4) & 0x0F) << 0
-                | (CanFTP_SendingRepeate_t)((messageCan->data[6] >> 0) & 0x03) << 4
+                | (CanFTP_SendingRepeate_t)((messageCan->data[6] >> 0) & 0x0F) << 4
             );
-            messageModel->configuration.repeateAckCount = (CanFTP_SendingRepeate_t)((messageCan->data[6] >> 2) & 0x3F);
-            messageModel->configuration.repeateInterval = (CanFTP_SendingRepeate_t)((messageCan->data[7] >> 0) & 0xFF);
+            messageModel->configuration.repeateInterval = (CanFTP_SendingRepeate_t)(
+                  (CanFTP_SendingRepeate_t)((messageCan->data[6] >> 4) & 0x0F) << 0
+                | (CanFTP_SendingRepeate_t)((messageCan->data[7] >> 0) & 0xFF) << 4
+            );
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_START)
         {
@@ -83,6 +85,9 @@ void CanFTP_Message_Server_SessionControl_Pack(CanFTP_Message_Server_SessionCont
 
         if (messageModel->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION)
         {
+            CanFTP_SendingRepeate_t repeateAckCount = messageModel->configuration.repeateAckCount > 0xFF ? 0xFF : messageModel->configuration.repeateAckCount;
+            CanFTP_SendingRepeateInterval_t repeateInterval = messageModel->configuration.repeateInterval > 0x0FFF ? 0x0FFF : messageModel->configuration.repeateInterval;
+
             messageDataVector[0] |= ((messageModel->configuration.pageIndex >> 0) & 0x0F) << 4;
             messageDataVector[1] |= (((messageModel->configuration.pageIndex >> 4) & 0x0F) << 0) 
                                     | (((messageModel->configuration.fileLength >> 0) & 0x0F) << 4);
@@ -90,10 +95,10 @@ void CanFTP_Message_Server_SessionControl_Pack(CanFTP_Message_Server_SessionCont
             messageDataVector[3] |= (((messageModel->configuration.fileLength >> 12) & 0xFF) << 0);
             messageDataVector[4] |= (((messageModel->configuration.fileLength >> 20) & 0xFF) << 0);
             messageDataVector[5] |= (((messageModel->configuration.fileLength >> 28) & 0x0F) << 0)
-                                    | (((messageModel->configuration.repeateBlockCount >> 0) & 0x0F) << 4);
-            messageDataVector[6] |= (((messageModel->configuration.repeateBlockCount >> 4) & 0x03) << 0)
-                                    | (((messageModel->configuration.repeateAckCount >> 0) & 0x3F) << 2);
-            messageDataVector[7] |= (((messageModel->configuration.repeateInterval >> 0) & 0xFF) << 0);
+                                    | (((repeateAckCount >> 0) & 0x0F) << 4);
+            messageDataVector[6] |= (((repeateAckCount >> 4) & 0x0F) << 0)
+                                    | (((repeateInterval >> 0) & 0x0F) << 4);
+            messageDataVector[7] |= (((repeateInterval >> 4) & 0xFF) << 0);
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_START)
         {

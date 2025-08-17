@@ -188,7 +188,6 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
 
             messageModel.configuration.pageIndex = session->fileConfiguration.pageIndex;
             messageModel.configuration.fileLength = session->fileConfiguration.fileLength;
-            messageModel.configuration.repeateBlockCount = session->configuration.repeateBlockCount;
             messageModel.configuration.repeateAckCount = session->configuration.repeateAckCount;
             messageModel.configuration.repeateInterval = session->configuration.repeateAckInterval;
         }

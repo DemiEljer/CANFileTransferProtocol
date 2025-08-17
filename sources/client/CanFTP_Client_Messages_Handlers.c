@@ -155,7 +155,6 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
                 client->agents.sessionController.session.configuration.fileLength = message->configuration.fileLength;
                 client->agents.sessionController.session.configuration.pageIndex = message->configuration.pageIndex;
                 client->agents.sessionController.session.configuration.repeateAckCount = message->configuration.repeateAckCount;
-                client->agents.sessionController.session.configuration.repeateBlockCount = message->configuration.repeateBlockCount;
                 client->agents.sessionController.session.configuration.repeateInterval = message->configuration.repeateInterval;
                 // Выставление запроса на начало конфигурации
                 client->agents.sessionController.requsts.configurationRequest = CANFTP_TRUE;

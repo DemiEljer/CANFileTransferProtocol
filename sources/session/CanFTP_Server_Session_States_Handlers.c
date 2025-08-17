@@ -26,33 +26,36 @@ void CanFTP_Server_Session_IterationEventHandler(CanFTP_FinalStateMachine_t *fms
         {
             CanFTP_Server_Session_SetStatus(session, CANFTP_SESSIONSTATUS_ERROR_NOCLIENTSLEFT);
         }
-        // Вызов событией особождения клиентов
-        if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
+        else
         {
-            CanFTP_DeviceCode_t clientIndex = 0;
-
-            for (clientIndex = 0; clientIndex < session->clients.clientsCount; clientIndex++)
+            // Вызов событией особождения клиентов
+            if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
             {
-                CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), clientIndex);
-                // Вызов события освобождения клиента
-                if (client != CANFTP_NULL)
+                CanFTP_DeviceCode_t clientIndex = 0;
+
+                for (clientIndex = 0; clientIndex < session->clients.clientsCount; clientIndex++)
                 {
-                    if (!CanFTP_Server_Session_Client_IsInSession(client))
+                    CanFTP_Server_Session_Client_t* client = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), clientIndex);
+                    // Вызов события освобождения клиента
+                    if (client != CANFTP_NULL)
                     {
-                        if (client->isDisposeEventCalled == CANFTP_FALSE)
+                        if (!CanFTP_Server_Session_Client_IsInSession(client))
                         {
-                            // Выставления флага подтверждения вызова события
-                            client->isDisposeEventCalled = CANFTP_TRUE;
-                            // Вызов события
-                            session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
-                        }
-                        // Проверка логики циклической отправки сообщений удаления клиента
-                        if (CanFTP_TimeTrigger_HasFired_Udpate(&(client->deletingSendingTrigger)))
-                        {
-                            if (CanFTP_IterationsHandler_Handle(&(client->deletingSendingCounter)))
+                            if (client->isDisposeEventCalled == CANFTP_FALSE)
                             {
-                                // Отправка сообщения удаления клиента
-                                CanFTP_Server_Session_MessageSend_DeleteClient(session, client);
+                                // Выставления флага подтверждения вызова события
+                                client->isDisposeEventCalled = CANFTP_TRUE;
+                                // Вызов события
+                                session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+                            }
+                            // Проверка логики циклической отправки сообщений удаления клиента
+                            if (CanFTP_TimeTrigger_HasFired_Udpate(&(client->deletingSendingTrigger)))
+                            {
+                                if (CanFTP_IterationsHandler_Handle(&(client->deletingSendingCounter)))
+                                {
+                                    // Отправка сообщения удаления клиента
+                                    CanFTP_Server_Session_MessageSend_DeleteClient(session, client);
+                                }
                             }
                         }
                     }

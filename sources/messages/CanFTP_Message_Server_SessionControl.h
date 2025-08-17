@@ -34,8 +34,6 @@ typedef struct _CanFTP_Message_Server_SessionControl
         CanFTP_PageIndex_t pageIndex;
         // Длина передаваемого файла
         CanFTP_FileLength_t fileLength;
-        // Количество повторных отправок блока файла
-        CanFTP_SendingRepeate_t repeateBlockCount;
         // Количество повторных отправок сообщений подтверждения
         CanFTP_SendingRepeate_t repeateAckCount;
         // Интервал времени повторной отправки
