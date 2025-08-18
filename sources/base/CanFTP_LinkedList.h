@@ -4,7 +4,7 @@
 #include "CanFTP_LinkedList_Defines.h"
 
 /*
-    Проинициализовать список
+    Проинициализировать список
 */
 void CanFTP_LinkedList_Init(CanFTP_LinkedList_t* list, CanFTP_LinkedList_ElementSize_t elementSize);
 /*

@@ -73,7 +73,7 @@ typedef struct _CanFTP_Server
     {
         // Обратный вызов отправки сообщений
         CanFTP_Server_MessageSendCallback_t sendMessageCallback;
-        // Событие находления клиента
+        // Обратный вызов нахождения клиента
         CanFTP_Server_ClientFoundCallback_t clientFoundCallback;
         // Обратный вызов события завершения сессии
         CanFTP_Server_SessionFinishCallback_t sessionFinishedCallback;

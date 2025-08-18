@@ -4,7 +4,7 @@
 #include "CanFTP_TimeHandlers_Defines.h"
 
 /*
-    Проинициализовать функция получения текущей метки времени
+    Проинициализировать функция получения текущей метки времени
 */
 void CanFTP_TimeHandlers_InitCurrentTimeGetter(CanFTP_GetTimeMarkHandler_t timeGetter);
 /*

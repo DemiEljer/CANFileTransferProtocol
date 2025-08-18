@@ -426,6 +426,8 @@ void CanFTP_Server_Session_State_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
                 client->isDisposeEventCalled = CANFTP_TRUE;
                 // Выставление запроса на штаное удаление клиента
                 client->requests.disposeBecauseSessionHasFinished = CANFTP_TRUE;
+                // Копирования новой версии софта
+                CanFTP_SoftwareVersion_Copy(&(client->serverClient->configuration.softVersion), &(session->fileConfiguration.newSoftVersion));
                 // Вызов удаления клиента
                 CanFTP_Server_Session_Client_Dispose(client);
                 // Вызов события

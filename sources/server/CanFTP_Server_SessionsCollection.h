@@ -4,7 +4,7 @@
 #include "CanFTP_Server_SessionsCollection_Defines.h"
 
 /*
-    Проинициализовать коллекцию сессий
+    Проинициализировать коллекцию сессий
 */
 void CanFTP_Server_SessionsCollection_Init(CanFTP_Server_SessionsCollection_t* collection);
 /*

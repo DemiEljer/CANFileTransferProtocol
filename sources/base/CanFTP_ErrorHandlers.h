@@ -12,7 +12,7 @@ void CanFTP_ThrowError();
 */
 void CanFTP_ThrowErrorWithCode(uint8_t errorCode);
 /*
-    Проинициализовать обработчик ошибок
+    Проинициализировать обработчик ошибок
 */
 void CanFTP_InitErrorHandler(CanFTP_ErrorThrowEvent_t handler);
 

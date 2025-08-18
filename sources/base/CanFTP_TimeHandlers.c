@@ -7,7 +7,7 @@ static CanFTP_TimeHandler_t _timeHandler =
 };
 
 /*
-    Проинициализовать функция получения текущей метки времени
+    Проинициализировать функция получения текущей метки времени
 */
 void CanFTP_TimeHandlers_InitCurrentTimeGetter(CanFTP_GetTimeMarkHandler_t timeGetter)
 {

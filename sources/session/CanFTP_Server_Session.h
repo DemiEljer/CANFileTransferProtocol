@@ -4,7 +4,7 @@
 #include "CanFTP_Server_Session_Defines.h"
 
 /*
-    Проинициализовать сессию
+    Проинициализировать сессию
 */
 void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, CanFTP_SessionCode_t sessionCode);
 /*
@@ -12,15 +12,15 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
 */
 void CanFTP_Server_Session_Dispose(CanFTP_Server_Session_t *session);
 /*
-    Проициализовать клиентов, участвующих в сессии
+    Проинициализировать клиентов, участвующих в сессии
 */
 void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_DeviceCode_t clientsCount, CanFTP_Server_Client_t** serverClients);
 /*
-    Проициализовать параметры отправляемого файла
+    Проинициализировать параметры отправляемого файла
 */
 void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session, CanFTP_PageIndex_t pageIndex, CanFTP_FileLength_t fileLength);
 /*
-    Проициализовать новую версию программного обеспечения
+    Проинициализировать новую версию программного обеспечения
 */
 void CanFTP_Server_Session_InitNewSoftVersion(CanFTP_Server_Session_t *session, CanFTP_SoftwareVersion_t* newSoftVersion);
 /*
@@ -32,7 +32,7 @@ void CanFTP_Server_Session_Invoke(CanFTP_Server_Session_t *session);
 */
 void CanFTP_Server_Session_Start(CanFTP_Server_Session_t *session);
 /*
-    Запрос на остановка сессии
+    Запрос на остановку сессии
 */
 void CanFTP_Server_Session_Stop(CanFTP_Server_Session_t *session);
 /*

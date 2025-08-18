@@ -2,7 +2,7 @@
 #include "CanFTP_Server_Session_States_Handlers.h"
 
 /*
-    Проинициализовать сессию
+    Проинициализировать сессию
 */
 void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, CanFTP_SessionCode_t sessionCode)
 {
@@ -200,7 +200,7 @@ void CanFTP_Server_Session_Start(CanFTP_Server_Session_t *session)
     session->requests.startRequest = CANFTP_TRUE;
 }
 /*
-    Запрос на остановка сессии
+    Запрос на остановку сессии
 */
 void CanFTP_Server_Session_Stop(CanFTP_Server_Session_t *session)
 {       
