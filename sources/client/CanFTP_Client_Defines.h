@@ -19,12 +19,12 @@ typedef CanFTP_Logical_t (*CanFTP_Client_RequestCallback_t)(CanFTP_Client_t* cli
 // Тип функции обратного вызова согласования сессии
 typedef CanFTP_Logical_t (*CanFTP_Client_SessionConfigurationCallback_t)(CanFTP_Client_t* client, CanFTP_Client_Session_Configuration_t* sessionConfiguration);
 // Тип функции обратной связи успешного приема блока файла
-typedef CanFTP_Logical_t (*CanFTP_Client_BlockRecieceCallback_t)(CanFTP_Client_t* client
+typedef void (*CanFTP_Client_BlockRecieceCallback_t)(CanFTP_Client_t* client
     , CanFTP_FileLength_t startByteIndex
     , CanFTP_FileLength_t bytesCount
     , uint8_t* data);
 // Тип функции обратной связи завершения сессии
-typedef CanFTP_Logical_t (*CanFTP_Client_SessionFinishedCallback_t)(CanFTP_Client_t* client
+typedef void (*CanFTP_Client_SessionFinishedCallback_t)(CanFTP_Client_t* client
     , CanFTP_SessionStatus_t sessionStatus
     , CanFTP_SoftwareVersion_t* newSoftVersion);
 
