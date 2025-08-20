@@ -9,7 +9,7 @@ void CanFTP_Client_Init(CanFTP_Client_t *client)
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return;
     }    
@@ -131,7 +131,7 @@ void CanFTP_Client_Invoke(CanFTP_Client_t *client)
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return;
     }    
@@ -145,7 +145,7 @@ void CanFTP_Client_RecieveCanMessage(CanFTP_Client_t *client, CanFTP_CanMessage_
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return;
     }    
@@ -159,7 +159,7 @@ void CanFTP_Client_InitRanmod(CanFTP_Client_t *client)
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return;
     }    
@@ -173,7 +173,7 @@ void CanFTP_Client_TerminateSession(CanFTP_Client_t *client)
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return;
     }    
@@ -187,7 +187,7 @@ void CanFTP_Client_LockLogic(CanFTP_Client_t *client)
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return;
     }    
@@ -201,7 +201,7 @@ void CanFTP_Client_UnlockLogic(CanFTP_Client_t *client)
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return;
     }    
@@ -215,7 +215,7 @@ CanFTP_Logical_t CanFTP_Client_CheckIsPinging(CanFTP_Client_t *client)
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return CANFTP_FALSE;
     } 
@@ -229,7 +229,7 @@ CanFTP_Logical_t CanFTP_Client_CheckIsInSession(CanFTP_Client_t *client)
 {
     if (client == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
 
         return CANFTP_FALSE;
     }

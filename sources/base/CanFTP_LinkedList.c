@@ -83,42 +83,39 @@ CanFTP_LinkedList_Element_t* CanFTP_LinkedList_AppendTail(CanFTP_LinkedList_t* l
 */
 CanFTP_LinkedList_Element_t* CanFTP_LinkedList_Insert(CanFTP_LinkedList_t* list, CanFTP_LinkedList_ElementsCount_t index)
 {
-    if (list->elementsCount == 0)
+    if (index == 0)
     {
-        CanFTP_ThrowError();
+        return CanFTP_LinkedList_AppendHead(list);
+    }
+    else if (index == list->elementsCount)
+    {
+        return CanFTP_LinkedList_AppendTail(list);
+    }
+    else if (list->elementsCount == 0)
+    {
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_LIST_OUTOFEANGE);
 
         return CANFTP_NULL;
     }
     else
     {
-        if (index == 0)
+        CanFTP_LinkedList_Element_t* insertingPositionElement = CanFTP_LinkedList_GetAt(list, index);
+
+        if (insertingPositionElement != CANFTP_NULL)
         {
-            return CanFTP_LinkedList_AppendHead(list);
-        }
-        else if (index == list->elementsCount)
-        {
-            return CanFTP_LinkedList_AppendTail(list);
-        }
+            CanFTP_LinkedList_Element_t* newElement = (CanFTP_LinkedList_Element_t*)malloc(list->elementSize);
+            newElement->list = list;
+
+            newElement->prevElement = insertingPositionElement->prevElement;
+            newElement->nextElement = insertingPositionElement;
+            insertingPositionElement->prevElement->nextElement = newElement;
+            insertingPositionElement->prevElement = newElement;
+
+            return newElement;
+        } 
         else
         {
-            CanFTP_LinkedList_Element_t* insertingPositionElement = CanFTP_LinkedList_GetAt(list, index);
-
-            if (insertingPositionElement != CANFTP_NULL)
-            {
-                CanFTP_LinkedList_Element_t* newElement = (CanFTP_LinkedList_Element_t*)malloc(list->elementSize);
-                newElement->list = list;
-
-                newElement->prevElement = insertingPositionElement->prevElement;
-                newElement->nextElement = insertingPositionElement;
-                insertingPositionElement->prevElement->nextElement = newElement;
-                insertingPositionElement->prevElement = newElement;
-
-                return newElement;
-            } 
-            else
-            {
-                return CANFTP_NULL;
-            }
+            return CANFTP_NULL;
         }
     }
 }
@@ -172,7 +169,7 @@ CanFTP_Logical_t CanFTP_LinkedList_Remove(CanFTP_LinkedList_t* list, CanFTP_Link
     {
         if (element->list != list)
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_LIST_STRANGERELEMENT);
 
             return CANFTP_FALSE;
         }
@@ -221,7 +218,7 @@ CanFTP_LinkedList_Element_t* CanFTP_LinkedList_GetAt(CanFTP_LinkedList_t* list, 
 {
     if (index >= list->elementsCount)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_LIST_OUTOFEANGE);
 
         return CANFTP_NULL;
     }

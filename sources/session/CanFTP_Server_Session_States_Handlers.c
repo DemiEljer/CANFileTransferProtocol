@@ -185,7 +185,7 @@ uint32_t CanFTP_Server_Session_State_REGISTRATING_Body(CanFTP_FinalStateMachine_
         }
         else
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
         }
     }
     // Верификация прошедших регистрацию клиентов

@@ -2,6 +2,7 @@
 #define CANFTP_ERRORHANDLERS_DEFINES_H_
 
 #include "CanFTP_BaseTypes_Defines.h"
+#include "CanFTP_ErrorType.h"
 
 // Сигнатура функции вызова обработчика ошибок
 typedef void (*CanFTP_ErrorThrowEvent_t)(uint32_t);

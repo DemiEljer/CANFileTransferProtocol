@@ -3,7 +3,7 @@
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Client_SessionControl_Unpack(CanFTP_Message_Client_SessionControl_t* messageModel, CanFTP_CanMessage_t* messageCan)
+CanFTP_Logical_t CanFTP_Message_Client_SessionControl_Unpack(CanFTP_Message_Client_SessionControl_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
     if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_CLIENT_SESSIONCONTROL, CANFTP_MESSAGE_DLC_CLIENT_SESSIONCONTROL))
     {
@@ -31,8 +31,14 @@ void CanFTP_Message_Client_SessionControl_Unpack(CanFTP_Message_Client_SessionCo
         }   
         else
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_MESSAGES_WRONGTYPE);
         }
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
     }
 }
 /*
@@ -67,7 +73,7 @@ void CanFTP_Message_Client_SessionControl_Pack(CanFTP_Message_Client_SessionCont
         }
         else
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_MESSAGES_WRONGTYPE);
         }
     }
 

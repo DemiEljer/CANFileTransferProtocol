@@ -3,7 +3,7 @@
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Client_SubBlocksStatuses_Unpack(CanFTP_Message_Client_SubBlocksStatuses_t* messageModel, CanFTP_CanMessage_t* messageCan)
+CanFTP_Logical_t CanFTP_Message_Client_SubBlocksStatuses_Unpack(CanFTP_Message_Client_SubBlocksStatuses_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
     if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_CLIENT_SUBBLOCKSSTATUSES, CANFTP_MESSAGE_DLC_CLIENT_SUBBLOCKSSTATUSES))
     {
@@ -15,6 +15,12 @@ void CanFTP_Message_Client_SubBlocksStatuses_Unpack(CanFTP_Message_Client_SubBlo
         {
             messageModel->subblocksReciecedFlags[i] = (CanFTP_Logical_t)((messageCan->data[i / 8] >> (i % 8)) & 0x01);
         }
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
     }
 }
 /*

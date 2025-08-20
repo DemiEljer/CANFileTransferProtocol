@@ -32,7 +32,7 @@ void CanFTP_FinalStateMachine_Init(CanFTP_FinalStateMachine_t* fsm
             // Вызов исключения в случае, если не установлен один из обязательных параметров
             if (state->handlers.bodyStateHandler == 0)
             {
-                CanFTP_ThrowError();
+                CanFTP_ThrowErrorWithCode(CANFTP_ERROR_FMS_NOBODYHANLER);
             }
         }
     }
@@ -43,7 +43,7 @@ void CanFTP_FinalStateMachine_Init(CanFTP_FinalStateMachine_t* fsm
             && fsm->state != 0
             && fsm->state >= fsm->statesCount)
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_FMS_OUTOFHANDLERS);
         }
         else if (fsm->statesCount > 0)
         {
@@ -92,7 +92,7 @@ void CanFTP_FinalStateMachine_ChangeState(CanFTP_FinalStateMachine_t* fsm, CanFT
         // Проверка валидности перехода в новое состояние
         if (newState >= fsm->statesCount)
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_FMS_OUTOFHANDLERS);
         }
         else
         {

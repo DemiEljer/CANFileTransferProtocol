@@ -85,7 +85,7 @@ CanFTP_Logical_t CanFTP_CanMessage_Verify(CanFTP_CanMessage_t* canMessage
     if (canMessage->dataLength != dataLength
         || (!CanFTP_CanMessage_CheckMessageCodification(canMessage, messageCodificator)))
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_MESSAGES_WRONGPARAMS);
 
         return 0x00;
     }

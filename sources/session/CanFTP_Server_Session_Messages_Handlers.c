@@ -162,7 +162,7 @@ void CanFTP_Server_Session_MessageSend_Registration(CanFTP_Server_Session_t* ses
         }
         else
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENT_NULL);
         }
     }
     // Упаковка сообщения и отправка
@@ -201,10 +201,6 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
 
             messageModel.finish.sessionStatus = session->status;
             CanFTP_SoftwareVersion_Copy(&(messageModel.finish.newSoftVersion), &(session->fileConfiguration.newSoftVersion));
-        }
-        else
-        {
-            CanFTP_ThrowError();
         }
     }
     // Упаковка сообщения и отправка

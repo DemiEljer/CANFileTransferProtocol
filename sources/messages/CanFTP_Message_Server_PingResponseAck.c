@@ -3,7 +3,7 @@
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Server_PingResponseAck_Unpack(CanFTP_Message_Server_PingResponseAck_t* messageModel, CanFTP_CanMessage_t* messageCan)
+CanFTP_Logical_t CanFTP_Message_Server_PingResponseAck_Unpack(CanFTP_Message_Server_PingResponseAck_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
     if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_PINGRESPONSE, CANFTP_MESSAGE_DLC_SERVER_PINGRESPONSE))
     {
@@ -15,6 +15,12 @@ void CanFTP_Message_Server_PingResponseAck_Unpack(CanFTP_Message_Server_PingResp
             | (CanFTP_DeviceSerial_t)((messageCan->data[3] >> 0) & 0xFF) << 20
             | (CanFTP_DeviceSerial_t)((messageCan->data[4] >> 0) & 0x0F) << 28
         );
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
     }
 }
 /*

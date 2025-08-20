@@ -3,7 +3,7 @@
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Client_PingResponse_Unpack(CanFTP_Message_Client_PingResponse_t* messageModel, CanFTP_CanMessage_t* messageCan)
+CanFTP_Logical_t CanFTP_Message_Client_PingResponse_Unpack(CanFTP_Message_Client_PingResponse_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
     if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_CLIENT_PINGRESPONSE, CANFTP_MESSAGE_DLC_CLIENT_PINGRESPONSE))
     {
@@ -53,8 +53,14 @@ void CanFTP_Message_Client_PingResponse_Unpack(CanFTP_Message_Client_PingRespons
         }
         else
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_MESSAGES_WRONGTYPE);
         }
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
     }
 }
 /*
@@ -97,7 +103,7 @@ void CanFTP_Message_Client_PingResponse_Pack(CanFTP_Message_Client_PingResponse_
         }
         else
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_MESSAGES_WRONGTYPE);
         }
     }
 

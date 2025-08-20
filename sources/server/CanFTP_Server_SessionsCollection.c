@@ -134,7 +134,7 @@ CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_GetSessionByCode(CanFT
 {
     if (sessionCode >= CANFTP_SERVER_SESSIONS_MAXCOUNT)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSIONSCOLLECTION_OUTOFEANGE);
 
         return CANFTP_NULL;
     }
@@ -178,7 +178,7 @@ CanFTP_Server_Session_t* CanFTP_Server_SessionsCollection_GetActiveSessionByInde
 {
     if (index >= collection->activeSessionsCount)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSIONSCOLLECTION_OUTOFEANGE);
 
         return CANFTP_NULL;
     }

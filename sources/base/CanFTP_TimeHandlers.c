@@ -20,7 +20,7 @@ CanFTP_TimeMark_t CanFTP_TimeHandlers_GetCurrentTime()
 {
     if (_timeHandler.currentTimeGetter == 0)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_TIME_NOTTIMEGETTER);
 
         return 0;
     }
@@ -45,7 +45,7 @@ uint32_t CanFTP_TimeHandlers_GetDeltaTime(CanFTP_TimeMark_t *timeMark)
 
     if (currentTimeMark < *(timeMark))
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_TIME_TIMEMARK);
 
         return 0;
     }

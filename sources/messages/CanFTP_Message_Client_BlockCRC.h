@@ -23,7 +23,7 @@ typedef struct _CanFTP_Message_Client_BlockCRC
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Client_BlockCRC_Unpack(CanFTP_Message_Client_BlockCRC_t* messageModel, CanFTP_CanMessage_t* messageCan);
+CanFTP_Logical_t CanFTP_Message_Client_BlockCRC_Unpack(CanFTP_Message_Client_BlockCRC_t* messageModel, CanFTP_CanMessage_t* messageCan);
 /*
     Упаковка сообщения
 */

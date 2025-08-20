@@ -46,7 +46,7 @@ CanFTP_Server_Client_t* CanFTP_Server_ClientsCollection_GetAt(CanFTP_Server_Clie
     // Проверка на граничное условие количества клиентов в коллекции
     if (CanFTP_Server_ClientsCollection_GetCount(collection) <= index)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENTSCOLLECTION_OUTOFEANGE);
 
         return CANFTP_NULL;
     }

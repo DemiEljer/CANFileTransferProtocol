@@ -8,7 +8,7 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -110,7 +110,7 @@ void CanFTP_Server_Session_Dispose(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -129,7 +129,7 @@ void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -146,7 +146,7 @@ void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *sessio
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -164,7 +164,7 @@ void CanFTP_Server_Session_InitNewSoftVersion(CanFTP_Server_Session_t *session, 
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -178,7 +178,7 @@ void CanFTP_Server_Session_Invoke(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -192,7 +192,7 @@ void CanFTP_Server_Session_Start(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -206,7 +206,7 @@ void CanFTP_Server_Session_Stop(CanFTP_Server_Session_t *session)
 {       
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -220,7 +220,7 @@ void CanFTP_Server_Session_Delete(CanFTP_Server_Session_t *session)
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return;
     }
@@ -235,7 +235,7 @@ float CanFTP_Server_Session_GetCompletingPercent(CanFTP_Server_Session_t *sessio
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return 0.0F;
     }
@@ -265,7 +265,7 @@ CanFTP_Logical_t CanFTP_Server_Session_CheckIsActive(CanFTP_Server_Session_t *se
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return CANFTP_FALSE;
     }
@@ -279,7 +279,7 @@ CanFTP_Logical_t CanFTP_Server_Session_CheckCanBeDisposed(CanFTP_Server_Session_
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return CANFTP_FALSE;
     }
@@ -293,7 +293,7 @@ CanFTP_SessionStatus_t CanFTP_Server_Session_GetStatus(CanFTP_Server_Session_t *
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return CANFTP_SESSIONSTATUS_OK;
     }
@@ -307,7 +307,7 @@ CanFTP_DeviceCode_t CanFTP_Server_Session_GetClientsCount(CanFTP_Server_Session_
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return 0;
     }
@@ -321,7 +321,7 @@ CanFTP_DeviceCode_t CanFTP_Server_Session_GetActiveClientsCount(CanFTP_Server_Se
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return 0;
     }
@@ -335,7 +335,7 @@ CanFTP_Server_Session_Client_t* CanFTP_Server_Session_GetClientByIndex(CanFTP_Se
 {
     if (session == CANFTP_NULL)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_NULL);
 
         return CANFTP_NULL;
     }

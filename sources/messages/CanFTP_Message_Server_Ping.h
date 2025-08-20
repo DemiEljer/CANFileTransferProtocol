@@ -19,7 +19,7 @@ typedef struct _CanFTP_Message_Server_Ping
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Server_Ping_Unpack(CanFTP_Message_Server_Ping_t* messageModel, CanFTP_CanMessage_t* messageCan);
+CanFTP_Logical_t CanFTP_Message_Server_Ping_Unpack(CanFTP_Message_Server_Ping_t* messageModel, CanFTP_CanMessage_t* messageCan);
 /*
     Упаковка сообщения
 */

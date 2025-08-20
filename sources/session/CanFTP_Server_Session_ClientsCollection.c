@@ -83,7 +83,7 @@ CanFTP_Server_Session_Client_t* CanFTP_Server_Session_ClientsCollection_GetClien
     }
     else
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CLIENTSCOLLECTION_OUTOFEANGE);
 
         return CANFTP_NULL;
     }

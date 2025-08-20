@@ -3,7 +3,7 @@
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Server_Registration_Unpack(CanFTP_Message_Server_Registration_t* messageModel, CanFTP_CanMessage_t* messageCan)
+CanFTP_Logical_t CanFTP_Message_Server_Registration_Unpack(CanFTP_Message_Server_Registration_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
     if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_REGISTRATION, CANFTP_MESSAGE_DLC_SERVER_REGISTRATION))
     {
@@ -15,6 +15,12 @@ void CanFTP_Message_Server_Registration_Unpack(CanFTP_Message_Server_Registratio
         );
         messageModel->sessionCode = (CanFTP_SessionCode_t)(messageCan->data[4]);
         messageModel->deviceCode = (CanFTP_DeviceCode_t)(messageCan->data[5]);
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
     }
 }
 /*

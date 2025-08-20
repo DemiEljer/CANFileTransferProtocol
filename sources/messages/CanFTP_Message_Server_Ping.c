@@ -3,7 +3,7 @@
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Server_Ping_Unpack(CanFTP_Message_Server_Ping_t* messageModel, CanFTP_CanMessage_t* messageCan)
+CanFTP_Logical_t CanFTP_Message_Server_Ping_Unpack(CanFTP_Message_Server_Ping_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
     if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_PING, CANFTP_MESSAGE_DLC_SERVER_PING))
     {
@@ -12,6 +12,12 @@ void CanFTP_Message_Server_Ping_Unpack(CanFTP_Message_Server_Ping_t* messageMode
             | (CanFTP_ProtocolVersion_t)(messageCan->data[1]) << 8
         );
         messageModel->terminationRequest = (CanFTP_TerminationRequest_t)(messageCan->data[2] & 0x03);
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
     }
 }
 /*

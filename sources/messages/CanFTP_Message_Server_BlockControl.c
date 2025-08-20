@@ -3,7 +3,7 @@
 /*
     Распаковка сообщения
 */
-void CanFTP_Message_Server_BlockControl_Unpack(CanFTP_Message_Server_BlockControl_t* messageModel, CanFTP_CanMessage_t* messageCan)
+CanFTP_Logical_t CanFTP_Message_Server_BlockControl_Unpack(CanFTP_Message_Server_BlockControl_t* messageModel, CanFTP_CanMessage_t* messageCan)
 {
     if (CanFTP_CanMessage_Verify(messageCan, CANFTP_MESSAGE_ID_SERVER_BLOCKCONTROL, CANFTP_MESSAGE_DLC_SERVER_BLOCKCONTROL))
     {
@@ -44,8 +44,14 @@ void CanFTP_Message_Server_BlockControl_Unpack(CanFTP_Message_Server_BlockContro
         }
         else
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_MESSAGES_WRONGTYPE);
         }
+
+        return CANFTP_TRUE;
+    }
+    else
+    {
+        return CANFTP_FALSE;
     }
 }
 /*
@@ -85,7 +91,7 @@ void CanFTP_Message_Server_BlockControl_Pack(CanFTP_Message_Server_BlockControl_
         }
         else
         {
-            CanFTP_ThrowError();
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_MESSAGES_WRONGTYPE);
         }
     }
 

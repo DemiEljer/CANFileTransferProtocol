@@ -121,7 +121,7 @@ void CanFTP_Server_Session_Agent_BlockConroller_ResetBeforeBlockStart(CanFTP_Ser
     else
     {   
         // В случае отработки данной логики, как минимум один кадр должен быть не обработан
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_BLOCKERROR);
     }
 }
 /*

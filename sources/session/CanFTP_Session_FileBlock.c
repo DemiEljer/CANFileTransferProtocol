@@ -93,7 +93,7 @@ void CanFTP_Session_FileBlock_GetFrame(CanFTP_Session_FileBlock_t* block
 {
     if (frameIndex >= CANFTP_FILEBLOCK_FRAMESCOUNT)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_FILEBLOCK_OUTOFEANGE);
     }
     else
     {
@@ -115,7 +115,7 @@ void CanFTP_Session_FileBlock_SetFrame(CanFTP_Session_FileBlock_t* block
 {
     if (frameIndex >= CANFTP_FILEBLOCK_FRAMESCOUNT)
     {
-        CanFTP_ThrowError();
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_FILEBLOCK_OUTOFEANGE);
     }
     else
     {
