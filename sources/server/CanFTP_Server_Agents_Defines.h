@@ -20,11 +20,6 @@ typedef struct _CanFTP_Server_Agent_PingControler
         CanFTP_TerminationRequest_t terminationRequest;
 
     } requsts;
-    // Структура выходных параметров
-    struct
-    {
-
-    } statuses;
     // Триггер повторной отправки сообщений в случае, если не был получен ответ
     CanFTP_TimeTrigger_t reapeateSendingTrigger;
     // Серийный номер устройства, которому посылается подтверждение
