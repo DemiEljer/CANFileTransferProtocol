@@ -5,16 +5,17 @@
 */
 void CanFTP_Session_FileBlock_Reset(CanFTP_Session_FileBlock_t* block)
 {
-    uint32_t i = 0;
-    // Сброс данных фрейма
-    for (i = 0; i < block->length; i++)
-    {
-        block->data[i] = 0x00;
-    }
     // Сброс базовых параметров
     {
         block->index = 0;
         block->length = 0;
+    }
+
+    uint32_t i = 0;
+    // Сброс данных фрейма
+    for (i = 0; i < CANFTP_FILEBLOCK_LENGTH; i++)
+    {
+        block->data[i] = 0x00;
     }
 
     CanFTP_Session_FileBlock_ResetFramesFlags(block);

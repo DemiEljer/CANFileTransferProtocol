@@ -95,10 +95,6 @@ void CanFTP_Server_Session_Init(CanFTP_Server_Session_t *session, void* server, 
         CanFTP_Server_Session_Agent_SessionConroller_Reset(&(session->agents.sessionController));
         CanFTP_Server_Session_Agent_BlockConroller_Reset(&(session->agents.blockController));
     }
-    // Сброс параметров клиентов
-    {
-
-    }
     CanFTP_Server_Session_Configuration_Reset(&(session->configuration));
     CanFTP_Server_Session_ClientsCollection_Init(&(session->clients));
     CanFTP_Server_Session_FileConfiguration_Reset(&(session->fileConfiguration));

@@ -67,7 +67,7 @@ typedef struct _CanFTP_Server_Session_Agent_BlockConroller
     // Идекс кадра
     CanFTP_BlockIndex_t currentBlockIndex;
     // CRC-сумма блока
-    uint8_t fileBlockCRC[8];
+    uint8_t fileBlockCRC[CANFTP_FILEBLOCK_CRCLENGTH];
 
 } CanFTP_Server_Session_Agent_BlockConroller_t;
 
