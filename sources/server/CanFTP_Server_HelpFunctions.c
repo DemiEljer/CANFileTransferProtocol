@@ -20,5 +20,6 @@ CanFTP_Logical_t CanFTP_Server_PingPermition(CanFTP_Server_t *server)
 */
 CanFTP_Logical_t CanFTP_Server_CreateSessionPermition(CanFTP_Server_t *server)
 {
-    return CanFTP_Server_GetState(server) == CANFTP_SERVERSTATE_IDLE;
+    return CanFTP_Server_GetState(server) == CANFTP_SERVERSTATE_IDLE
+           || CanFTP_Server_GetState(server) == CANFTP_SERVERSTATE_SESSION;
 }

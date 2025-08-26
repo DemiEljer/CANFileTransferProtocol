@@ -180,22 +180,22 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
         }
         else if (message->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_FINISH)
         {
-            if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY
-                || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_STARTED)
+            if (message->finish.sessionStatus != CANFTP_SESSIONSTATUS_OK)
             {
                 CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), message->finish.sessionStatus);
-                CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(message->finish.newSoftVersion));
-                // Выставление запроса на окончание сессии
-                client->agents.sessionController.requsts.stopRequest = CANFTP_TRUE;
             }
-            // Ошибка посоедовательности сообщение
-            else if (CanFTP_Client_GetState(client) != CANFTP_CLIENTSTATE_SESSION_FINISHED)
+            else
             {
-                if (message->finish.sessionStatus != CANFTP_SESSIONSTATUS_OK)
+                if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_BLOCK_NEXTBLOCKREADY
+                    || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_STARTED)
                 {
                     CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), message->finish.sessionStatus);
+                    CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(message->finish.newSoftVersion));
+                    // Выставление запроса на окончание сессии
+                    client->agents.sessionController.requsts.stopRequest = CANFTP_TRUE;
                 }
-                else
+                // Ошибка посоедовательности сообщение
+                else if (CanFTP_Client_GetState(client) != CANFTP_CLIENTSTATE_SESSION_FINISHED)
                 {
                     CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
                 }

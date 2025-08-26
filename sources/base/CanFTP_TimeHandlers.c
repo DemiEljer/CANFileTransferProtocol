@@ -64,7 +64,7 @@ CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPessed(CanFTP_TimeMark_t *timeMa
 /*
     Проверить, что интервал времени прошел, и обновить метку времени в данном случае
 */
-CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPassed_UpdateTimemark(CanFTP_TimeMark_t *timeMark, CanFTP_TimeInterval_t timeInterval)
+CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPassed_UpdateTimeMark(CanFTP_TimeMark_t *timeMark, CanFTP_TimeInterval_t timeInterval)
 {
     uint8_t resultFlag = CanFTP_TimeHandlers_IntervalHasPessed(timeMark, timeInterval);
 
@@ -106,5 +106,5 @@ CanFTP_Logical_t CanFTP_TimeTrigger_HasFired(CanFTP_TimeTrigger_t *trigger)
 */
 CanFTP_Logical_t CanFTP_TimeTrigger_HasFired_Udpate(CanFTP_TimeTrigger_t *trigger)
 {
-    return CanFTP_TimeHandlers_IntervalHasPassed_UpdateTimemark(&(trigger->timeMark), trigger->timeInterval);
+    return CanFTP_TimeHandlers_IntervalHasPassed_UpdateTimeMark(&(trigger->timeMark), trigger->timeInterval);
 }

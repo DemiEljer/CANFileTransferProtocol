@@ -26,7 +26,7 @@ CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPessed(CanFTP_TimeMark_t *timeMa
 /*
     Проверить, что интервал времени прошел, и обновить метку времени в данном случае
 */
-CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPassed_UpdateTimemark(CanFTP_TimeMark_t *timeMark, CanFTP_TimeInterval_t timeInterval);
+CanFTP_Logical_t CanFTP_TimeHandlers_IntervalHasPassed_UpdateTimeMark(CanFTP_TimeMark_t *timeMark, CanFTP_TimeInterval_t timeInterval);
 /*
     Установить значение интевала времени для триггера
 */

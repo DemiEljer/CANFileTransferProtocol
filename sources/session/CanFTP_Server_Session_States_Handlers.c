@@ -172,7 +172,12 @@ uint32_t CanFTP_Server_Session_State_REGISTRATING_Body(CanFTP_FinalStateMachine_
                 || !CanFTP_Server_Session_Client_IsInSession(currentClient))
             {
                 // В случае, если клиент зарегистрирован или вышел из сессии, переходим к другому
-                CanFTP_Server_Session_Agent_RegistrationConroller_MoveToNextClient(&(session->agents.registrationConrtoller), session->clients.clientsCount);
+                if (CanFTP_Server_Session_Agent_RegistrationConroller_MoveToNextClient(&(session->agents.registrationConrtoller), session->clients.clientsCount))
+                {
+                    currentClient = CanFTP_Server_Session_ClientsCollection_GetClientByIndex(&(session->clients), session->agents.registrationConrtoller.clientIndex);
+                    // Подготовка клиента к сессии
+                    CanFTP_Server_Session_Client_Prepare(currentClient);
+                }
             }
             else if (CanFTP_TimeTrigger_HasFired_Udpate(&(currentClient->repeateSendingTrigger)))
             {
@@ -586,6 +591,9 @@ uint32_t CanFTP_Server_Session_State_BLOCK_SENDING_Body(CanFTP_FinalStateMachine
     // Проверка триггера времени отправки сообщения
     else if (CanFTP_TimeTrigger_HasFired_Udpate(&(session->agents.blockController.sendDataMessageTrigger)))
     {
+        // Обновить метки времени, так как в данном состоянии клиенты не отправляют подтверждения серверу
+        CanFTP_Server_Session_ClientsCollection_UpdateLostConnectionTimeMarks(&(session->clients));
+
         CanFTP_Server_Session_MessageSend_DataFrame(session);
 
         if (!CanFTP_Session_FileBlock_GetNextUnandledFrameIndex(&(session->agents.blockController.fileBlock)

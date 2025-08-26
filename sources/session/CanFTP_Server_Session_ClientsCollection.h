@@ -129,6 +129,10 @@ void CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnfinished(CanFTP_Ser
     Удалить всех клиентов, не принявших блок
 */
 CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnrecieved(CanFTP_Server_Session_ClientsCollection_t* collection);
+/*
+    Обновить метки времени потери связи с клиентами
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_UpdateLostConnectionTimeMarks(CanFTP_Server_Session_ClientsCollection_t* collection);
 
 
 #endif // CANFTP_SERVER_SESSION_CLIENTSCOLLECTION_H_

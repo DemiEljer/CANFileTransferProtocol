@@ -447,3 +447,15 @@ CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_DeleteAllBlockUnreci
 
     return recivedBlockCount;
 }
+/*
+    Обновить метки времени потери связи с клиентами
+*/
+CanFTP_DeviceCode_t CanFTP_Server_Session_ClientsCollection_UpdateLostConnectionTimeMarks(CanFTP_Server_Session_ClientsCollection_t* collection)
+{
+    CanFTP_DeviceCode_t clientIndex = 0;
+
+    for (clientIndex = 0; clientIndex < collection->clientsCount; clientIndex++)
+    {
+        CanFTP_TimeTrigger_Update(&(collection->clients[clientIndex].lostConnectionTrigger));
+    }
+}

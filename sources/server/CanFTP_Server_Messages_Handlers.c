@@ -16,6 +16,8 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
             if (client == CANFTP_NULL)
             {
                 client = CanFTP_Server_ClientsCollection_Append(&(server->clients));
+
+                CanFTP_Server_Client_Reset(client);
             }
             // Флаг, что клиент уже был сконфигурирован
             CanFTP_Logical_t clientConfigurationIsFinished = CanFTP_Server_Client_IsConfigured(client);
@@ -50,6 +52,8 @@ void CanFTP_Server_MessageRecieve_PingResponse(void* invoker, CanFTP_Message_Cli
             if (client == CANFTP_NULL)
             {
                 client = CanFTP_Server_ClientsCollection_Append(&(server->clients));
+
+                CanFTP_Server_Client_Reset(client);
             }
             // Флаг, что клиент уже был сконфигурирован
             CanFTP_Logical_t clientConfigurationIsFinished = CanFTP_Server_Client_IsConfigured(client);
