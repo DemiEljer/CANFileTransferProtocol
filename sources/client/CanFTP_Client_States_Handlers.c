@@ -318,6 +318,7 @@ void CanFTP_Client_State_SESSION_REGISTRATED_Enter(CanFTP_FinalStateMachine_t *f
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
     CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(client->deviceConfig.softVersion));
+    CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.lostConnectionTrigger), CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT);
 
     DEBUG_CLIENT_PRINTSTATE("SESSION_REGISTRATED", client->deviceConfig.serialNumber);
 }
@@ -376,6 +377,19 @@ void CanFTP_Client_State_SESSION_CONFIGURED_Enter(CanFTP_FinalStateMachine_t *fm
     // Инициализация параметров повторов ответов
     CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.repeateAckTrigger), client->agents.sessionController.session.configuration.repeateInterval);
     CanFTP_IterationsHandler_SetMaxCount(&(client->agents.sessionController.repeateAckCounter), client->agents.sessionController.session.configuration.repeateAckCount);
+    // Инициализация интервала времени потери связи
+    {
+        CanFTP_TimeInterval_t newLostConnectionTimeout = client->agents.sessionController.session.configuration.repeateInterval
+            * client->agents.sessionController.session.configuration.repeateAckCount
+            * client->agents.sessionController.session.configuration.repeateAckCount;
+        // Обработка сценария, когда понижается скорость работы протокола, с условием сохранения минимального интервала времени 
+        if (newLostConnectionTimeout < CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT)
+        {
+            newLostConnectionTimeout = CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT;
+        }
+
+        CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.lostConnectionTrigger), newLostConnectionTimeout);
+    }
     // Вызов логики согласования с вышестоящей логикой параметров сессии
     {
         if (client->callbacks.sessionConfigureationCallback == CANFTP_NULL)

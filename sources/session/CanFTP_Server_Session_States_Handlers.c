@@ -225,6 +225,9 @@ void CanFTP_Server_Session_State_CONFIGURING_Enter(CanFTP_FinalStateMachine_t *f
     CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(&(session->agents.sessionController)
         , session->configuration.sessionControlInterval
         , session->configuration.sessionControlRepeateCount);
+    CanFTP_Server_Session_ClientsCollection_UpdateControlSendingParams(&(session->clients)
+        , session->configuration.repeateAckInterval
+        , session->configuration.repeateAckCount);
 
     DEBUG_SESSION_PRINTSTATE("CONFIGURING", session->code)
 }

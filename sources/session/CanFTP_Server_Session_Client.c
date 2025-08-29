@@ -150,6 +150,17 @@ void CanFTP_Server_Session_Client_UpdateControlSendingParams(CanFTP_Server_Sessi
     CanFTP_TimeTrigger_Update(&(client->repeateSendingTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(client->repeateSendingCounter), maxCount);
     CanFTP_IterationsHandler_Reset(&(client->repeateSendingCounter));
+    // Инициализация интервала времени потери связи
+    {
+        CanFTP_TimeInterval_t newLostConnectionTimeout = interval * maxCount * maxCount;
+        // Обработка сценария, когда понижается скорость работы протокола, с условием сохранения минимального интервала времени 
+        if (newLostConnectionTimeout < CANFTP_SERVER_SESSION_LOSTCONNECTION_TIMEOUT)
+        {
+            newLostConnectionTimeout = CANFTP_SERVER_SESSION_LOSTCONNECTION_TIMEOUT;
+        }
+
+        CanFTP_TimeTrigger_SetInterval(&(client->lostConnectionTrigger), newLostConnectionTimeout);
+    }
 }
 /*
     Обновить параметры отпавки сообщений удаления клиента из сессии
