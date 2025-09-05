@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2025 Ilya Kobrunov <ilya.kobrunov@gmail.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #ifndef CANFTP_CLIENT_HELPFUNCTIONS_H_
 #define CANFTP_CLIENT_HELPFUNCTIONS_H_
 

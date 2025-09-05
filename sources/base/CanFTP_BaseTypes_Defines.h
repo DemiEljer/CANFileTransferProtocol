@@ -1,11 +1,11 @@
-#ifndef CANFTP_BASETYPES_DEFINES_H_
-#define CANFTP_BASETYPES_DEFINES_H_
-
 /*
- * Copyright (c) 2024 Nordic Semiconductor ASA
+ * Copyright (c) 2025 Ilya Kobrunov <ilya.kobrunov@gmail.com>
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+
+#ifndef CANFTP_BASETYPES_DEFINES_H_
+#define CANFTP_BASETYPES_DEFINES_H_
 
 #include "stdint.h"
 #include "CanFTP_Configs.h"

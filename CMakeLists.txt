@@ -1,3 +1,6 @@
+# Copyright (c) 2025 Ilya Kobrunov <ilya.kobrunov@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
 message("=== CANFileTransferProtocol library has been included ===")
 
 set(LIBRARY_NAME CANFileTransferProtocol)
