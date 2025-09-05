@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2025 Ilya Kobrunov <ilya.kobrunov@gmail.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "CanFTP_TimeHandlers.h"
 
 // Структура обработчика времени
