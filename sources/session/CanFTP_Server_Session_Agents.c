@@ -53,7 +53,7 @@ void CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(CanFTP_Ser
     , CanFTP_IterationCounter_t maxCount)
 {
     CanFTP_TimeTrigger_SetInterval(&(agent->sendMessageTrigger), interval);
-    CanFTP_TimeTrigger_Update(&(agent->sendMessageTrigger));
+    CanFTP_TimeTrigger_Reset(&(agent->sendMessageTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(agent->sendMessageCounter), maxCount);
     CanFTP_IterationsHandler_Reset(&(agent->sendMessageCounter));
 }
@@ -94,11 +94,11 @@ void CanFTP_Server_Session_Agent_BlockConroller_UpdateSendingParams(CanFTP_Serve
     , CanFTP_IterationCounter_t blockMaxCount)
 {
     CanFTP_TimeTrigger_SetInterval(&(agent->sendControlMessageTrigger), controlInterval);
-    CanFTP_TimeTrigger_Update(&(agent->sendControlMessageTrigger));
+    CanFTP_TimeTrigger_Reset(&(agent->sendControlMessageTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(agent->sendControlMessageCounter), controlMaxCount);
     CanFTP_IterationsHandler_Reset(&(agent->sendControlMessageCounter));
     CanFTP_TimeTrigger_SetInterval(&(agent->sendDataMessageTrigger), dataInterval);
-    CanFTP_TimeTrigger_Update(&(agent->sendDataMessageTrigger));
+    CanFTP_TimeTrigger_Reset(&(agent->sendDataMessageTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(agent->sendBlockCounter), blockMaxCount);
 }
 /*
