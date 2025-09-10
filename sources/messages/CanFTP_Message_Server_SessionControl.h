@@ -7,6 +7,7 @@
 #ifndef CANFTP_MESSAGE_SERVER_SESSIONCONTROL_H_
 #define CANFTP_MESSAGE_SERVER_SESSIONCONTROL_H_
 
+#include "CanFTP_Message_Client_SessionControl.h"
 #include "CanFTP_Messages_Handlers.h"
 #include "CanFTP_SoftwareVersion.h"
 #include "CanFTP_ClientSessionAckStatus.h"
@@ -21,6 +22,7 @@ typedef enum _CanFTP_Message_Server_SessionControl_Type
     CANFTP_MESSAGE_SERVER_SESSIONCONTROL_START = 1,
     CANFTP_MESSAGE_SERVER_SESSIONCONTROL_FINISH = 2,
     CANFTP_MESSAGE_SERVER_SESSIONCONTROL_DELETECLIENT = 3,
+
 } CanFTP_Message_Server_SessionControl_Type_t;
 
 /*
@@ -36,14 +38,34 @@ typedef struct _CanFTP_Message_Server_SessionControl
     // CONFIGURATION
     struct
     {
-        // Индекс страницы записи
-        CanFTP_PageIndex_t pageIndex;
-        // Длина передаваемого файла
-        CanFTP_FileLength_t fileLength;
-        // Количество повторных отправок сообщений подтверждения
-        CanFTP_SendingRepeate_t repeateAckCount;
-        // Интервал времени повторной отправки
-        CanFTP_SendingRepeateInterval_t repeateInterval;
+        // Индекс части конфигурации
+        CanFTP_Message_Client_SessionControl_ConfigurationPart_t partIndex;
+        // PART0
+        struct 
+        {
+            // Индекс первой страницы записи
+            CanFTP_PageIndex_t firstPageIndex;
+            // Количество страниц записи
+            CanFTP_PageIndex_t pagesCount;
+            // Количество повторных отправок сообщений подтверждения при управлении сессией
+            CanFTP_SendingRepeate_t sessionRepeateCount;
+            // Интервал времени повторной отправки сообщений подтверждения при управлении сессией
+            CanFTP_SendingRepeateInterval_t sessionRepeateInterval;
+            // Количество повторных отправок сообщений подтверждения при передаче блока
+            CanFTP_SendingRepeate_t blockRepeateCount;
+            // Интервал времени повторной отправки сообщений подтверждения при передаче блока
+            CanFTP_SendingRepeateInterval_t blockRepeateInterval;
+
+        } part0;
+        // PART1
+        struct 
+        {
+            // Длина передаваемого файла
+            CanFTP_FileLength_t fileLength;
+            // Новая версия программного обеспечения
+            CanFTP_SoftwareVersion_t newSoftVersion;
+
+        } part1;
 
     } configuration;
     // START
@@ -56,8 +78,6 @@ typedef struct _CanFTP_Message_Server_SessionControl
     {
         // Статус завершения операции
         CanFTP_SessionStatus_t sessionStatus;
-        // Новая версия программного обеспечения
-        CanFTP_SoftwareVersion_t newSoftVersion;
 
     } finish;
     // DELETECLIENT

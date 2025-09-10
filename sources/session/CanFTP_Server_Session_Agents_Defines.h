@@ -12,6 +12,7 @@
 #include "CanFTP_Server_Session_Params.h"
 #include "CanFTP_Session_FileBlock.h"
 #include "CanFTP_ClientBlockHandlingStatus.h"
+#include "CanFTP_Message_Client_SessionControl.h"
 
 /*
     Контроллер регистрации клиентов
@@ -35,6 +36,8 @@ typedef struct _CanFTP_Server_Session_Agent_SessionConroller
     CanFTP_TimeTrigger_t sendMessageTrigger;
     // Счетчик повторной отправки сообщения регистрации
     CanFTP_IterationsHandler_t sendMessageCounter;
+    // Запрашиваемый индекс части конфигурации
+    CanFTP_Message_Client_SessionControl_ConfigurationPart_t configurationPartIndexRequest;
 
 } CanFTP_Server_Session_Agent_SessionConroller_t;
 /*

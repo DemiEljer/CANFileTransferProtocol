@@ -43,7 +43,7 @@ typedef uint16_t CanFTP_BlockLength_t;
 // Тип версии протокола
 typedef uint16_t CanFTP_ProtocolVersion_t;
 // Тип индекса страницы записи
-typedef uint8_t CanFTP_PageIndex_t;
+typedef uint16_t CanFTP_PageIndex_t;
 // Тип размера передаваемого файла
 typedef uint32_t CanFTP_FileLength_t;
 // Тип параметра количества повтореных отправок

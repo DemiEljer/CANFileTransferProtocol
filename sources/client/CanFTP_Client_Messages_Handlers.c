@@ -155,25 +155,44 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
     {
         if (message->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION)
         {
-            if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_REGISTRATED)
+            if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_REGISTRATED
+                || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_CONFIGURING)
             {
+                // Сброс контроллеров итераций ответа в случае, если пришла новая часть конфигурации
+                if (client->agents.sessionController.requsts.configurationPartIndex !=
+                    message->configuration.partIndex)
+                {
+                    CanFTP_TimeTrigger_Reset(&(client->agents.sessionController.repeateAckTrigger));
+                    CanFTP_IterationsHandler_Reset(&(client->agents.sessionController.repeateAckCounter));
+                }
                 // Инициализация параметров сессии
-                client->agents.sessionController.session.configuration.fileLength = message->configuration.fileLength;
-                client->agents.sessionController.session.configuration.pageIndex = message->configuration.pageIndex;
-                client->agents.sessionController.session.configuration.repeateAckCount = message->configuration.repeateAckCount;
-                client->agents.sessionController.session.configuration.repeateInterval = message->configuration.repeateInterval;
+                if (message->configuration.partIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0)
+                {
+                    client->agents.sessionController.session.configuration.firstPageIndex = message->configuration.part0.firstPageIndex;
+                    client->agents.sessionController.session.configuration.pagesCount = message->configuration.part0.pagesCount;
+                    client->agents.sessionController.session.configuration.sessionRepeateCount = message->configuration.part0.sessionRepeateCount;
+                    client->agents.sessionController.session.configuration.sessionRepeateInterval = message->configuration.part0.sessionRepeateInterval;
+                    client->agents.sessionController.session.configuration.blockRepeateCount = message->configuration.part0.blockRepeateCount;
+                    client->agents.sessionController.session.configuration.blockRepeateInterval = message->configuration.part0.blockRepeateInterval;
+                }
+                else if (message->configuration.partIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1)
+                {
+                    client->agents.sessionController.session.configuration.fileLength = message->configuration.part1.fileLength;
+                    CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.session.configuration.newSoftVersion), &(message->configuration.part1.newSoftVersion));
+                }
                 // Выставление запроса на начало конфигурации
                 client->agents.sessionController.requsts.configurationRequest = CANFTP_TRUE;
+                client->agents.sessionController.requsts.configurationPartIndex = message->configuration.partIndex;
             }
             // Ошибка посоедовательности сообщение
-            else if (CanFTP_Client_GetState(client) != CANFTP_CLIENTSTATE_SESSION_CONFIGURED)
+            else if (CanFTP_Client_GetState(client) != CANFTP_CLIENTSTATE_SESSION_CONFIGURING)
             {
                 CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_WRONGSEQUENCE);
             }
         }
         else if (message->messageType == CANFTP_MESSAGE_SERVER_SESSIONCONTROL_START)
         {
-            if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_CONFIGURED)
+            if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_CONFIGURING)
             {
                 // Выставление запроса на начало сессии
                 client->agents.sessionController.requsts.startRequest = CANFTP_TRUE;
@@ -196,7 +215,6 @@ void CanFTP_Client_MessageRecieve_SessionControl(void* invoker, CanFTP_Message_S
                     || CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_STARTED)
                 {
                     CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), message->finish.sessionStatus);
-                    CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(message->finish.newSoftVersion));
                     // Выставление запроса на окончание сессии
                     client->agents.sessionController.requsts.stopRequest = CANFTP_TRUE;
                 }
@@ -400,12 +418,22 @@ void CanFTP_Client_MessageSend_SessionControl(CanFTP_Client_t* client)
 
             messageModel.registrationAck.status = CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS;
         }
-        else if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_CONFIGURED)
+        else if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_CONFIGURING)
         {
             messageModel.messageType = CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATIONACK;
 
             messageModel.configurationAck.status = CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS;
-            messageModel.configurationAck.maxBlockLength = CANFTP_FILEBLOCK_LENGTH;
+
+            if (client->agents.sessionController.requsts.configurationPartIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0)
+            {
+                messageModel.configurationAck.partIndex = CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0;
+            }
+            else if (client->agents.sessionController.requsts.configurationPartIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1)
+            {
+                messageModel.configurationAck.partIndex = CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1;
+
+                messageModel.configurationAck.part1.maxBlockLength = CANFTP_FILEBLOCK_LENGTH;
+            }
         }
         else if (CanFTP_Client_GetState(client) == CANFTP_CLIENTSTATE_SESSION_STARTED)
         {
@@ -526,5 +554,9 @@ void CanFTP_Client_MessageSend(CanFTP_Client_t* client, CanFTP_CanMessage_t* mes
     if (client->callbacks.sendMessageCallback != CANFTP_NULL)
     {
         client->callbacks.sendMessageCallback(client, message);
+    }
+    else
+    {
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CALLBACKS_NOMESSAGESENDER);
     }
 }

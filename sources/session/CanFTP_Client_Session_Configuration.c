@@ -11,8 +11,20 @@
 */
 void CanFTP_Session_Configuratio_Reset(CanFTP_Client_Session_Configuration_t *configuration)
 {
+    // Индекс первой страницы записи
+    configuration->firstPageIndex = 0;
+    // Количество страниц записи
+    configuration->pagesCount = 0;
+    // Новая версия программного обеспечения
+    CanFTP_SoftwareVersion_Reset(&(configuration->newSoftVersion));
+    // Длина передаваемого файла
     configuration->fileLength = 0;
-    configuration->pageIndex = 0;
-    configuration->repeateAckCount = 0;
-    configuration->repeateInterval = 0;
+    // Количество повторных отправок сообщений подтверждения при управлении сессией
+    configuration->sessionRepeateCount = 0;
+    // Интервал времени повторной отправки сообщений подтверждения при управлении сессией
+    configuration->sessionRepeateInterval = 0;
+    // Количество повторных отправок сообщений подтверждения при передаче блока
+    configuration->blockRepeateCount = 0;
+    // Интервал времени повторной отправки сообщений подтверждения при передаче блока
+    configuration->blockRepeateInterval = 0;
 }

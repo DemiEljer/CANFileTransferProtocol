@@ -48,10 +48,10 @@ void CanFTP_Client_Init(CanFTP_Client_t *client)
         client->fms.states[CANFTP_CLIENTSTATE_SESSION_REGISTRATED].handlers.bodyStateHandler = CanFTP_Client_State_SESSION_REGISTRATED_Body;
         client->fms.states[CANFTP_CLIENTSTATE_SESSION_REGISTRATED].handlers.leaveStateHandler = CanFTP_Client_State_SESSION_REGISTRATED_Leave;
 
-        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURED].stateModel = CANFTP_NULL;
-        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURED].handlers.enterStateHandler = CanFTP_Client_State_SESSION_CONFIGURED_Enter;
-        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURED].handlers.bodyStateHandler = CanFTP_Client_State_SESSION_CONFIGURED_Body;
-        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURED].handlers.leaveStateHandler = CanFTP_Client_State_SESSION_CONFIGURED_Leave;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURING].stateModel = CANFTP_NULL;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURING].handlers.enterStateHandler = CanFTP_Client_State_SESSION_CONFIGURING_Enter;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURING].handlers.bodyStateHandler = CanFTP_Client_State_SESSION_CONFIGURING_Body;
+        client->fms.states[CANFTP_CLIENTSTATE_SESSION_CONFIGURING].handlers.leaveStateHandler = CanFTP_Client_State_SESSION_CONFIGURING_Leave;
 
         client->fms.states[CANFTP_CLIENTSTATE_SESSION_STARTED].stateModel = CANFTP_NULL;
         client->fms.states[CANFTP_CLIENTSTATE_SESSION_STARTED].handlers.enterStateHandler = CanFTP_Client_State_SESSION_STARTED_Enter;
@@ -116,7 +116,7 @@ void CanFTP_Client_Init(CanFTP_Client_t *client)
         client->callbacks.lockLogicRequestCallback = CANFTP_NULL;
         client->callbacks.unlockLogicRequestCallback = CANFTP_NULL;
         client->callbacks.sessionConfigureationCallback = CANFTP_NULL;
-        client->callbacks.blockRecieceCallback = CANFTP_NULL;
+        client->callbacks.blockRecieveCallback = CANFTP_NULL;
         client->callbacks.sessionFinishedCallback = CANFTP_NULL;
     }
     // Сброс конфигурации

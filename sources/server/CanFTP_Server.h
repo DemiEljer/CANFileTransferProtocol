@@ -53,6 +53,10 @@ CanFTP_SessionCode_t CanFTP_Server_GetActiveSessionsCount(CanFTP_Server_t *serve
     Получить активную сессию по иднексу
 */
 CanFTP_Server_Session_t* CanFTP_Server_GetActiveSessionByIndex(CanFTP_Server_t *server, CanFTP_SessionCode_t index);
+/*
+    Проверить, что сессия может быть запущена
+*/
+CanFTP_Logical_t CanFTP_Server_CanSessionBeCreated(CanFTP_Server_t *server);
 
 
 #endif // CANFTP_SERVER_H_

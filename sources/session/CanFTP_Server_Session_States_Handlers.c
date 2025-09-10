@@ -232,8 +232,8 @@ void CanFTP_Server_Session_State_CONFIGURING_Enter(CanFTP_FinalStateMachine_t *f
         , session->configuration.sessionControlInterval
         , session->configuration.sessionControlRepeateCount);
     CanFTP_Server_Session_ClientsCollection_UpdateControlSendingParams(&(session->clients)
-        , session->configuration.repeateAckInterval
-        , session->configuration.repeateAckCount);
+        , session->configuration.clientSessionRepeateInterval > session->configuration.clientBlockRepeateInterval ? session->configuration.clientSessionRepeateInterval : session->configuration.clientBlockRepeateInterval
+        , session->configuration.clientSessionRepeateCount > session->configuration.clientBlockRepeateCount ? session->configuration.clientSessionRepeateCount : session->configuration.clientBlockRepeateCount);
 
     DEBUG_SESSION_PRINTSTATE("CONFIGURING", session->code)
 }
@@ -256,17 +256,40 @@ uint32_t CanFTP_Server_Session_State_CONFIGURING_Body(CanFTP_FinalStateMachine_t
         resultState = CANFTP_SESSIONSTATE_STARTING;
     }
     // Проверка триггера времени отправки сообщения
-    else if (CanFTP_TimeTrigger_HasFired_Udpate(&(session->agents.sessionController.sendMessageTrigger)))
+    else 
     {
-        // Проверка количества уже отправленных сообщений
-        if (CanFTP_IterationsHandler_Handle(&(session->agents.sessionController.sendMessageCounter)))
+        // Проверить, что все клиенты подтвердили получения части конфигурации
+        if (CanFTP_Server_Session_ClientsCollection_CheckClientsPartConfiguration(&(session->clients), session->agents.sessionController.configurationPartIndexRequest))
         {
-            CanFTP_Server_Session_MessageSend_SessionControl(session);
+            session->agents.sessionController.configurationPartIndexRequest++;
+
+            CanFTP_Server_Session_Agent_SessionConroller_ResetSendingParams(&(session->agents.sessionController));
+        }
+
+        if (session->agents.sessionController.configurationPartIndexRequest < CANFT_MESSAGE_CLIENT_CONFIGURATIONPARTS_COUNT)
+        {
+            if (CanFTP_TimeTrigger_HasFired_Udpate(&(session->agents.sessionController.sendMessageTrigger)))
+            {
+                // Проверка количества уже отправленных сообщений
+                if (CanFTP_IterationsHandler_Handle(&(session->agents.sessionController.sendMessageCounter)))
+                {
+                    CanFTP_Server_Session_MessageSend_SessionControl(session);
+                }
+                else
+                {
+                    // Удаляем клиентов, которые не прошли текущий этап конфигурации
+                    CanFTP_Server_Session_ClientsCollection_DeleteAllPartUnconfigured(&(session->clients), session->agents.sessionController.configurationPartIndexRequest);
+
+                    session->agents.sessionController.configurationPartIndexRequest++;
+
+                    CanFTP_Server_Session_Agent_SessionConroller_ResetSendingParams(&(session->agents.sessionController));
+                }
+            }
         }
         else
         {
             // В случае, если были пройдены все этапы конфигурации, то удаляем всех не прошедших этап клиентов
-            CanFTP_Server_Session_ClientsCollection_DeleteAllUnconfugured(&(session->clients));
+            CanFTP_Server_Session_ClientsCollection_DeleteAllUnconfigured(&(session->clients));
         }
     }
 
@@ -510,6 +533,10 @@ void CanFTP_Server_Session_State_BLOCK_STARTING_Enter(CanFTP_FinalStateMachine_t
                 , &(session->agents.blockController.fileBlock)
                 , session->agents.blockController.firstBlockByteIndex
                 , requestingBytesCount);
+        }
+        else
+        {
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CALLBACKS_NOBLOCKHANDLER);
         }
         // Расчет новой CRC-суммы
         CanFTP_Session_FileBlock_CalculateCRC(&(session->agents.blockController.fileBlock), session->agents.blockController.fileBlockCRC);

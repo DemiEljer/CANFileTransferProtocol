@@ -15,6 +15,7 @@
 #include "CanFTP_ClientBlockHandlingStatus.h"
 #include "CanFTP_SoftwareVersion.h"
 #include "CanFTP_Message_Client_PingResponse.h"
+#include "CanFTP_Message_Client_SessionControl.h"
 
 /*
     Структура параметров состояния на этапе PING
@@ -90,6 +91,8 @@ typedef struct _CanFTP_Client_Agent_SessionController
         CanFTP_Logical_t stopBlockRequest;
         // Подтверждение получения ответа о статусе блока
         CanFTP_Logical_t blockFinishAckRecieved;
+        // Запрашиваемый индекс части сообщения конфигурации
+        CanFTP_Message_Client_SessionControl_ConfigurationPart_t configurationPartIndex;
 
     } requsts;
     // Структура выходных параметров
@@ -123,8 +126,6 @@ typedef struct _CanFTP_Client_Agent_SessionController
     CanFTP_TimeTrigger_t lostConnectionTrigger;
     // Счетчик количества повторений подтверждений Ack
     CanFTP_IterationsHandler_t repeateAckCounter;
-    // Новая версия файла
-    CanFTP_SoftwareVersion_t newSoftVersion;
 
 } CanFTP_Client_Agent_SessionController_t;
 

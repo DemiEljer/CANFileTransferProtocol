@@ -129,6 +129,30 @@ void ErrorHandle(uint32_t errorCode)
 CanFTP_InitErrorHandler(ErrorHandle);
 ```
 
+#### Типы ошибок
+
+|Ощибка|Значение|Описание|
+|------|--------|--------|
+|ERROR_LIST_OUTOFRANGE|1|Ошибка выхода за пределы размера списка|
+|ERROR_LIST_STRANGERELEMENT|2|Ошибка не принадлежности элемента списку|
+|ERROR_TIME_NOTTIMEGETTER|3|Ошибка отсутствия обработчика получения текущего времени|
+|ERROR_TIME_TIMEMARK|4|Ошибка метки времени|
+|ERROR_CLIENT_NULL|5|Ошибка отсутствия ссылки на клиента|
+|ERROR_FMS_NOBODYHANLER|6|Ошибка отсуствия обработчика тела состояния конечного автомата|
+|ERROR_FMS_OUTOFHANDLERS|7|Ошибка выхода за переделы коллекции состояний конечного автомата|
+|ERROR_MESSAGES_WRONGTYPE|8|Ошибка типа сообщения|
+|ERROR_MESSAGES_WRONGPARAMS|9|Ошибка параметров сообщения|
+|ERROR_CLIENTSCOLLECTION_OUTOFRANGE|10|Выход за пределы коллекции клиентов|
+|ERROR_SESSIONSCOLLECTION_OUTOFRANGE|11|Выход за пределы коллекции сессий|
+|ERROR_SERVER_NULL|12|Ошибка отсутствия ссылки на сервер|
+|ERROR_SESSION_BLOCKERROR|13|Ошибка обработки блока файла|
+|ERROR_CLIENT_ALREADYINSESSION|14|Ошибка попытки добавления в сессию клиента, который уже находится в сессии|
+|ERROR_SESSION_NULL|15|Ошибка отсутствия ссылки на сессию|
+|ERROR_FILEBLOCK_OUTOFRANGE|16|Ошибка выхода за пределы блока файла|
+|ERROR_SESSION_CONFIGURATION_PARTINDEXOUTOFRANGE|17|Ошибка выхода за пределы коллекции конфигурационных сообщений|
+|ERROR_CALLBACKS_NOMESSAGESENDER|18|Ошибка отсутствия обработчика отправки CAN-сообщений|
+|ERROR_CALLBACKS_NOBLOCKHANDLER|19|Ошибка отсутствия обработчика приема блока файла|
+
 > Для детального ознакомления с обработчиком ошибок см. файл **/source/base/CanFTP_ErrorHandlers.h**.
 
 В случае, если необходимо уменьшить буфер блока файла, необходимо скорректировать константу **CANFTP_FILEBLOCK_LENGTH** (по умолчанию - 2048) в файле **/source/session/CanFTP_Session_FileBlock_Defines**

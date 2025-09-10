@@ -88,13 +88,21 @@ CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckIsNotDisposedLeft(
 */
 CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsRegistrationAndDelete(CanFTP_Server_Session_ClientsCollection_t* collection);
 /*
+    Проврить, что все клиенты прошли конкретный этап конфигурации
+*/
+CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsPartConfiguration(CanFTP_Server_Session_ClientsCollection_t* collection, CanFTP_Message_Client_SessionControl_ConfigurationPart_t partIndex);
+/*
+    Удалить всех клиентов, не прошедших этап конфигурации
+*/
+void CanFTP_Server_Session_ClientsCollection_DeleteAllPartUnconfigured(CanFTP_Server_Session_ClientsCollection_t* collection, CanFTP_Message_Client_SessionControl_ConfigurationPart_t partIndex);
+/*
     Проврить, что все клиенты были сконфигурированы
 */
 CanFTP_Logical_t CanFTP_Server_Session_ClientsCollection_CheckClientsConfiguration(CanFTP_Server_Session_ClientsCollection_t* collection);
 /*
     Удалить всех клиентов, не прошедших конфигурацию 
 */
-void CanFTP_Server_Session_ClientsCollection_DeleteAllUnconfugured(CanFTP_Server_Session_ClientsCollection_t* collection);
+void CanFTP_Server_Session_ClientsCollection_DeleteAllUnconfigured(CanFTP_Server_Session_ClientsCollection_t* collection);
 /*
     Проврить, что все клиенты готовы к началу сессии
 */

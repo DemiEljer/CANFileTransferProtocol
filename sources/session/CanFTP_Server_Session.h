@@ -24,7 +24,10 @@ void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_
 /*
     Проинициализировать параметры отправляемого файла
 */
-void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session, CanFTP_PageIndex_t pageIndex, CanFTP_FileLength_t fileLength);
+void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session
+    , CanFTP_PageIndex_t firstPageIndex
+    , CanFTP_PageIndex_t pagesCount
+    , CanFTP_FileLength_t fileLength);
 /*
     Проинициализировать новую версию программного обеспечения
 */

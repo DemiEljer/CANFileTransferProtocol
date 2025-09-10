@@ -11,6 +11,9 @@
 #include "CanFTP_ClientSessionAckStatus.h"
 #include "CanFTP_SessionStatus.h"
 
+// Количество частей конфигурации сессии
+#define CANFT_MESSAGE_CLIENT_CONFIGURATIONPARTS_COUNT 2
+
 /*
     Тип сообщения при управлении сессией
 */
@@ -20,7 +23,17 @@ typedef enum _CanFTP_Message_Client_SessionControl_Type
     CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATIONACK = 1,
     CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_STARTSESSIONACK = 2,
     CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_FINISHSESSIONACK = 3,
+
 } CanFTP_Message_Client_SessionControl_Type_t;
+/*
+    Индекс сообщения конфинурации
+*/
+typedef enum _CanFTP_Message_Client_SessionControl_ConfigurationPart
+{
+    CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0 = 0,
+    CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1 = 1,
+
+} CanFTP_Message_Client_SessionControl_ConfigurationPart_t;
 
 /*
     Структура сообщения BlockControl
@@ -45,8 +58,20 @@ typedef struct _CanFTP_Message_Client_SessionControl
     {
         // Статус завершения операции
         CanFTP_ClientSessionAckStatus_t status;
-        // Максимальный размер блока
-        CanFTP_BlockLength_t maxBlockLength;
+        // Индекс части конфигурации
+        CanFTP_Message_Client_SessionControl_ConfigurationPart_t partIndex;
+        // PART0
+        struct 
+        {
+
+        } part0;
+        // PART1
+        struct 
+        {
+            // Максимальный размер блока
+            CanFTP_BlockLength_t maxBlockLength;
+
+        } part1;
 
     } configurationAck;
     // STARTSESSIONACK

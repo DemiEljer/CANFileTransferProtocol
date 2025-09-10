@@ -80,6 +80,7 @@
 |CanFTP_Server_CreateNewSession|Создать экземпляр сессии|
 |CanFTP_Server_GetActiveSessionsCount|Получить количество активных сессий|
 |CanFTP_Server_GetActiveSessionByIndex|Получить активную сессию по иднексу|
+|CanFTP_Server_CanSessionBeCreated|Проверить, возможно ли сейчас создать сессию|
 
 > **Примечание.** После начала поиска устройств (**CanFTP_Server_StartPing**) или их освобождения (**CanFTP_Server_StartRelease**) необходимо вызвать **CanFTP_Server_StopPing**, чтобы остановить процесс. 
 
@@ -114,8 +115,10 @@
 |defaultSessionConfiguration.blockControlInterval|Интервалы времени отправки сообщений при управлении процессом отправки блока|
 |defaultSessionConfiguration.blockControlRepeateCount|Количество повторений отправки сообщений при управлении процессом отправки блока|
 |defaultSessionConfiguration.frameSendingInterval|Интервалы времени отправки кадров блока|
-|defaultSessionConfiguration.repeateAckInterval|Интервалы времени отправки подтверждений со стороны клиента|
-|defaultSessionConfiguration.repeateAckCount|Количество повторений отправки сообщений от клиентов|
+|defaultSessionConfiguration.clientSessionRepeateInterval|Интервалы времени отправки подтверждений со стороны клиента при управлении сессией|
+|defaultSessionConfiguration.clientSessionRepeateCount|Количество повторений отправки сообщений от клиентов при управлении сессией|
+|defaultSessionConfiguration.clientBlockRepeateInterval|Интервалы времени отправки подтверждений со стороны клиента при отправке блока|
+|defaultSessionConfiguration.clientBlockRepeateCount|Количество повторений отправки сообщений от клиентов при отправке блока|
 
 ---
 ## CanFTP_Server_Client_t

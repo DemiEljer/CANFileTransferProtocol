@@ -144,7 +144,10 @@ void CanFTP_Server_Session_InitClients(CanFTP_Server_Session_t *session, CanFTP_
 /*
     Проициализовать параметры отправляемого файла
 */
-void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session, CanFTP_PageIndex_t pageIndex, CanFTP_FileLength_t fileLength)
+void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *session
+    , CanFTP_PageIndex_t firstPageIndex
+    , CanFTP_PageIndex_t pagesCount
+    , CanFTP_FileLength_t fileLength)
 {
     if (session == CANFTP_NULL)
     {
@@ -154,7 +157,8 @@ void CanFTP_Server_Session_InitFileConfiguration(CanFTP_Server_Session_t *sessio
     }
 
     CanFTP_Server_Session_FileConfiguration_InitBaseParamns(&(session->fileConfiguration)
-        , pageIndex
+        , firstPageIndex
+        , pagesCount
         , fileLength);
 
     session->statuses.fileIsInited = CANFTP_TRUE;

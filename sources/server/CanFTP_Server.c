@@ -251,3 +251,10 @@ CanFTP_Server_Session_t* CanFTP_Server_GetActiveSessionByIndex(CanFTP_Server_t *
 
     return CanFTP_Server_SessionsCollection_GetActiveSessionByIndex(&(server->sessions), index);
 }
+/*
+    Проверить, что сессия может быть запущена
+*/
+CanFTP_Logical_t CanFTP_Server_CanSessionBeCreated(CanFTP_Server_t *server)
+{
+    return CanFTP_Server_CreateSessionPermition(server);
+}

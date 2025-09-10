@@ -11,7 +11,8 @@
 */
 void CanFTP_Server_Session_FileConfiguration_Reset(CanFTP_Server_Session_FileConfiguration_t* configuration)
 {
-    configuration->pageIndex = 0;
+    configuration->firstPageIndex = 0;
+    configuration->pagesCount = 0;
     configuration->fileLength = 0;
     configuration->maxBlockLength = CANFTP_FILEBLOCK_LENGTH;
     CanFTP_SoftwareVersion_Reset(&(configuration->newSoftVersion));
@@ -20,10 +21,12 @@ void CanFTP_Server_Session_FileConfiguration_Reset(CanFTP_Server_Session_FileCon
     Инициализация базовых параметров конфигурации файла
 */
 void CanFTP_Server_Session_FileConfiguration_InitBaseParamns(CanFTP_Server_Session_FileConfiguration_t* configuration
-    , CanFTP_PageIndex_t pageIndex
+    , CanFTP_PageIndex_t firstPageIndex
+    , CanFTP_PageIndex_t pagesCount
     , CanFTP_FileLength_t fileLength)
 {
-    configuration->pageIndex = pageIndex;
+    configuration->firstPageIndex = firstPageIndex;
+    configuration->pagesCount = pagesCount;
     configuration->fileLength = fileLength;
 }
 /*

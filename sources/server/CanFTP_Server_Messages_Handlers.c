@@ -203,4 +203,8 @@ void CanFTP_Server_MessageSend(CanFTP_Server_t* server, CanFTP_CanMessage_t* mes
     {
         server->callbacks.sendMessageCallback(server, message);
     }
+    else
+    {
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CALLBACKS_NOMESSAGESENDER);
+    }
 }

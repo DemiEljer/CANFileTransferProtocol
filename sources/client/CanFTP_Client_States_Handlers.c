@@ -144,12 +144,14 @@ void CanFTP_Client_State_PING_RESPONSING_Enter(CanFTP_FinalStateMachine_t *fms, 
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    // Инициализация времени повторной отправки сообщений
-    CanFTP_TimeTrigger_SetInterval(&(client->agents.pingController.reapeateSendingTrigger)
-        , CanFTP_Random_GetNext_Range(&(client->agents.random)
-        , CANFTP_CLIENT_PING_MININTERVAL
-        , CANFTP_CLIENT_PING_MAXINTERVAL));
-    CanFTP_TimeTrigger_Update(&(client->agents.pingController.reapeateSendingTrigger));
+    // Инициализация параметров повторной отправки сообщений ответов
+    {
+        CanFTP_TimeTrigger_SetInterval(&(client->agents.pingController.reapeateSendingTrigger)
+            , CanFTP_Random_GetNext_Range(&(client->agents.random)
+            , CANFTP_CLIENT_PING_MININTERVAL
+            , CANFTP_CLIENT_PING_MAXINTERVAL));
+        CanFTP_TimeTrigger_Update(&(client->agents.pingController.reapeateSendingTrigger));
+    }
 
     DEBUG_CLIENT_PRINTSTATE("PING_RESPONSING", client->deviceConfig.serialNumber);
 }
@@ -323,8 +325,7 @@ void CanFTP_Client_State_SESSION_REGISTRATED_Enter(CanFTP_FinalStateMachine_t *f
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.newSoftVersion), &(client->deviceConfig.softVersion));
-    CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.lostConnectionTrigger), CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT);
+    CanFTP_SoftwareVersion_Copy(&(client->agents.sessionController.session.configuration.newSoftVersion), &(client->deviceConfig.softVersion));
 
     DEBUG_CLIENT_PRINTSTATE("SESSION_REGISTRATED", client->deviceConfig.serialNumber);
 }
@@ -346,7 +347,7 @@ uint32_t CanFTP_Client_State_SESSION_REGISTRATED_Body(CanFTP_FinalStateMachine_t
     {
         if (client->agents.sessionController.requsts.configurationRequest)
         {
-            resultState = CANFTP_CLIENTSTATE_SESSION_CONFIGURED;
+            resultState = CANFTP_CLIENTSTATE_SESSION_CONFIGURING;
         }
         // Отправка подтверждения регистрации в рамках сессии
         else if (CanFTP_TimeTrigger_HasFired_Udpate(&(client->agents.sessionController.repeateAckTrigger))
@@ -377,45 +378,18 @@ void CanFTP_Client_State_SESSION_REGISTRATED_Leave(CanFTP_FinalStateMachine_t *f
 #ifndef CLIENT_STATE_SESSION_CONFIGURED_
 #define CLIENT_STATE_SESSION_CONFIGURED_
 
-void CanFTP_Client_State_SESSION_CONFIGURED_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel)
+void CanFTP_Client_State_SESSION_CONFIGURING_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel)
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
-    // Инициализация параметров повторов ответов
-    CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.repeateAckTrigger), client->agents.sessionController.session.configuration.repeateInterval);
-    CanFTP_IterationsHandler_SetMaxCount(&(client->agents.sessionController.repeateAckCounter), client->agents.sessionController.session.configuration.repeateAckCount);
-    // Инициализация интервала времени потери связи
-    {
-        CanFTP_TimeInterval_t newLostConnectionTimeout = client->agents.sessionController.session.configuration.repeateInterval
-            * client->agents.sessionController.session.configuration.repeateAckCount
-            * client->agents.sessionController.session.configuration.repeateAckCount;
-        // Обработка сценария, когда понижается скорость работы протокола, с условием сохранения минимального интервала времени 
-        if (newLostConnectionTimeout < CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT)
-        {
-            newLostConnectionTimeout = CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT;
-        }
-
-        CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.lostConnectionTrigger), newLostConnectionTimeout);
-    }
-    // Вызов логики согласования с вышестоящей логикой параметров сессии
-    {
-        if (client->callbacks.sessionConfigureationCallback == CANFTP_NULL)
-        {
-            client->agents.sessionController.statuses.sessionHasBeenVerified = CANFTP_TRUE;
-        }
-        else
-        {
-            client->agents.sessionController.statuses.sessionHasBeenVerified = client->callbacks.sessionConfigureationCallback(client, &(client->agents.sessionController.session.configuration));
-        }
-    }
 
     DEBUG_CLIENT_PRINTSTATE("SESSION_CONFIGURED", client->deviceConfig.serialNumber);
 }
 
-uint32_t CanFTP_Client_State_SESSION_CONFIGURED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
+uint32_t CanFTP_Client_State_SESSION_CONFIGURING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel)
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
-    CanFTP_ClientState_t resultState = CANFTP_CLIENTSTATE_SESSION_CONFIGURED;
+    CanFTP_ClientState_t resultState = CANFTP_CLIENTSTATE_SESSION_CONFIGURING;
 
     // Проверка условия, что не был снят запрос на закрытие сессии
     if (client->agents.sessionController.requsts.requestSession != CANFTP_TRUE)
@@ -426,15 +400,31 @@ uint32_t CanFTP_Client_State_SESSION_CONFIGURED_Body(CanFTP_FinalStateMachine_t 
     }
     else
     {
-        if (client->agents.sessionController.statuses.sessionHasBeenVerified != CANFTP_TRUE)
+        
+        if (client->agents.sessionController.requsts.startRequest)
         {
-            CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_CONFIGURATIONFAILED);
+            // Вызов логики согласования с вышестоящей логикой параметров сессии
+            {
+                if (client->callbacks.sessionConfigureationCallback == CANFTP_NULL)
+                {
+                    client->agents.sessionController.statuses.sessionHasBeenVerified = CANFTP_TRUE;
+                }
+                else
+                {
+                    client->agents.sessionController.statuses.sessionHasBeenVerified = client->callbacks.sessionConfigureationCallback(client, &(client->agents.sessionController.session.configuration));
+                }
+            }
+            // Проверка, что был выставлен флаг успешной верификации сессии
+            if (client->agents.sessionController.statuses.sessionHasBeenVerified != CANFTP_TRUE)
+            {
+                CanFTP_Client_Agent_SessionController_SetSessionStatus(&(client->agents.sessionController), CANFTP_SESSIONSTATUS_ERROR_CONFIGURATIONFAILED);
 
-            resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
-        }
-        else if (client->agents.sessionController.requsts.startRequest)
-        {
-            resultState = CANFTP_CLIENTSTATE_SESSION_STARTED;
+                resultState = CANFTP_CLIENTSTATE_SESSION_FINISHED;
+            }
+            else
+            {
+                resultState = CANFTP_CLIENTSTATE_SESSION_STARTED;
+            }
         }
         // Отправка подтверждения регистрации сессии
         else if (CanFTP_TimeTrigger_HasFired_Udpate(&(client->agents.sessionController.repeateAckTrigger)))
@@ -449,9 +439,28 @@ uint32_t CanFTP_Client_State_SESSION_CONFIGURED_Body(CanFTP_FinalStateMachine_t 
     return resultState;
 }
 
-void CanFTP_Client_State_SESSION_CONFIGURED_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel)
+void CanFTP_Client_State_SESSION_CONFIGURING_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel)
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
+
+    // Инициализация интервала времени потери связи
+    {
+        CanFTP_SendingRepeateInterval_t maxRepeateInterval = client->agents.sessionController.session.configuration.sessionRepeateInterval > client->agents.sessionController.session.configuration.blockRepeateInterval
+            ? client->agents.sessionController.session.configuration.sessionRepeateInterval
+            : client->agents.sessionController.session.configuration.blockRepeateInterval;
+        CanFTP_SendingRepeate_t maxRepeateCount = client->agents.sessionController.session.configuration.sessionRepeateCount > client->agents.sessionController.session.configuration.blockRepeateCount
+            ? client->agents.sessionController.session.configuration.sessionRepeateCount
+            : client->agents.sessionController.session.configuration.blockRepeateCount;
+        
+        CanFTP_TimeInterval_t newLostConnectionTimeout = 10 * maxRepeateInterval * maxRepeateCount;
+        // Обработка сценария, когда понижается скорость работы протокола, с условием сохранения минимального интервала времени 
+        if (newLostConnectionTimeout < CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT)
+        {
+            newLostConnectionTimeout = CANFTP_CLIENT_SEESION_LOSTCONNECTION_TIMEOUT;
+        }
+
+        CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.lostConnectionTrigger), newLostConnectionTimeout);
+    }
 
     CanFTP_Client_Agent_SessionController_ResetBetweenStates(&(client->agents.sessionController));
 }
@@ -467,6 +476,11 @@ void CanFTP_Client_State_SESSION_CONFIGURED_Leave(CanFTP_FinalStateMachine_t *fm
 void CanFTP_Client_State_SESSION_STARTED_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel)
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
+
+    // Инициализация параметров повторной отправки сообщений ответов
+    CanFTP_Client_Agent_SessionController_UpdateTimeParams(&(client->agents.sessionController)
+        , client->agents.sessionController.session.configuration.sessionRepeateInterval
+        , client->agents.sessionController.session.configuration.sessionRepeateCount);
 
     DEBUG_CLIENT_PRINTSTATE("SESSION_STARTED", client->deviceConfig.serialNumber);
 }
@@ -537,8 +551,17 @@ void CanFTP_Client_State_SESSION_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
     // Корректировка параметров отправки сообщений подтверждения в случае активации вышестоящей логики  
     if (client->agents.logicLockController.requsts.requestToLockLogic != CANFTP_TRUE)
     {
-        CanFTP_TimeTrigger_SetInterval(&(client->agents.sessionController.repeateAckTrigger), CANFTP_CLIENT_SEESION_TERMINATIONACK_PERIOD);
-        CanFTP_IterationsHandler_SetMaxCount(&(client->agents.sessionController.repeateAckCounter), CANFTP_CLIENT_SEESION_TERMINATIONACK_COUNT);
+        // Инициализация параметров повторной отправки сообщений ответов
+        CanFTP_Client_Agent_SessionController_UpdateTimeParams(&(client->agents.sessionController)
+            , CANFTP_CLIENT_SEESION_TERMINATIONACK_PERIOD
+            , CANFTP_CLIENT_SEESION_TERMINATIONACK_COUNT);
+    }
+    else
+    {
+        // Инициализация параметров повторной отправки сообщений ответов
+        CanFTP_Client_Agent_SessionController_UpdateTimeParams(&(client->agents.sessionController)
+            , client->agents.sessionController.session.configuration.sessionRepeateInterval
+            , client->agents.sessionController.session.configuration.sessionRepeateCount);
     }
 
     DEBUG_CLIENT_PRINTSTATE("SESSION_FINISHED", client->deviceConfig.serialNumber);
@@ -584,13 +607,13 @@ void CanFTP_Client_State_SESSION_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms,
     // Обратный вызов окончания сессии
     if (client->callbacks.sessionFinishedCallback != CANFTP_NULL)
     {
-        client->callbacks.sessionFinishedCallback(client, client->agents.sessionController.statuses.sessionStatus, &(client->agents.sessionController.newSoftVersion));
+        client->callbacks.sessionFinishedCallback(client, client->agents.sessionController.statuses.sessionStatus, &(client->agents.sessionController.session.configuration.newSoftVersion));
     }
     // Автоматическое обновление номера версии
     if (client->control.autpUpdateSoftVersion
         && client->agents.sessionController.statuses.sessionStatus == CANFTP_SESSIONSTATUS_OK)
     {
-        CanFTP_SoftwareVersion_Copy(&(client->deviceConfig.softVersion), &(client->agents.sessionController.newSoftVersion));
+        CanFTP_SoftwareVersion_Copy(&(client->deviceConfig.softVersion), &(client->agents.sessionController.session.configuration.newSoftVersion));
     }
 
     CanFTP_Client_Agent_SessionController_Reset(&(client->agents.sessionController));
@@ -607,11 +630,16 @@ void CanFTP_Client_State_SESSION_FINISHED_Leave(CanFTP_FinalStateMachine_t *fms,
 void CanFTP_Client_State_BLOCK_STARTED_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel)
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
+
     // Сбролс флагов приема фреймов блока в случае, если запрошена повторная отправка
     if (client->agents.sessionController.statuses.blockHandlingStatus == CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT)
     {
         CanFTP_Client_Agent_SessionController_NewBlockReset(&(client->agents.sessionController));
     }
+    // Инициализация параметров повторной отправки сообщений ответов
+    CanFTP_Client_Agent_SessionController_UpdateTimeParams(&(client->agents.sessionController)
+        , client->agents.sessionController.session.configuration.blockRepeateInterval
+        , client->agents.sessionController.session.configuration.blockRepeateCount);
 
     DEBUG_CLIENT_PRINTSTATE("BLOCK_STARTED", client->deviceConfig.serialNumber);
 }
@@ -668,6 +696,11 @@ void CanFTP_Client_State_BLOCK_RECIEVING_Enter(CanFTP_FinalStateMachine_t *fms, 
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
+    // Инициализация параметров повторной отправки сообщений ответов
+    CanFTP_Client_Agent_SessionController_UpdateTimeParams(&(client->agents.sessionController)
+        , client->agents.sessionController.session.configuration.blockRepeateInterval
+        , client->agents.sessionController.session.configuration.blockRepeateCount);
+
     DEBUG_CLIENT_PRINTSTATE("BLOCK_RECIEVING", client->deviceConfig.serialNumber);
 }
 
@@ -714,6 +747,7 @@ void CanFTP_Client_State_BLOCK_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms, v
 {
     CanFTP_Client_t* client = (CanFTP_Client_t*)(fms);
 
+    // Расчет параметров верификации приема блока файла
     if (client->agents.sessionController.statuses.blockHandlingStatus != CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKISRECIEVED)
     {
         client->agents.sessionController.statuses.allBlocksFramesWereRecieved 
@@ -725,6 +759,10 @@ void CanFTP_Client_State_BLOCK_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms, v
                 , client->agents.sessionController.statuses.blockCRC);
         }
     }
+    // Инициализация параметров повторной отправки сообщений ответов
+    CanFTP_Client_Agent_SessionController_UpdateTimeParams(&(client->agents.sessionController)
+        , client->agents.sessionController.session.configuration.blockRepeateInterval
+        , client->agents.sessionController.session.configuration.blockRepeateCount);
 
     DEBUG_CLIENT_PRINTSTATE("BLOCK_FINISHED", client->deviceConfig.serialNumber);
 }
@@ -790,12 +828,16 @@ void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Enter(CanFTP_FinalStateMachine_t *
         && client->agents.sessionController.statuses.newBlockIsHandling == CANFTP_TRUE)
     {
         // Обработный вызов успешного приема блока
-        if (client->callbacks.blockRecieceCallback != CANFTP_NULL)
+        if (client->callbacks.blockRecieveCallback != CANFTP_NULL)
         {
-            client->callbacks.blockRecieceCallback(client
+            client->callbacks.blockRecieveCallback(client
                 , client->agents.sessionController.statuses.resultFileLength 
                 , client->agents.sessionController.session.block.length
                 , client->agents.sessionController.session.block.data);
+        }
+        else
+        {
+            CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CALLBACKS_NOBLOCKHANDLER);
         }
         // Увеличение длины файла
         client->agents.sessionController.statuses.resultFileLength += client->agents.sessionController.session.block.length;
@@ -804,6 +846,10 @@ void CanFTP_Client_State_BLOCK_NEXTBLOCKREADY_Enter(CanFTP_FinalStateMachine_t *
     }
     // Сброс флагов управления процессом приема блока
     CanFTP_Client_Agent_SessionController_ResetBlock(&(client->agents.sessionController));
+    // Инициализация параметров повторной отправки сообщений ответов
+    CanFTP_Client_Agent_SessionController_UpdateTimeParams(&(client->agents.sessionController)
+        , client->agents.sessionController.session.configuration.blockRepeateInterval
+        , client->agents.sessionController.session.configuration.blockRepeateCount);
 
     DEBUG_CLIENT_PRINTSTATE("BLOCK_NEXTBLOCKREADY", client->deviceConfig.serialNumber);
 }

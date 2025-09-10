@@ -8,7 +8,7 @@
 #define CANFTP_SERVER_SESSION_PARAMS_H_
 
 // Интервал отправки сообщений при регистрации клиентов
-#define CANFTP_SERVER_SESSION_REGISTRATION_INTERVAL 100
+#define CANFTP_SERVER_SESSION_REGISTRATION_INTERVAL 250
 // Количество попыток регистрации клиентов
 #define CANFTP_SERVER_SESSION_REGISTRATION_COUNT 10
 // Интервал отправки сообщений управления сессией
@@ -24,9 +24,13 @@
 // Интервал времени при отправке фрейма блока файла
 #define CANFTP_SERVER_SESSION_FRAMESENDING_INTERVAL 1
 // Интервел времени отправки подтверждений со стороны клиентов
-#define CANFTP_SERVER_SESSION_ACKREPEATE_INTERVAL 100
+#define CANFTP_SERVER_SESSION_SESSIONCONTROL_ACKREPEATE_INTERVAL 250
 // Количество попыток отправки подтверждений со стороны клиента
-#define CANFTP_SERVER_SESSION_ACKREPEATE_COUNT 10
+#define CANFTP_SERVER_SESSION_SESSIONCONTROL_ACKREPEATE_COUNT 10
+// Интервел времени отправки подтверждений со стороны клиентов
+#define CANFTP_SERVER_SESSION_BLOCKCONTROL_ACKREPEATE_INTERVAL 50
+// Количество попыток отправки подтверждений со стороны клиента
+#define CANFTP_SERVER_SESSION_BLOCKCONTROL_ACKREPEATE_COUNT 10
 // Интервал времени для отслеживания потери связи с клиентом
 #define CANFTP_SERVER_SESSION_LOSTCONNECTION_TIMEOUT 10000
 

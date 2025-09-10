@@ -26,6 +26,10 @@ CanFTP_Logical_t CanFTP_Server_Session_Agent_RegistrationConroller_CheckIfClient
 */
 void CanFTP_Server_Session_Agent_SessionConroller_Reset(CanFTP_Server_Session_Agent_SessionConroller_t* agent);
 /*
+    Сбросить параметры отправки соообщений
+*/
+void CanFTP_Server_Session_Agent_SessionConroller_ResetSendingParams(CanFTP_Server_Session_Agent_SessionConroller_t* agent);
+/*
     Обновить параметры отправки соообщений
 */
 void CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(CanFTP_Server_Session_Agent_SessionConroller_t* agent

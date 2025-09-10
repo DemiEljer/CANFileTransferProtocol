@@ -7,6 +7,7 @@
 #ifndef CANFTP_SERVER_SESSION_CLIENT_DEFINES_H_
 #define CANFTP_SERVER_SESSION_CLIENT_DEFINES_H_
 
+#include "CanFTP_Message_Client_SessionControl.h"
 #include "CanFTP_Server_Session_Params.h"
 #include "CanFTP_Session_ClientAssosiation.h"
 #include "CanFTP_Session_FileBlock_Defines.h"
@@ -40,7 +41,7 @@ typedef struct _CanFTP_Server_Session_Client
         // Подтверждение факта регистрации в сессии
         CanFTP_Logical_t isRegistrated;
         // Подтверждение факта конфигурации 
-        CanFTP_Logical_t isConfigurated;
+        CanFTP_Logical_t isPartConfigurated[CANFT_MESSAGE_CLIENT_CONFIGURATIONPARTS_COUNT];
         // Подтверждение факта начала сессии
         CanFTP_Logical_t sessionIsStarted;
         // Подтверждение факта окончания сессии

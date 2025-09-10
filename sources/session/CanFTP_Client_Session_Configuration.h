@@ -7,21 +7,29 @@
 #ifndef CANFTP_CLIENT_SESSION_CONFIGURATION_H_
 #define CANFTP_CLIENT_SESSION_CONFIGURATION_H_
 
-#include "CanFTP_BaseTypes_Defines.h"
+#include "CanFTP_SoftwareVersion.h"
 
 /*
     Структура конфигурации сессии на стороне клиента
 */
 typedef struct _CanFTP_Client_Session_Configuration
 {
-    // Индекс страницы записи
-    CanFTP_PageIndex_t pageIndex;
+    // Индекс первой страницы записи
+    CanFTP_PageIndex_t firstPageIndex;
+    // Количество страниц записи
+    CanFTP_PageIndex_t pagesCount;
+    // Новая версия программного обеспечения
+    CanFTP_SoftwareVersion_t newSoftVersion;
     // Длина передаваемого файла
     CanFTP_FileLength_t fileLength;
-    // Количество повторных отправок сообщений подтверждения
-    CanFTP_SendingRepeate_t repeateAckCount;
-    // Интервал времени повторной отправки
-    CanFTP_SendingRepeateInterval_t repeateInterval;
+    // Количество повторных отправок сообщений подтверждения при управлении сессией
+    CanFTP_SendingRepeate_t sessionRepeateCount;
+    // Интервал времени повторной отправки сообщений подтверждения при управлении сессией
+    CanFTP_SendingRepeateInterval_t sessionRepeateInterval;
+    // Количество повторных отправок сообщений подтверждения при передаче блока
+    CanFTP_SendingRepeate_t blockRepeateCount;
+    // Интервал времени повторной отправки сообщений подтверждения при передаче блока
+    CanFTP_SendingRepeateInterval_t blockRepeateInterval;
     
 } CanFTP_Client_Session_Configuration_t;
 

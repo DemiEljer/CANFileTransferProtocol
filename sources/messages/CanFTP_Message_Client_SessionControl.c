@@ -24,7 +24,24 @@ CanFTP_Logical_t CanFTP_Message_Client_SessionControl_Unpack(CanFTP_Message_Clie
         else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATIONACK)
         {
             messageModel->configurationAck.status = (CanFTP_ClientSessionAckStatus_t)((messageCan->data[0] >> 4) & 0x0F); 
-            messageModel->configurationAck.maxBlockLength = (CanFTP_BlockLength_t)(messageCan->data[1] | (messageCan->data[2] & 0x0F) << 8);
+            messageModel->configurationAck.partIndex = (CanFTP_Message_Client_SessionControl_ConfigurationPart_t)(messageCan->data[1] & 0x0F);
+            
+            if (messageModel->configurationAck.partIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0)
+            {
+                // Ничего не делаем
+            }
+            else if (messageModel->configurationAck.partIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1)
+            {
+                messageModel->configurationAck.part1.maxBlockLength = (CanFTP_BlockLength_t)
+                (
+                      (CanFTP_BlockLength_t)((messageCan->data[1] >> 4) & 0x0F) << 0
+                    | (CanFTP_BlockLength_t)((messageCan->data[2] >> 0) & 0xFF) << 4
+                );
+            }
+            else
+            {
+                CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_CONFIGURATION_PARTINDEXOUTOFRANGE);
+            }
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_STARTSESSIONACK)
         {
@@ -65,8 +82,21 @@ void CanFTP_Message_Client_SessionControl_Pack(CanFTP_Message_Client_SessionCont
         else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATIONACK)
         {
             messageDataVector[0] |= ((messageModel->configurationAck.status >> 0) & 0x0F) << 4;
-            messageDataVector[1] |= ((messageModel->configurationAck.maxBlockLength >> 0) & 0xFF) << 0;
-            messageDataVector[2] |= ((messageModel->configurationAck.maxBlockLength >> 8) & 0x0F) << 0;
+            messageDataVector[1] |= messageModel->configurationAck.partIndex & 0x0F;
+
+            if (messageModel->configurationAck.partIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0)
+            {
+                // Ничего не делаем
+            }
+            else if (messageModel->configurationAck.partIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1)
+            {
+                messageDataVector[1] |= ((messageModel->configurationAck.part1.maxBlockLength >> 0) & 0x0F) << 4;
+                messageDataVector[2] |= ((messageModel->configurationAck.part1.maxBlockLength >> 4) & 0xFF) << 0;
+            }
+            else
+            {
+                CanFTP_ThrowErrorWithCode(CANFTP_ERROR_SESSION_CONFIGURATION_PARTINDEXOUTOFRANGE);
+            }
         }
         else if (messageModel->messageType == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_STARTSESSIONACK)
         {

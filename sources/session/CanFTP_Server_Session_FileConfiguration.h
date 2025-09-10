@@ -15,8 +15,10 @@
 */
 typedef struct _CanFTP_Server_Session_FileConfiguration
 {
-    // Индекс страницы
-    CanFTP_PageIndex_t pageIndex;
+    // Индекс первой страницы записи
+    CanFTP_PageIndex_t firstPageIndex;
+    // Количество страниц записи
+    CanFTP_PageIndex_t pagesCount;
     // Длина файла
     CanFTP_FileLength_t fileLength;
     // Максимальный длина блока
@@ -34,7 +36,8 @@ void CanFTP_Server_Session_FileConfiguration_Reset(CanFTP_Server_Session_FileCon
     Инициализация базовых параметров конфигурации файла
 */
 void CanFTP_Server_Session_FileConfiguration_InitBaseParamns(CanFTP_Server_Session_FileConfiguration_t* configuration
-    , CanFTP_PageIndex_t pageIndex
+    , CanFTP_PageIndex_t firstPageIndex
+    , CanFTP_PageIndex_t pagesCount
     , CanFTP_FileLength_t fileLength);
 /*
     Инициализация максимальной длины блока

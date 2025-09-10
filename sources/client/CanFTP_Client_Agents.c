@@ -62,6 +62,7 @@ void CanFTP_Client_Agent_SessionController_Reset(CanFTP_Client_Agent_SessionCont
     agent->requsts.recievingBlockRequest = CANFTP_FALSE;
     agent->requsts.stopBlockRequest = CANFTP_FALSE;
     agent->requsts.blockFinishAckRecieved = CANFTP_FALSE;
+    agent->requsts.configurationPartIndex = CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0;
     agent->statuses.sessionStatus = CANFTP_SESSIONSTATUS_OK;
     agent->statuses.sessionHasBeenVerified = CANFTP_FALSE;
     agent->statuses.allBlocksFramesWereRecieved = CANFTP_FALSE;
@@ -136,8 +137,18 @@ void CanFTP_Client_Agent_SessionController_SetSessionStatus(CanFTP_Client_Agent_
 */
 void CanFTP_Client_Agent_SessionController_ResetBetweenStates(CanFTP_Client_Agent_SessionController_t *agent)
 {
-    // Сброс счетчика количества повторений
+    // Сброс счетчика количества повторных отправок
     CanFTP_IterationsHandler_Reset(&(agent->repeateAckCounter));
-    // Сброс метки времени генерации ответа
+    // Сброс метки времени повторной отправки
     CanFTP_TimeTrigger_Reset(&(agent->repeateAckTrigger));
+}
+/*
+    Обновить параметры времени
+*/
+void CanFTP_Client_Agent_SessionController_UpdateTimeParams(CanFTP_Client_Agent_SessionController_t *agent, CanFTP_SendingRepeateInterval_t interval, CanFTP_SendingRepeate_t maxCount)
+{
+    // Установка максимального количества повторений
+    CanFTP_IterationsHandler_SetMaxCount(&(agent->repeateAckCounter), maxCount);
+    // Установка итервала времени повторной отправки
+    CanFTP_TimeTrigger_SetInterval(&(agent->repeateAckTrigger), interval);
 }

@@ -34,7 +34,6 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
     {
         client->statuses.isDisposed = CANFTP_FALSE;
         client->statuses.isRegistrated = CANFTP_FALSE;
-        client->statuses.isConfigurated = CANFTP_FALSE;
         client->statuses.sessionIsStarted = CANFTP_FALSE;
         client->statuses.sessionIsFinished = CANFTP_FALSE;
         client->statuses.sessionStatus = CANFTP_SESSIONSTATUS_OK;
@@ -42,6 +41,13 @@ void CanFTP_Server_Session_Client_Init(CanFTP_Server_Session_Client_t *client
         client->statuses.isBlockFinished = CANFTP_FALSE;
         client->statuses.isNextBlockReady = CANFTP_FALSE;
         client->statuses.blockStatus = CANFTP_CLIENTBLOCKHANDLINGSTATUS_BLOCKREPEAT;
+
+        CanFTP_Message_Client_SessionControl_ConfigurationPart_t configurationPartIndex = 0;
+        // Сброс флагов чтения конфигурации сессии
+        for (configurationPartIndex = 0; configurationPartIndex < CANFT_MESSAGE_CLIENT_CONFIGURATIONPARTS_COUNT; configurationPartIndex++)
+        {
+            client->statuses.isPartConfigurated[configurationPartIndex] = CANFTP_FALSE;
+        }
     }
     // Связывание с клиентом на стороне сервера
     if (serverClient != CANFTP_NULL
@@ -158,7 +164,7 @@ void CanFTP_Server_Session_Client_UpdateControlSendingParams(CanFTP_Server_Sessi
     CanFTP_IterationsHandler_Reset(&(client->repeateSendingCounter));
     // Инициализация интервала времени потери связи
     {
-        CanFTP_TimeInterval_t newLostConnectionTimeout = interval * maxCount * maxCount;
+        CanFTP_TimeInterval_t newLostConnectionTimeout = 10 * interval * maxCount;
         // Обработка сценария, когда понижается скорость работы протокола, с условием сохранения минимального интервала времени 
         if (newLostConnectionTimeout < CANFTP_SERVER_SESSION_LOSTCONNECTION_TIMEOUT)
         {
@@ -187,6 +193,23 @@ void CanFTP_Server_Session_Client_UpdateDeletingSendingParams(CanFTP_Server_Sess
     CanFTP_TimeTrigger_SetInterval(&(client->deletingSendingTrigger), interval);
     CanFTP_TimeTrigger_Update(&(client->deletingSendingTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(client->deletingSendingCounter), maxCount);
+}
+/*
+    Проверить, что клиент прошел конфигурацию
+*/
+CanFTP_Logical_t CanFTP_Server_Session_Client_IsConfigured(CanFTP_Server_Session_Client_t *client)
+{
+    CanFTP_Message_Client_SessionControl_ConfigurationPart_t configurationPartIndex = 0;
+    // Сброс флагов чтения конфигурации сессии
+    for (configurationPartIndex = 0; configurationPartIndex < CANFT_MESSAGE_CLIENT_CONFIGURATIONPARTS_COUNT; configurationPartIndex++)
+    {
+        if (client->statuses.isPartConfigurated[configurationPartIndex] != CANFTP_TRUE)
+        {
+            return CANFTP_FALSE;
+        }
+    }
+
+    return CANFTP_TRUE;
 }
 /*
     Проверить, что клиент активно участвует в сессии

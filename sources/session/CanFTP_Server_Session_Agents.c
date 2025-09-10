@@ -42,6 +42,15 @@ void CanFTP_Server_Session_Agent_SessionConroller_Reset(CanFTP_Server_Session_Ag
 {
     CanFTP_TimeTrigger_Reset(&(agent->sendMessageTrigger));
     CanFTP_IterationsHandler_Reset(&(agent->sendMessageCounter));
+    agent->configurationPartIndexRequest = CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0;
+}
+/*
+    Сбросить параметры отправки соообщений
+*/
+void CanFTP_Server_Session_Agent_SessionConroller_ResetSendingParams(CanFTP_Server_Session_Agent_SessionConroller_t* agent)
+{
+    CanFTP_TimeTrigger_Reset(&(agent->sendMessageTrigger));
+    CanFTP_IterationsHandler_Reset(&(agent->sendMessageCounter));
 }
 /*
     Обновить параметры отправки соообщений
@@ -53,9 +62,9 @@ void CanFTP_Server_Session_Agent_SessionConroller_UpdateSendingParams(CanFTP_Ser
     , CanFTP_IterationCounter_t maxCount)
 {
     CanFTP_TimeTrigger_SetInterval(&(agent->sendMessageTrigger), interval);
-    CanFTP_TimeTrigger_Reset(&(agent->sendMessageTrigger));
     CanFTP_IterationsHandler_SetMaxCount(&(agent->sendMessageCounter), maxCount);
-    CanFTP_IterationsHandler_Reset(&(agent->sendMessageCounter));
+
+    CanFTP_Server_Session_Agent_SessionConroller_ResetSendingParams(agent);
 }
 /*
     Сбросить контроллер блока

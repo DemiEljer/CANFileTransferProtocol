@@ -36,10 +36,18 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
             {
                 if (message->configurationAck.status == CANFTP_CLIENTSESSIONACKSTATUS_SUCCESS)
                 {
-                    // Чтение ограничения на размер блока файла
-                    CanFTP_Server_Session_FileConfiguration_InitMaxBlockLength(&(session->fileConfiguration), message->configurationAck.maxBlockLength);
-                    // Подтверждение конфигурации сессии
-                    client->statuses.isConfigurated = CANFTP_TRUE;
+                    if (message->configurationAck.partIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0)
+                    {
+                        // Подтверждение конфигурации сессии
+                        client->statuses.isPartConfigurated[CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0] = CANFTP_TRUE;
+                    }
+                    else if (message->configurationAck.partIndex == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1)
+                    {
+                        // Чтение ограничения на размер блока файла
+                        CanFTP_Server_Session_FileConfiguration_InitMaxBlockLength(&(session->fileConfiguration), message->configurationAck.part1.maxBlockLength);
+                        // Подтверждение конфигурации сессии
+                        client->statuses.isPartConfigurated[CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1] = CANFTP_TRUE;
+                    }
                 }
                 else
                 {
@@ -192,10 +200,24 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
         {
             messageModel.messageType = CANFTP_MESSAGE_SERVER_SESSIONCONTROL_CONFIGURATION;
 
-            messageModel.configuration.pageIndex = session->fileConfiguration.pageIndex;
-            messageModel.configuration.fileLength = session->fileConfiguration.fileLength;
-            messageModel.configuration.repeateAckCount = session->configuration.repeateAckCount;
-            messageModel.configuration.repeateInterval = session->configuration.repeateAckInterval;
+            if (session->agents.sessionController.configurationPartIndexRequest == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0)
+            {
+                messageModel.configuration.partIndex = CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART0;
+
+                messageModel.configuration.part0.firstPageIndex = session->fileConfiguration.firstPageIndex;
+                messageModel.configuration.part0.pagesCount = session->fileConfiguration.pagesCount;
+                messageModel.configuration.part0.sessionRepeateCount = session->configuration.clientSessionRepeateCount;
+                messageModel.configuration.part0.sessionRepeateInterval = session->configuration.clientSessionRepeateInterval;
+                messageModel.configuration.part0.blockRepeateCount = session->configuration.clientBlockRepeateCount;
+                messageModel.configuration.part0.blockRepeateInterval = session->configuration.clientBlockRepeateInterval;
+            }
+            else if (session->agents.sessionController.configurationPartIndexRequest == CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1)
+            {
+                messageModel.configuration.partIndex = CANFTP_MESSAGE_CLIENT_SESSIONCONTROL_CONFIGURATION_PART1;
+
+                messageModel.configuration.part1.fileLength = session->fileConfiguration.fileLength;
+                CanFTP_SoftwareVersion_Copy(&(messageModel.configuration.part1.newSoftVersion), &(session->fileConfiguration.newSoftVersion));
+            }
         }
         else if (CanFTP_Server_Session_GetState(session) == CANFTP_SESSIONSTATE_STARTING)
         {
@@ -206,7 +228,6 @@ void CanFTP_Server_Session_MessageSend_SessionControl(CanFTP_Server_Session_t* s
             messageModel.messageType = CANFTP_MESSAGE_SERVER_SESSIONCONTROL_FINISH;
 
             messageModel.finish.sessionStatus = session->status;
-            CanFTP_SoftwareVersion_Copy(&(messageModel.finish.newSoftVersion), &(session->fileConfiguration.newSoftVersion));
         }
     }
     // Упаковка сообщения и отправка
@@ -319,5 +340,9 @@ void CanFTP_Server_Session_MessageSend(CanFTP_Server_Session_t* session, CanFTP_
         && session->server != CANFTP_NULL)
     {
         session->callbacks.sendMessageCallback(session->server, message);
+    }
+    else
+    {
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_CALLBACKS_NOMESSAGESENDER);
     }
 }

@@ -10,7 +10,9 @@
 #include "CanFTP_Messages_Debug.h"
 
 // Маска протокола
-#define CANFTP_MESSAGE_MASK                         0xFFFF0000
+#define CANFTP_MESSAGE_MASK                         0x1FFF0000
+#define CANFTP_MESSAGE_FILTERMASK                   0x1FF00000
+#define CANFTP_MESSAGE_FILTERID                     0x00000000
 // Идентификаторы
 #define CANFTP_MESSAGE_ID_SERVER_PING               0x00010000
 #define CANFTP_MESSAGE_ID_SERVER_PINGRESPONSE       0x00020000

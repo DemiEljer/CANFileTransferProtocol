@@ -17,6 +17,7 @@ typedef enum _CanFTP_Message_Client_BlockControl_Type
 {
     CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_START = 0,
     CANFTP_MESSAGE_CLIENT_BLOCKCONTROL_FINISH = 1,
+    
 } CanFTP_Message_Client_BlockControl_Type_t;
 
 /*

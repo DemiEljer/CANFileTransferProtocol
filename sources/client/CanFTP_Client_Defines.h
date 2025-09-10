@@ -90,7 +90,7 @@ typedef struct _CanFTP_Client
         // Обратный вызов конфигурации сессии (0 - сессия не прошла валидацию, 1 - сессия прошла валидацию)
         CanFTP_Client_SessionConfigurationCallback_t sessionConfigureationCallback;
         // Обратный вызов успешного приема блока файла 
-        CanFTP_Client_BlockRecieceCallback_t blockRecieceCallback;
+        CanFTP_Client_BlockRecieceCallback_t blockRecieveCallback;
         // Обратный вызов завершения сессии
         CanFTP_Client_SessionFinishedCallback_t sessionFinishedCallback;
 

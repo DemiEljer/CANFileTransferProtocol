@@ -41,5 +41,9 @@ void CanFTP_Client_Agent_SessionController_SetSessionStatus(CanFTP_Client_Agent_
     Сброс флагов управления при переходе в другое состояние
 */
 void CanFTP_Client_Agent_SessionController_ResetBetweenStates(CanFTP_Client_Agent_SessionController_t *agent);
+/*
+    Обновить параметры времени
+*/
+void CanFTP_Client_Agent_SessionController_UpdateTimeParams(CanFTP_Client_Agent_SessionController_t *agent, CanFTP_SendingRepeateInterval_t interval, CanFTP_SendingRepeate_t maxCount);
 
 #endif // CANFTP_CLIENT_AGENTS_H_

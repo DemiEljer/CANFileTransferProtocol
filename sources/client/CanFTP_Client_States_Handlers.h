@@ -51,9 +51,9 @@ void CanFTP_Client_State_SESSION_REGISTRATED_Leave(CanFTP_FinalStateMachine_t *f
 /*
     Обработка состояния SESSION_CONFIGURED
 */
-void CanFTP_Client_State_SESSION_CONFIGURED_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel);
-uint32_t CanFTP_Client_State_SESSION_CONFIGURED_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel);
-void CanFTP_Client_State_SESSION_CONFIGURED_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel);
+void CanFTP_Client_State_SESSION_CONFIGURING_Enter(CanFTP_FinalStateMachine_t *fms, void* stateModel);
+uint32_t CanFTP_Client_State_SESSION_CONFIGURING_Body(CanFTP_FinalStateMachine_t *fms, void* stateModel);
+void CanFTP_Client_State_SESSION_CONFIGURING_Leave(CanFTP_FinalStateMachine_t *fms, void* stateModel);
 /*
     Обработка состояния SESSION_STARTED
 */

@@ -25,7 +25,7 @@ typedef enum _CanFTP_ClientState
     // Клиент зарегистрирован в сессии
     CANFTP_CLIENTSTATE_SESSION_REGISTRATED = 4,
     // Сессия сконфигурирована
-    CANFTP_CLIENTSTATE_SESSION_CONFIGURED = 5,
+    CANFTP_CLIENTSTATE_SESSION_CONFIGURING = 5,
     // Сессия перешла в активное состояние
     CANFTP_CLIENTSTATE_SESSION_STARTED = 6,
     // Сессия завершена

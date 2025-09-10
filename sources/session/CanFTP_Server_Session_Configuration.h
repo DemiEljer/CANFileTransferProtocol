@@ -18,24 +18,28 @@ typedef struct _CanFTP_Server_Session_Configuration
 {
     // Интервалы времени отправки сообщений при регистрации клиентов
     CanFTP_TimeInterval_t registrationInterval;
-    // Количество повторений отправки сообщений при регистрации клиентов
+    // Количество повторных отправок сообщений при регистрации клиентов
     CanFTP_IterationCounter_t registrationRepeateCount;
     // Интервалы времени отправки сообщений при управлении сессией
     CanFTP_TimeInterval_t sessionControlInterval;
-    // Количество повторений отправки сообщений при управлении сессей
+    // Количество повторных отправок сообщений при управлении сессей
     CanFTP_IterationCounter_t sessionControlRepeateCount;
-    // Количество повторений отправки блока
+    // Количество повторных отправок блока
     CanFTP_SendingRepeate_t repeateBlockCount;
     // Интервалы времени отправки сообщений при управлении процессом отправки блока
     CanFTP_TimeInterval_t blockControlInterval;
-    // Количество повторений отправки сообщений при управлении процессом отправки блока
+    // Количество повторных отправок сообщений при управлении процессом отправки блока
     CanFTP_IterationCounter_t blockControlRepeateCount;
     // Интервалы времени отправки кадров блока
     CanFTP_TimeInterval_t frameSendingInterval;
-    // Интервалы времени отправки подтверждений со стороны клиента
-    CanFTP_SendingRepeateInterval_t repeateAckInterval;
-    // Количество повторений отправки сообщений от клиентов
-    CanFTP_SendingRepeate_t repeateAckCount;
+    // Количество повторных отправок сообщений подтверждения при управлении сессией (клиентом)
+    CanFTP_SendingRepeate_t clientSessionRepeateCount;
+    // Интервал времени повторной отправки сообщений подтверждения при управлении сессией (клиентом)
+    CanFTP_SendingRepeateInterval_t clientSessionRepeateInterval;
+    // Количество повторных отправок сообщений подтверждения при передаче блока (клиентом)
+    CanFTP_SendingRepeate_t clientBlockRepeateCount;
+    // Интервал времени повторной отправки сообщений подтверждения при передаче блока (клиентом)
+    CanFTP_SendingRepeateInterval_t clientBlockRepeateInterval;
 
 } CanFTP_Server_Session_Configuration_t;
 

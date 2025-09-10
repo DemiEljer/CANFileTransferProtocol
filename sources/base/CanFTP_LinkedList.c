@@ -99,7 +99,7 @@ CanFTP_LinkedList_Element_t* CanFTP_LinkedList_Insert(CanFTP_LinkedList_t* list,
     }
     else if (list->elementsCount == 0)
     {
-        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_LIST_OUTOFEANGE);
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_LIST_OUTOFRANGE);
 
         return CANFTP_NULL;
     }
@@ -224,7 +224,7 @@ CanFTP_LinkedList_Element_t* CanFTP_LinkedList_GetAt(CanFTP_LinkedList_t* list, 
 {
     if (index >= list->elementsCount)
     {
-        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_LIST_OUTOFEANGE);
+        CanFTP_ThrowErrorWithCode(CANFTP_ERROR_LIST_OUTOFRANGE);
 
         return CANFTP_NULL;
     }

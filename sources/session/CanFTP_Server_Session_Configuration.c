@@ -19,8 +19,10 @@ void CanFTP_Server_Session_Configuration_Reset(CanFTP_Server_Session_Configurati
     configuration->blockControlInterval = CANFTP_SERVER_SESSION_BLCOCKCONTROL_INTERVAL;
     configuration->blockControlRepeateCount = CANFTP_SERVER_SESSION_BLOCKCONTROL_COUNT;
     configuration->frameSendingInterval = CANFTP_SERVER_SESSION_FRAMESENDING_INTERVAL;
-    configuration->repeateAckInterval = CANFTP_SERVER_SESSION_ACKREPEATE_INTERVAL;
-    configuration->repeateAckCount = CANFTP_SERVER_SESSION_ACKREPEATE_COUNT;
+    configuration->clientSessionRepeateInterval = CANFTP_SERVER_SESSION_SESSIONCONTROL_ACKREPEATE_INTERVAL;
+    configuration->clientSessionRepeateCount = CANFTP_SERVER_SESSION_SESSIONCONTROL_ACKREPEATE_COUNT;
+    configuration->clientBlockRepeateInterval = CANFTP_SERVER_SESSION_BLOCKCONTROL_ACKREPEATE_INTERVAL;
+    configuration->clientBlockRepeateCount = CANFTP_SERVER_SESSION_BLOCKCONTROL_ACKREPEATE_COUNT;
 }
 /*
     Скопировать конфигурацию
@@ -35,6 +37,8 @@ void CanFTP_Server_Session_Configuration_Copy(CanFTP_Server_Session_Configuratio
     to->blockControlInterval = from->blockControlInterval;
     to->blockControlRepeateCount = from->blockControlRepeateCount;
     to->frameSendingInterval = from->frameSendingInterval;
-    to->repeateAckInterval = from->repeateAckInterval;
-    to->repeateAckCount = from->repeateAckCount;
+    to->clientSessionRepeateInterval = from->clientSessionRepeateInterval;
+    to->clientSessionRepeateCount = from->clientSessionRepeateCount;
+    to->clientBlockRepeateInterval = from->clientBlockRepeateInterval;
+    to->clientBlockRepeateCount = from->clientBlockRepeateCount;
 }

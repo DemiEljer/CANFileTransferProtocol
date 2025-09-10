@@ -52,6 +52,10 @@ void CanFTP_Server_Session_Client_UpdateDeletingSendingParams(CanFTP_Server_Sess
     // Количество отправляемых сообщений
     , CanFTP_IterationCounter_t maxCount);
 /*
+    Проверить, что клиент прошел конфигурацию
+*/
+CanFTP_Logical_t CanFTP_Server_Session_Client_IsConfigured(CanFTP_Server_Session_Client_t *client);
+/*
     Проверить, что клиент активно участвует в сессии
 */
 CanFTP_Logical_t CanFTP_Server_Session_Client_IsInSession(CanFTP_Server_Session_Client_t *client);

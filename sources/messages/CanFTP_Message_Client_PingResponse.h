@@ -20,6 +20,7 @@ typedef enum _CanFTP_Message_Client_PingResponse_Type
 {
     CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE1 = 0,
     CANFTP_MESSAGE_CLIENT_PINGRESPONSE_RESPONSE2 = 1,
+    
 } CanFTP_Message_Client_PingResponse_Type_t;
 
 /*

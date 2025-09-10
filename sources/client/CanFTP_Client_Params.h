@@ -11,14 +11,14 @@
     В процессе Ping каждый раз выбирается произвольный интервал ответа в заданном диапазоне
 */
 // Минимальный интервал времени Ping
-#define CANFTP_CLIENT_PING_MININTERVAL 20
+#define CANFTP_CLIENT_PING_MININTERVAL 50
 // Максимальный интервал времени Ping
-#define CANFTP_CLIENT_PING_MAXINTERVAL 100
+#define CANFTP_CLIENT_PING_MAXINTERVAL 500
 // Продолжительность процесса Ping без повторной отправки запроса
 #define CANFTP_CLIENT_PING_TIMEOUT 1000
 
 // Интервал повтора ответа на запрос сервера
-#define CANFTP_CLIENT_SEESION_REPEATEACK_INTERVAL 100
+#define CANFTP_CLIENT_SEESION_REPEATEACK_INTERVAL 250
 // Количество итераций повтора ответа на запрос сервера
 #define CANFTP_CLIENT_SEESION_REPEATEACK_COUNT 10
 // Интервал времени потери связи с сервером при отсуствии сообщений
