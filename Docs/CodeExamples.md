@@ -32,11 +32,17 @@ CanFTP_Logical_t ClientSessionConfigurationRequestCallback(CanFTP_Client_t *clie
 {
     printf("=== Client \"%u\" session configuration has been requested\r\n", client->deviceConfig.serialNumber);
 
-    printf("pageIndex : %u\r\n", configuration->pageIndex);
-    printf("fileLength : %u\r\n", configuration->fileLength);
-    printf("repeateAckCount : %u\r\n", configuration->repeateAckCount);
-    printf("repeateBlockCount : %u\r\n", configuration->repeateBlockCount);
-    printf("repeateInterval : %u\r\n", configuration->repeateInterval);
+    printf("new version : %u.%u.%u\r\n"
+        , configuration->newSoftVersion.higherPart
+        , configuration->newSoftVersion.middlePart
+        , configuration->newSoftVersion.lowerPart);
+    printf("FirstPageIndex : %u\r\n", configuration->firstPageIndex);\
+    printf("PagesCount : %u\r\n", configuration->pagesCount);
+    printf("FileLength : %u\r\n", configuration->fileLength);
+    printf("SessionRepeateCount : %u\r\n", configuration->sessionRepeateCount);
+    printf("SessionRepeateInterval : %u\r\n", configuration->sessionRepeateInterval);
+    printf("BlockRepeateCount : %u\r\n", configuration->blockRepeateCount);
+    printf("BlockRepeateInterval : %u\r\n", configuration->blockRepeateInterval);
 
     // В случае успешной проверки конфигурации возвращается 1, в случае ошибки - 0
     return CANFTP_TRUE;
@@ -46,8 +52,8 @@ CanFTP_Logical_t ClientSessionBlockRecievedCallback(CanFTP_Client_t *client, Can
 {
     printf("=== Client \"%u\" session block has been recieved\r\n", client->deviceConfig.serialNumber);
 
-    printf("start : %u\r\n", firstByteIndex);
-    printf("count : %u\r\n", bytesCount);
+    printf("Start bit : %u\r\n", firstByteIndex);
+    printf("Bits count : %u\r\n", bytesCount);
 
     // Тут происходит перенос блока в файла в место его постоянного хранения
 }
@@ -56,10 +62,10 @@ CanFTP_Logical_t ClientSessionHasBeenFinishedCallback(CanFTP_Client_t *client, C
 {
     printf("=== Client \"%u\" session has been finished\r\n", client->deviceConfig.serialNumber);
 
-    printf("status : %u\r\n", status);
-    printf("version.low : %u\r\n", version->lowerPart);
-    printf("version.mid : %u\r\n", version->middlePart);
-    printf("version.high : %u\r\n", version->higherPart);
+    printf("Status : %u\r\n", status);
+    printf("Version.low : %u\r\n", version->lowerPart);
+    printf("Version.mid : %u\r\n", version->middlePart);
+    printf("Version.high : %u\r\n", version->higherPart);
 }
 
 /*
@@ -72,7 +78,7 @@ CanFTP_Client_t client;
 CanFTP_Client_Init(&(client));
 // Инициализация обратных вызовов
 client.callbacks.sendMessageCallback = ClientTxCanMessageCallback;
-client.callbacks.blockRecieceCallback = ClientSessionBlockRecievedCallback;
+client.callbacks.blockRecieveCallback = ClientSessionBlockRecievedCallback;
 client.callbacks.lockLogicRequestCallback = ClientLogicLockRequestCallback;
 client.callbacks.sessionConfigureationCallback = ClientSessionConfigurationRequestCallback;
 client.callbacks.unlockLogicRequestCallback = ClientLogicUnlockRequestCallback;
@@ -201,7 +207,7 @@ CanFTP_Server_Client_t* sessionClients1[] =
 // Инициализация клиентов
 CanFTP_Server_Session_InitClients(session, 6, sessionClients1);
 // Инициализация передаваемого файла
-CanFTP_Server_Session_InitFileConfiguration(session, 0, FILE_LENGTH);
+CanFTP_Server_Session_InitFileConfiguration(session, 0, 1, FILE_LENGTH);
 // Инициализация новой версии программного обеспечения
 session->fileConfiguration.newSoftVersion.lowerPart = 25;
 session->fileConfiguration.newSoftVersion.middlePart = 26;
