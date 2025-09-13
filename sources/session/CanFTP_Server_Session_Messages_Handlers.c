@@ -26,7 +26,7 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
                 }
                 else
                 {
-                    // Тут пока ничего не делаем
+                    CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_REGISTRATIONFAILED);
                 }
             }
         }
@@ -51,7 +51,7 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
                 }
                 else
                 {
-                    // Тут пока ничего не делаем
+                    CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_CONFIGURATIONFAILED);
                 }
             }
         }
@@ -66,7 +66,7 @@ void CanFTP_Server_Session_MessageRecieve_SessionControl(CanFTP_Server_Session_t
                 }
                 else
                 {
-                    // Тут пока ничего не делаем
+                    CanFTP_Server_Session_Client_SetSessionStatus(client, CANFTP_SESSIONSTATUS_ERROR_SESSIONSTARTINGFAILED);
                 }
             }
         }

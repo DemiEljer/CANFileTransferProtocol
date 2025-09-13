@@ -35,7 +35,6 @@ void CanFTP_Server_Session_IterationEventHandler(CanFTP_FinalStateMachine_t *fms
         else
         {
             // Вызов событией особождения клиентов
-            if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
             {
                 CanFTP_DeviceCode_t clientIndex = 0;
 
@@ -52,7 +51,10 @@ void CanFTP_Server_Session_IterationEventHandler(CanFTP_FinalStateMachine_t *fms
                                 // Выставления флага подтверждения вызова события
                                 client->isDisposeEventCalled = CANFTP_TRUE;
                                 // Вызов события
-                                session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+                                if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
+                                {
+                                    session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);   
+                                }
                             }
                             // Проверка логики циклической отправки сообщений удаления клиента
                             if (CanFTP_TimeTrigger_HasFired_Udpate(&(client->deletingSendingTrigger)))
@@ -448,7 +450,6 @@ void CanFTP_Server_Session_State_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
         session->callbacks.sessionFinishedCallback(session->server, session, session->status, CanFTP_Server_Session_ClientsCollection_GetNotDisposedCount(&(session->clients)));
     }
     // Вызов событией особождения клиентов
-    if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
     {
         CanFTP_DeviceCode_t clientIndex = 0;
 
@@ -468,7 +469,10 @@ void CanFTP_Server_Session_State_FINISHED_Enter(CanFTP_FinalStateMachine_t *fms,
                 // Вызов удаления клиента
                 CanFTP_Server_Session_Client_Dispose(client);
                 // Вызов события
-                session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+                if (session->callbacks.clientReleaseCallback != CANFTP_NULL)
+                {
+                    session->callbacks.clientReleaseCallback(session->server, session, client->serverClient, client->statuses.sessionStatus);
+                }
             }
         }
     }
